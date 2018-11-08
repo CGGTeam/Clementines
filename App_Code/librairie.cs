@@ -82,7 +82,8 @@ public class librairie : System.Web.UI.Page
         };
         Conteneur.Controls.Add(t);
         return t;
-    }    public TableCell tdDYN(TableRow Conteneur,String strID,String strStyle)
+    }
+    public TableCell tdDYN(TableRow Conteneur,String strID,String strStyle)
     {
         TableCell t = new TableCell()
         {
@@ -91,10 +92,13 @@ public class librairie : System.Web.UI.Page
         };
         Conteneur.Controls.Add(t);
         return t;
-    }    public TableRow trDYN(Table Conteneur)
+    }
+    public TableRow trDYN(Table Conteneur)
     {
         TableRow t = new TableRow();
         Conteneur.Controls.Add(t);
         return t;
-    }
+    }
+
+
 }

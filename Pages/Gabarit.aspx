@@ -5,6 +5,6 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <asp:PlaceHolder id="phDynamique" runat="server" />
+    <p>Contenu de la page </p>
 </asp:Content>
 
