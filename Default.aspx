@@ -9,7 +9,11 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
+<<<<<<< HEAD
     <h1>CLÉMENTINE JULIEN</h1>
+=======
+    <h1>CLÉMENTINE - Constantin</h1>
+>>>>>>> 8ef083ad102b4dab8c84a8a58cd760fc97376176
     <hr />
     <div class="row">
         <div class="col-sm-4">
