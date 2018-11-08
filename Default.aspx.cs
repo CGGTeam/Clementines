@@ -12,16 +12,16 @@ public partial class _Default :  System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        films.Add("Film 1");
-        films.Add("Film 2");
-        films.Add("Film 3");
-        films.Add("Film 4");
-        films.Add("Film 5");
-        films.Add("Film 6");
-        films.Add("Film 7");
-        films.Add("Film 8");
-        films.Add("Film 9");
-        films.Add("Film 10");
+        films.Add("Film1");
+        films.Add("Film2");
+        films.Add("Film3");
+        films.Add("Film4");
+        films.Add("Film5");
+        films.Add("Film6");
+        films.Add("Film7");
+        films.Add("Film8");
+        films.Add("Film9");
+        films.Add("Film10");
 
         Panel row = lib.divDYN(phDynamique, "row", "row");
         Panel col1 = lib.divDYN(row, "col1", "col-sm-6");
@@ -42,8 +42,8 @@ public partial class _Default :  System.Web.UI.Page
         Panel div = lib.divDYN(container, film, "panel panel-warning");
         Panel header = lib.divDYN(div, "header" + film, "panel-heading");
         Panel content = lib.divDYN(div, "content" + film, "panel-body");
-        Label lblHeader = lib.lblDYN(header, "txt" + film, film);
-        Label lblContent = lib.lblDYN(content, "txt" + film, film);
+        Label lblHeader = lib.lblDYN(header, "txtHeader" + film, film);
+        Label lblContent = lib.lblDYN(content, "txtContent" + film, film);
     }
 
     protected void afficherPager(Control container)
