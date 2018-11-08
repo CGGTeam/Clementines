@@ -11,4 +11,19 @@ public partial class _Default :  System.Web.UI.Page
     {
 
     }
+    protected void tentativeLogin(object sender, EventArgs e)
+    {
+        String strNom = tbIdentifiant.Text;
+        String strPassword = tbPassword.Text;
+
+        /*
+         * Faire validation
+         */
+
+        /*
+         * Connecter à la BD
+         */
+         if(strNom == "user" && strPassword == "Pass1")
+            Response.Redirect("~/Default.aspx");
+    }
 }

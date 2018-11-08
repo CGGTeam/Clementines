@@ -1,5 +1,4 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="PageMaster_MasterPage" %>
-<%@ Register tagprefix="pers" TagName="NomOuPrenom" Src="/controles-utilisateur/Identifiant.ascx" %>
 
 <!DOCTYPE html>
 
@@ -8,8 +7,8 @@
     <title>
         <%: Page.Title %> - Clémentine
     </title>
-    <link rel="stylesheet" href="~/Static/styles/StyleSheet.css">
-    <script src="~/Static/scripts/JavaScript.js"></script>
+    <link rel="stylesheet" href="~/Static/styles/StyleSheet.css" runat="server" media="screen">
+    <script src="~/Static/scripts/JavaScript.js" ></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -23,15 +22,15 @@
 <!-- barre menu -->
     
     <form id="form1" runat="server">
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-dark bg-primary"  style="background-color: #646464;">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand">Clémentine</a>
+            <a class="navbar-brand a">Clémentine</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a>Accueul</a></li>
-            <li><a>Mes DVDs</a></li>
-            <li><a>Configuration</a></li>
+            <li><a class="a">Accueul</a></li>
+            <li><a class="a">Mes DVDs</a></li>
+            <li><a class="a">Configuration</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li>

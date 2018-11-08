@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="Login" Language="C#" MasterPageFile="../PageMaster/MasterPage.master" AutoEventWireup="true" CodeFile="login.aspx.cs" Inherits="_Default" %>
-<%@ Register tagprefix="pers" TagName="Identifiant" Src="/controles-utilisateur/Identifiant.ascx" %>
-<%@ Register tagprefix="pers" TagName="Password" Src="/controles-utilisateur/Identifiant.ascx" %>
+<%@ Register tagprefix="pers" TagName="Identifiant" Src="../controles-utilisateur/Identifiant.ascx" %>
+<%@ Register tagprefix="pers" TagName="Password" Src="../controles-utilisateur/Identifiant.ascx" %>
+
+
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" Runat="Server">
     <!-- Pour ajouter des imports dans le head -->
@@ -25,7 +27,7 @@
         <div class="checkbox">
           <hr />
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Se Connecter</button>
+        <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" OnClick="tentativeLogin" Text="Se connecter"/>
     </div>
 </asp:Content>
 

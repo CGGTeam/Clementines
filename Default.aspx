@@ -5,6 +5,9 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <p>Contenu de la page </p>
+    <h1>CLÉMENTINE</h1>
+    <br />
+    <hr />
+    <asp:PlaceHolder id="phDynamique" runat="server" />
 </asp:Content>
 
