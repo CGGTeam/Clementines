@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : System.Web.UI.Page
 {
-    protected int nbElementsParPage = 10;
+    protected int nbElementsParPage = 12;
     protected int noPage = 1;
 
     private librairie lib = new librairie();
@@ -30,7 +30,7 @@ public partial class _Default : System.Web.UI.Page
         string img = "Static/images/flavicon.png";
         initialiserNoPage();
 
-        for (int i = 1; i<= 20; i++)
+        for (int i = 1; i<= 32; i++)
         {
             films.Add(new Film("Film" + i, img, "Personne"+i));
         }
@@ -38,7 +38,7 @@ public partial class _Default : System.Web.UI.Page
         Panel row = lib.divDYN(phDynamique, "row", "row");
         Panel col1 = lib.divDYN(row, "col1", "col-sm-6");
         Panel col2 = lib.divDYN(row, "col2", "col-sm-6");
-        for (int i = (noPage * nbElementsParPage) - (nbElementsParPage-1); i <= nbElementsParPage* noPage; i++)
+        for (int i = (noPage * nbElementsParPage) - (nbElementsParPage-1); i <= nbElementsParPage* noPage && i <= films.Count(); i++)
         {
             if(i % 2 != 0)
                 afficherFilm(films[i-1], col1);
@@ -75,7 +75,7 @@ public partial class _Default : System.Web.UI.Page
     protected void afficherPager(Control control)
     {
         LiteralControl pager = new LiteralControl();
-        decimal nbPages = Math.Floor((decimal)films.Count / (decimal)nbElementsParPage);
+        decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
 
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
