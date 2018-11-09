@@ -79,9 +79,11 @@ public partial class _Default : System.Web.UI.Page
 
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
+        previous = previous <= 0 ? noPage : previous;
+
         string strDebut =  "<nav aria - label = 'Page navigation example' >" +
                                 "<ul class='pagination justify-content-center'>" +
-                                    "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous+"'>Previous</a></li>";
+                                    "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous+"'> Previous</a></li>";
 
         pager.Text += strDebut;
         for(int i = 1; i <= nbPages; i++)
@@ -91,9 +93,11 @@ public partial class _Default : System.Web.UI.Page
             pager.Text += strMillieu;
         }
 
-        int next = noPage +1;
-        strClass = next >= nbPages ? "page-item disabled" : "page-item";
-        string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "'>Next</a></li>" +
+        int next = noPage + 1;
+        strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
+        next = next >= nbPages + 1 ? noPage : next;
+
+        string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "'>Next</a></li>" +
                                 "</ul>" +
                             "</nav>";
         pager.Text += strFin;
