@@ -23,24 +23,23 @@ public class librairie : System.Web.UI.Page
         panel.CssClass = strStyle;
         return panel;
     }
-    public ImageButton btnImgDYN(Control Conteneur, String strID, String strImg, String mot)
+    public ImageButton btnImgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         ImageButton img = new ImageButton
         {
             ID = strID,
-            CssClass = "sImage",
+            CssClass = strClass,
             ImageUrl = strImg,
-            OnClientClick = "clickLettre("+ strID + ",\""+ mot + "\");return false;"
         };
         Conteneur.Controls.Add(img);
         return img;
     }
-    public Image imgDYN(Control Conteneur, String strID, String strImg)
+    public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         Image img = new Image
         {
             ID = strID,
-            CssClass = "sImage",
+            CssClass = strClass,
             ImageUrl = strImg,
         };
         Conteneur.Controls.Add(img);

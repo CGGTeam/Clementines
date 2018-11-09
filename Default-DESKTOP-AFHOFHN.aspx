@@ -9,9 +9,12 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <h1>CLÉMENTINE</h1>
+<<<<<<< HEAD
+    <h1>CLÉMENTINE JULIEN</h1>
+=======
+    <h1>CLÉMENTINE - Constantin</h1>
+>>>>>>> 8ef083ad102b4dab8c84a8a58cd760fc97376176
     <hr />
-    <!--   P'tit truc cute pour ajouter des document (juste titre)
     <div class="row">
         <div class="col-sm-4">
           <div class="panel panel-default">
@@ -36,7 +39,6 @@
           </div>
         </div>
     </div>
-    -->
 
     <hr />
 
