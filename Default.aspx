@@ -38,7 +38,6 @@
         </div>
     </div>
     -->
-
     <hr />
 
     <asp:PlaceHolder id="phDynamique" runat="server" />

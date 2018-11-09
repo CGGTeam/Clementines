@@ -65,18 +65,25 @@ public partial class _Default : System.Web.UI.Page
     {
         Panel div = librairie.divDYN(container, film.nom, "panel panel-warning");
         Panel header = librairie.divDYN(div, "header" + film.nom, "panel-heading");
-        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body");
+        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body mask rgba-red-strong");
         Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
         Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
         Label lblPersonne = librairie.lblDYN(content, "lblPersonne" + film.nom, film.personne);
+
         LinkButton email = new LinkButton()
         {
             ID = "btnEmail"+film.personne,
-            CssClass = "btn btn-primary"
+            CssClass = "btn btn-primary",           
         };
+        email.Click += new EventHandler(envoyerUnCourriel);
         content.Controls.Add(email);
-        Panel imgEmail = librairie.divDYN(email, "email" + film.personne, "glyphicon glyphicon-envelope col-sm-2");
 
+        Panel glyphEmail = new Panel()
+        {
+            CssClass = "glyphicon glyphicon-envelope col-sm-2",
+            ID = "email" + film.personne,
+        };
+        email.Controls.Add(glyphEmail);
     }
 
     private void afficherPager(Control control)
@@ -113,6 +120,6 @@ public partial class _Default : System.Web.UI.Page
     }
     private void envoyerUnCourriel(object sender, EventArgs e)
     {
-
+        Response.Redirect("~/Pages/Courriel.aspx");
     }
 }

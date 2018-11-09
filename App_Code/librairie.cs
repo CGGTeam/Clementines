@@ -29,7 +29,7 @@ static public class librairie
         {
             ID = strID,
             CssClass = strClass,
-            ImageUrl = strImg,
+            ImageUrl = strImg
         };
         Conteneur.Controls.Add(img);
         return img;
