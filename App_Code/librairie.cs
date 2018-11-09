@@ -8,22 +8,22 @@ using System.Web.UI.WebControls;
 /// <summary>
 /// Summary description for librairie
 /// </summary>
-public class librairie : System.Web.UI.Page
+static public class librairie 
 {
-    public Panel divDYN(Control Conteneur, String strID)
+    static public Panel divDYN(Control Conteneur, String strID)
     {
         Panel panel = new Panel();
         panel.ID = strID;
         Conteneur.Controls.Add(panel);
         return panel;
     }
-    public Panel divDYN(Control Conteneur, String strID, String strStyle)
+    static public Panel divDYN(Control Conteneur, String strID, String strStyle)
     {
         Panel panel = divDYN(Conteneur, strID);
         panel.CssClass = strStyle;
         return panel;
     }
-    public ImageButton btnImgDYN(Control Conteneur, String strID, String strImg, String strClass)
+    static public ImageButton btnImgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         ImageButton img = new ImageButton
         {
@@ -34,7 +34,7 @@ public class librairie : System.Web.UI.Page
         Conteneur.Controls.Add(img);
         return img;
     }
-    public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
+    static public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         Image img = new Image
         {
@@ -45,7 +45,7 @@ public class librairie : System.Web.UI.Page
         Conteneur.Controls.Add(img);
         return img;
     }
-    public Label lblDYN(Control Conteneur, String strID, String strValeur)
+    static public Label lblDYN(Control Conteneur, String strID, String strValeur)
     {
         Label lbl = new Label()
         {
@@ -55,13 +55,13 @@ public class librairie : System.Web.UI.Page
         Conteneur.Controls.Add(lbl);
         return lbl;
     }
-    public void brDYN(Control Conteneur)
+    static public void brDYN(Control Conteneur)
     {
         Literal br = new Literal();
         br.Text = "<br />";
         Conteneur.Controls.Add(br);
     }
-    public void brDYN(Control Conteneur, Int16 intNb)
+    static public void brDYN(Control Conteneur, Int16 intNb)
     {
 
         Literal br = new Literal();
@@ -72,7 +72,7 @@ public class librairie : System.Web.UI.Page
         }
         Conteneur.Controls.Add(br);
     }
-    public Table tableDYN(Control Conteneur,String strID,String strStyle)
+    static public Table tableDYN(Control Conteneur,String strID,String strStyle)
     {
         Table t = new Table()
         {
@@ -82,7 +82,7 @@ public class librairie : System.Web.UI.Page
         Conteneur.Controls.Add(t);
         return t;
     }
-    public TableCell tdDYN(TableRow Conteneur,String strID,String strStyle)
+    static public TableCell tdDYN(TableRow Conteneur,String strID,String strStyle)
     {
         TableCell t = new TableCell()
         {
@@ -92,7 +92,7 @@ public class librairie : System.Web.UI.Page
         Conteneur.Controls.Add(t);
         return t;
     }
-    public TableRow trDYN(Table Conteneur)
+    static public TableRow trDYN(Table Conteneur)
     {
         TableRow t = new TableRow();
         Conteneur.Controls.Add(t);

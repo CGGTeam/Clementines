@@ -7,7 +7,6 @@ using System.Web.UI.WebControls;
 
 public partial class Pages_DVDEnMain : System.Web.UI.Page
 {
-   private librairie lib = new librairie();
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
 
    protected void Page_Load(object sender, EventArgs e)
@@ -41,13 +40,13 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
       {
          if (numVignette % 3 == 0)
          {
-            row = lib.divDYN(phVignettes, "row_" + numRow, "row");
+            row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
             numRow++;
          }
-         Panel col = lib.divDYN(row, "col_" + vignette.Key, "col-sm-4");
-         Panel panel = lib.divDYN(col, "panel_" + vignette.Key, "panel panel-default");
-         Panel panelBody = lib.divDYN(panel, "panel-body_" + vignette.Key, "panel-body");
-         Panel panelFooter = lib.divDYN(panel, "panel-footer_" + vignette.Key, "panel-footer");
+         Panel col = librairie.divDYN(row, "col_" + vignette.Key, "col-sm-4");
+         Panel panel = librairie.divDYN(col, "panel_" + vignette.Key, "panel panel-default");
+         Panel panelBody = librairie.divDYN(panel, "panel-body_" + vignette.Key, "panel-body");
+         Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + vignette.Key, "panel-footer");
 
          numVignette++;
       }
