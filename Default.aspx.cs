@@ -10,12 +10,18 @@ public partial class _Default : System.Web.UI.Page
     private int nbElementsParPage = 10;
     private int noPage = 1;
 
+    private List<Film> filmsOG = new List<Film>();
     private List<Film> films = new List<Film>();
 
+    private Panel col1;
+    private Panel col2;
+
+    private Panel row2;
+
     private class Film {
-        public string nom  {get; private set; }
-        public string vignette { get; private set; }
-        public string personne { get; private set; }
+        public string nom  {get; set; }
+        public string vignette { get; set; }
+        public string personne { get; set; }
 
         public Film(string nom, string vignette, string personne)
         {
@@ -24,28 +30,52 @@ public partial class _Default : System.Web.UI.Page
             this.personne = personne;
         }
     }
+    public void FilterList(object sender, EventArgs e)
+    {
+        
+        System.Diagnostics.Debug.WriteLine("filter");
+        string filtre = "1";
+        films.Clear();
+        films = filmsOG.Where(film => film.nom.Contains(filtre)).ToList();
+        AfficherLesFilms(col1, col2, row2);
+    }
+
     private void Page_Load(object sender, EventArgs e)
     {
+        System.Diagnostics.Debug.WriteLine("load");
+
+        //tbRecherche.Attributes.Add("onChange", "FilterList();");
+
         string img = "Static/images/flavicon.png";
         initialiserNoPage();
 
         for (int i = 1; i<= 32; i++)
         {
-            films.Add(new Film("Film" + i, img, "Personne"+i));
+            filmsOG.Add(new Film("Film" + i, img, "Personne"+i));
         }
+        films = filmsOG.ToList();
 
         Panel row = librairie.divDYN(phDynamique, "row", "row");
-        Panel col1 = librairie.divDYN(row, "col1", "col-sm-6");
-        Panel col2 = librairie.divDYN(row, "col2", "col-sm-6");
-        for (int i = (noPage * nbElementsParPage) - (nbElementsParPage-1); i <= nbElementsParPage* noPage && i <= films.Count(); i++)
-        {
-            if(i % 2 != 0)
-                afficherFilm(films[i-1], col1);
-            else
-                afficherFilm(films[i-1], col2);
-        }
+        col1 = librairie.divDYN(row, "col1", "col-sm-6");
+        col2 = librairie.divDYN(row, "col2", "col-sm-6");
 
-        Panel row2 = librairie.divDYN(phDynamique, "row2", "row");
+        row2 = librairie.divDYN(phDynamique, "row2", "row");
+        AfficherLesFilms(col1, col2, row2);
+        
+    }
+    private void AfficherLesFilms(Control col1, Control col2, Control row2)
+    {
+        col1.Controls.Clear();
+        col2.Controls.Clear();
+        row2.Controls.Clear();
+
+        for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+        {
+            if (i % 2 != 0)
+                afficherFilm(films[i - 1], col1);
+            else
+                afficherFilm(films[i - 1], col2);
+        }
         afficherPager(row2);
     }
     private void initialiserNoPage()

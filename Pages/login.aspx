@@ -27,7 +27,7 @@
         <div class="checkbox">
           <hr />
         </div>
-        <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" OnClick="tentativeLogin" Text="Se connecter"/>
+        <asp:Button runat="server" CssClass="btn btn-lg btn-primary btn-block" OnClick="tentativeLogin" Text="Se connecter"/>
     </div>
 </asp:Content>
 

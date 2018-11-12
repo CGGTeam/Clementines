@@ -25,7 +25,7 @@
 <nav class="navbar navbar-dark bg-primary"  style="background-color: #646464;">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand a">Clémentine</a>
+            <a class="navbar-brand a"> Clémentine</a>
         </div>
         <ul class="nav navbar-nav">
             <li><a href="../Default.aspx" class="a">Accueul</a></li>

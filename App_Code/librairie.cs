@@ -55,6 +55,16 @@ static public class librairie
         Conteneur.Controls.Add(lbl);
         return lbl;
     }
+    static public TextBox tbDYN(Control Conteneur, String strID, String strClass)
+    {
+        TextBox tb = new TextBox()
+        {
+            ID = strID,
+            CssClass = strClass
+        };
+        Conteneur.Controls.Add(tb);
+        return tb;
+    }
     static public void brDYN(Control Conteneur)
     {
         Literal br = new Literal();
