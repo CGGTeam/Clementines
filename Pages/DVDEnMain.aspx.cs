@@ -33,43 +33,31 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
    public void afficherPageVignettes(Dictionary<int, string> lstDVD)
    {
-      Panel row = row = lib.divDYN(phVignettes, "row", "row");
+      Panel row = row = librairie.divDYN(phVignettes, "row", "row");
 
       foreach (var vignette in lstDVD)
       {
-<<<<<<< HEAD
-         Panel col = lib.divDYN(row, "col_" + vignette.Key, "col-sm-3");
-         Panel panel = lib.divDYN(col, "panel_" + vignette.Key, "panel panel-default");
-         Panel panelBody = lib.divDYN(panel, "panel-body_" + vignette.Key, "panel-body vignette");
-         Panel panelCache = lib.divDYN(panelBody, "panel-cache_" + vignette.Key, "boutons-caches");
-         Table table = lib.tableDYN(panelCache, "table_" + vignette.Key, "tableau-boutons");
-
-         TableRow tr1 = lib.trDYN(table);
-         TableCell td1 = lib.tdDYN(tr1, "td_" + vignette.Key, "");
-         Button btn1 = lib.btnDYN(td1, "affichage_detaillee_" + vignette.Key, "btn btn-default boutons-options-film", "Affichage détaillée");
-
-         TableRow tr2 = lib.trDYN(table);
-         TableCell td2 = lib.tdDYN(tr2, "td_" + vignette.Key, "");
-         Button btn2 = lib.btnDYN(td2, "modifier_" + vignette.Key, "btn btn-default boutons-options-film", "Modifier");
-=======
-         if (numVignette % 3 == 0)
-         {
-            row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
-            numRow++;
-         }
-         Panel col = librairie.divDYN(row, "col_" + vignette.Key, "col-sm-4");
+         Panel col = librairie.divDYN(row, "col_" + vignette.Key, "col-sm-3");
          Panel panel = librairie.divDYN(col, "panel_" + vignette.Key, "panel panel-default");
-         Panel panelBody = librairie.divDYN(panel, "panel-body_" + vignette.Key, "panel-body");
+         Panel panelBody = librairie.divDYN(panel, "panel-body_" + vignette.Key, "panel-body vignette");
+         Panel panelCache = librairie.divDYN(panelBody, "panel-cache_" + vignette.Key, "boutons-caches");
+         Table table = librairie.tableDYN(panelCache, "table_" + vignette.Key, "tableau-boutons");
+
+         TableRow tr1 = librairie.trDYN(table);
+         TableCell td1 = librairie.tdDYN(tr1, "td_" + vignette.Key, "");
+         Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + vignette.Key, "btn btn-default boutons-options-film", "Affichage détaillée");
+
+         TableRow tr2 = librairie.trDYN(table);
+         TableCell td2 = librairie.tdDYN(tr2, "td_" + vignette.Key, "");
+         Button btn2 = librairie.btnDYN(td2, "modifier_" + vignette.Key, "btn btn-default boutons-options-film", "Modifier");
+
+         TableRow tr3 = librairie.trDYN(table);
+         TableCell td3 = librairie.tdDYN(tr3, "td_" + vignette.Key, "");
+         Button btn3 = librairie.btnDYN(td3, "supprimer_" + vignette.Key, "btn btn-default boutons-options-film", "Supprimer");
+
+         Image img = librairie.imgDYN(panelBody, "img_" + vignette.Key, "../Static/images/logo.png", "");
+
          Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + vignette.Key, "panel-footer");
->>>>>>> 321646cf799b81e6ccdca58e9e5f310d11e7b5e6
-
-         TableRow tr3 = lib.trDYN(table);
-         TableCell td3 = lib.tdDYN(tr3, "td_" + vignette.Key, "");
-         Button btn3 = lib.btnDYN(td3, "supprimer_" + vignette.Key, "btn btn-default boutons-options-film", "Supprimer");
-
-         Image img = lib.imgDYN(panelBody, "img_" + vignette.Key, "../Static/images/logo.png", "");
-
-         Panel panelFooter = lib.divDYN(panel, "panel-footer_" + vignette.Key, "panel-footer");
       }
 
 

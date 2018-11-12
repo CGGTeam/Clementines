@@ -34,9 +34,8 @@ static public class librairie
         Conteneur.Controls.Add(img);
         return img;
     }
-<<<<<<< HEAD
 
-    public Button btnDYN(Control conteneur, String strID, String strClass, String strValue)
+    static public Button btnDYN(Control conteneur, String strID, String strClass, String strValue)
    {
       Button btn = new Button
       {
@@ -47,11 +46,9 @@ static public class librairie
       conteneur.Controls.Add(btn);
       return btn;
    }
+   
 
-    public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
-=======
     static public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
->>>>>>> 321646cf799b81e6ccdca58e9e5f310d11e7b5e6
     {
         Image img = new Image
         {
