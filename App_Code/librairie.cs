@@ -34,6 +34,19 @@ public class librairie : System.Web.UI.Page
         Conteneur.Controls.Add(img);
         return img;
     }
+
+    public Button btnDYN(Control conteneur, String strID, String strClass, String strValue)
+   {
+      Button btn = new Button
+      {
+         ID = strID,
+         CssClass = strClass,
+         Text = strValue
+      };
+      conteneur.Controls.Add(btn);
+      return btn;
+   }
+
     public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         Image img = new Image

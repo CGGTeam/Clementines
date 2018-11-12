@@ -16,6 +16,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
       
       if (!Page.IsPostBack)
       {
+
          lstDVD.Add(1, "DVD 1");
          lstDVD.Add(2, "DVD 2");
          lstDVD.Add(3, "DVD 3");
@@ -33,23 +34,31 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
    public void afficherPageVignettes(Dictionary<int, string> lstDVD)
    {
-      int numVignette = 0;
-      int numRow = 1;
-      Panel row = null;
+      Panel row = row = lib.divDYN(phVignettes, "row", "row");
 
       foreach (var vignette in lstDVD)
       {
-         if (numVignette % 3 == 0)
-         {
-            row = lib.divDYN(phVignettes, "row_" + numRow, "row");
-            numRow++;
-         }
-         Panel col = lib.divDYN(row, "col_" + vignette.Key, "col-sm-4");
+         Panel col = lib.divDYN(row, "col_" + vignette.Key, "col-sm-3");
          Panel panel = lib.divDYN(col, "panel_" + vignette.Key, "panel panel-default");
-         Panel panelBody = lib.divDYN(panel, "panel-body_" + vignette.Key, "panel-body");
-         Panel panelFooter = lib.divDYN(panel, "panel-footer_" + vignette.Key, "panel-footer");
+         Panel panelBody = lib.divDYN(panel, "panel-body_" + vignette.Key, "panel-body vignette");
+         Panel panelCache = lib.divDYN(panelBody, "panel-cache_" + vignette.Key, "boutons-caches");
+         Table table = lib.tableDYN(panelCache, "table_" + vignette.Key, "tableau-boutons");
 
-         numVignette++;
+         TableRow tr1 = lib.trDYN(table);
+         TableCell td1 = lib.tdDYN(tr1, "td_" + vignette.Key, "");
+         Button btn1 = lib.btnDYN(td1, "affichage_detaillee_" + vignette.Key, "btn btn-default boutons-options-film", "Affichage détaillée");
+
+         TableRow tr2 = lib.trDYN(table);
+         TableCell td2 = lib.tdDYN(tr2, "td_" + vignette.Key, "");
+         Button btn2 = lib.btnDYN(td2, "modifier_" + vignette.Key, "btn btn-default boutons-options-film", "Modifier");
+
+         TableRow tr3 = lib.trDYN(table);
+         TableCell td3 = lib.tdDYN(tr3, "td_" + vignette.Key, "");
+         Button btn3 = lib.btnDYN(td3, "supprimer_" + vignette.Key, "btn btn-default boutons-options-film", "Supprimer");
+
+         Image img = lib.imgDYN(panelBody, "img_" + vignette.Key, "../Static/images/logo.png", "");
+
+         Panel panelFooter = lib.divDYN(panel, "panel-footer_" + vignette.Key, "panel-footer");
       }
 
 
