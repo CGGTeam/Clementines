@@ -34,6 +34,20 @@ static public class librairie
         Conteneur.Controls.Add(img);
         return img;
     }
+
+    static public Button btnDYN(Control conteneur, String strID, String strClass, String strValue)
+   {
+      Button btn = new Button
+      {
+         ID = strID,
+         CssClass = strClass,
+         Text = strValue
+      };
+      conteneur.Controls.Add(btn);
+      return btn;
+   }
+   
+
     static public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         Image img = new Image
