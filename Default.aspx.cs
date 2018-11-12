@@ -7,25 +7,24 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : System.Web.UI.Page
 {
-    protected int nbElementsParPage = 12;
-    protected int noPage = 1;
+    private int nbElementsParPage = 10;
+    private int noPage = 1;
 
-    private librairie lib = new librairie();
     private List<Film> films = new List<Film>();
 
-    protected class Film {
+    private class Film {
         public string nom  {get; private set; }
         public string vignette { get; private set; }
         public string personne { get; private set; }
 
-    public Film(string nom, string vignette, string personne)
+        public Film(string nom, string vignette, string personne)
         {
             this.nom = nom;
             this.vignette = vignette;
             this.personne = personne;
         }
     }
-    protected void Page_Load(object sender, EventArgs e)
+    private void Page_Load(object sender, EventArgs e)
     {
         string img = "Static/images/flavicon.png";
         initialiserNoPage();
@@ -35,9 +34,9 @@ public partial class _Default : System.Web.UI.Page
             films.Add(new Film("Film" + i, img, "Personne"+i));
         }
 
-        Panel row = lib.divDYN(phDynamique, "row", "row");
-        Panel col1 = lib.divDYN(row, "col1", "col-sm-6");
-        Panel col2 = lib.divDYN(row, "col2", "col-sm-6");
+        Panel row = librairie.divDYN(phDynamique, "row", "row");
+        Panel col1 = librairie.divDYN(row, "col1", "col-sm-6");
+        Panel col2 = librairie.divDYN(row, "col2", "col-sm-6");
         for (int i = (noPage * nbElementsParPage) - (nbElementsParPage-1); i <= nbElementsParPage* noPage && i <= films.Count(); i++)
         {
             if(i % 2 != 0)
@@ -46,10 +45,10 @@ public partial class _Default : System.Web.UI.Page
                 afficherFilm(films[i-1], col2);
         }
 
-        Panel row2 = lib.divDYN(phDynamique, "row2", "row");
+        Panel row2 = librairie.divDYN(phDynamique, "row2", "row");
         afficherPager(row2);
     }
-    protected void initialiserNoPage()
+    private void initialiserNoPage()
     {
         int n;
         if (Request.QueryString["Page"] == null || !int.TryParse(Request.QueryString["Page"], out n))
@@ -62,17 +61,32 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
-    protected void afficherFilm(Film film, Control container)
+    private void afficherFilm(Film film, Control container)
     {
-        Panel div = lib.divDYN(container, film.nom, "panel panel-warning");
-        Panel header = lib.divDYN(div, "header" + film.nom, "panel-heading");
-        Panel content = lib.divDYN(div, "content" + film.nom, "panel-body");
-        Label lblHeader = lib.lblDYN(header, "lbl" + film.nom, film.nom);
-        Image img = lib.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
-        Label lblContent = lib.lblDYN(content, "lblPersonne" + film.nom, film.personne);
+        Panel div = librairie.divDYN(container, film.nom, "panel panel-warning");
+        Panel header = librairie.divDYN(div, "header" + film.nom, "panel-heading");
+        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body mask rgba-red-strong");
+        Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
+        Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
+        Label lblPersonne = librairie.lblDYN(content, "lblPersonne" + film.nom, film.personne);
+
+        LinkButton email = new LinkButton()
+        {
+            ID = "btnEmail"+film.personne,
+            CssClass = "btn btn-primary",           
+        };
+        email.Click += new EventHandler(envoyerUnCourriel);
+        content.Controls.Add(email);
+
+        Panel glyphEmail = new Panel()
+        {
+            CssClass = "glyphicon glyphicon-envelope col-sm-2",
+            ID = "email" + film.personne,
+        };
+        email.Controls.Add(glyphEmail);
     }
 
-    protected void afficherPager(Control control)
+    private void afficherPager(Control control)
     {
         LiteralControl pager = new LiteralControl();
         decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
@@ -103,5 +117,9 @@ public partial class _Default : System.Web.UI.Page
         pager.Text += strFin;
 
         control.Controls.Add(pager);
+    }
+    private void envoyerUnCourriel(object sender, EventArgs e)
+    {
+        Response.Redirect("~/Pages/Courriel.aspx");
     }
 }

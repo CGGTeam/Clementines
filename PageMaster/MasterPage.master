@@ -28,9 +28,9 @@
             <a class="navbar-brand a">Clémentine</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a class="a">Accueul</a></li>
-            <li><a class="a">Mes DVDs</a></li>
-            <li><a class="a">Configuration</a></li>
+            <li><a href="../Default.aspx" class="a">Accueul</a></li>
+            <li><a href="../Pages/DVDEnMain.aspx" class="a">Mes DVDs</a></li>
+            <li><a href="../Pages/AjoutFilm.aspx" class="a">Ajouter un DVD</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li>
