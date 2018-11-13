@@ -1,0 +1,14 @@
+﻿.label-gras{
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.label-non-gras {
+    font-size: 25px;
+    color:darkred;
+}
+
+.vignette {
+    height:100%;
+    width:150px;
+}
