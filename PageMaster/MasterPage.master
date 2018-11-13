@@ -11,7 +11,7 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="~/Static/styles/StyleSheet.css" runat="server" media="screen">
     <script src="Static/scripts/JavaScript.js" ></script>
-
+    <script src="../Static/scripts/JavaScript.js" ></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="~/Static/images/flavicon.png" />
@@ -33,8 +33,17 @@
             <li><a href="../Pages/DVDEnMain.aspx" class="a">Mes DVDs</a></li>
             <li><a href="../Pages/AjoutFilm.aspx" class="a">Ajouter un DVD</a></li>
         </ul>
+
         <ul class="nav navbar-nav navbar-right">
             <li>
+                <div class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <asp:TextBox runat="server" type="text" id="tbNavSearch" class="form-control" placeholder="Recherche"/>
+                    </div>
+                    <asp:LinkButton runat="server" class="btn btn-default" OnClick="Search">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </asp:LinkButton>
+                </div>
                 <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="S'identifer" OnClick="PageLogin" />
             </li>
         </ul>

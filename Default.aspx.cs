@@ -54,7 +54,7 @@ public partial class _Default : System.Web.UI.Page
     public void UpdateFiltre(object sender, EventArgs e)
     {
         string strFiltre = tbRecherche.Text;
-        
+        System.Diagnostics.Debug.WriteLine("in");
         Response.Redirect("~/Default.aspx?Page=1&Filtre="+ strFiltre, false);
     }
 
@@ -116,8 +116,7 @@ public partial class _Default : System.Web.UI.Page
     private void InitialiserSearch()
     {
         if (Request.QueryString["Filtre"] == null)
-        {
-            System.Diagnostics.Debug.WriteLine("vide");
+        { 
             filtre = "";
         }
         else
