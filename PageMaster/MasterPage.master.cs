@@ -16,4 +16,9 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
     {
         Response.Redirect("~/Pages/login.aspx");
     }
+    protected void Search(Object sender, EventArgs e)
+    {
+        string str = tbNavSearch.Text;
+        Response.Redirect("~/Default.aspx?Page=1&Filtre=" + str, false);
+    }
 }

@@ -11,3 +11,9 @@ function CreateTxt() {
     container.innerHTML = html;
     return false;
 }
+function search() {
+    var str = $("#tbNavSearch").val();
+    console.log(str);
+    window.location = "Default.aspx?Page=1&Filtre=" + str;
+    return false;
+}

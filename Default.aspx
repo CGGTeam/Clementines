@@ -6,6 +6,7 @@
     <!-- Pour ajouter des imports dans le head -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="Static/scripts/Scriptdefault.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
@@ -23,7 +24,7 @@
               </h4>
             </div>
             <div id="collapse1" class="panel-collapse collapse out">
-              <div class="panel-body">
+              <div class="panel-body">http://localhost:59445/~Static/scripts/Scriptdefault.js
                   <label for="tbNomFilm" class="sr-only">Nom du film</label>
                     <pers:film runat="server" id="tbNomFilm" placeholder="Nom du film" CssClass="form-control"></pers:film>
 
@@ -38,9 +39,23 @@
         </div>
     </div>
     -->
-    <asp:TextBox runat="server" ID="tbRecherche"></asp:TextBox>
-    <asp:Button runat="server" ID="btnRecherche" Text="recherche" OnClick="FilterList"/>
+    <div class="input-group">
+        <asp:TextBox runat="server" ID="tbRecherche" CssClass="tbRecherhce"></asp:TextBox>
+        <asp:LinkButton runat="server" id="btnRecherche" OnClick="UpdateFiltre">
+                    <div class="glyphicon glyphicon-search"></div>
+        </asp:LinkButton> 
+    </div>
+    <div class="input-group">
+        <asp:HiddenField runat="server" ID="hfTitre" Value="true"/>
+        <asp:CheckBox runat="server" class="form-check-input" id="cbTitre" Checked="true" OnCheckedChanged="Check" AutoPostBack="True"/>
+        <label class="form-check-label" for="cbTitre">Titre</label>
 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <asp:HiddenField runat="server" ID="hfPersonne" Value="false"/>
+        <asp:CheckBox runat="server" class="form-check-input" id="cbPersonne" OnCheckedChanged="Check" AutoPostBack="True"/>
+        <label class="form-check-label" for="cbPersonne">Propriétaire</label>
+    </div>
     <hr />
 
     <asp:PlaceHolder id="phDynamique" runat="server" />
