@@ -17,6 +17,11 @@
             <div class="row">
                 <div class="col-sm-12 form-group">
                     <label for="comments">
+                        Destinaire :</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="destinaire" placeholder="Votre distinaire" />
+
+                    <br />
+                    <label for="comments">
                         Message :</label>
                     <textarea class="form-control" name="comments" 
                         id="comments" placeholder="Votre message" maxlength="6000" rows="7" style="max-width:100%; max-height:600px;"></textarea>

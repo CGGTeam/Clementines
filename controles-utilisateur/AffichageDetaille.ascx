@@ -1,6 +1,20 @@
 ﻿<%@ Control Language="C#" %>
 <script runat="server">
-
+    static string prevPage = String.Empty;
+ 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+         if( !IsPostBack )
+         {
+             prevPage = Request.UrlReferrer.ToString();
+         }
+ 
+     }
+ 
+     protected void Retour(object sender, EventArgs e)
+     {
+          Response.Redirect(prevPage);
+     }
 </script>
 
  <div class="panel panel-default">
@@ -124,10 +138,5 @@
 </div>
 <!-- TODO : ajouter d'autres champs, modifier textbox pour des dropdown list  -->
 <div class="row">
-    <div class="col-sm-6">
-        <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter"/>
-    </div>
-    <div class="col-sm-6">
-        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Annuler"/>
-    </div>
+        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Retour" onclick="Retour"/>
 </div>

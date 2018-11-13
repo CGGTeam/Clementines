@@ -39,22 +39,32 @@
         </div>
     </div>
     -->
-    <div class="input-group">
-        <asp:TextBox runat="server" ID="tbRecherche" CssClass="tbRecherhce"></asp:TextBox>
-        <asp:LinkButton runat="server" id="btnRecherche" OnClick="UpdateFiltre">
-                    <div class="glyphicon glyphicon-search"></div>
-        </asp:LinkButton> 
-    </div>
-    <div class="input-group">
-        <asp:HiddenField runat="server" ID="hfTitre" Value="true"/>
-        <asp:CheckBox runat="server" class="form-check-input" id="cbTitre" Checked="true" OnCheckedChanged="Check" AutoPostBack="True"/>
-        <label class="form-check-label" for="cbTitre">Titre</label>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="input-group">
+                <asp:TextBox runat="server" ID="tbRecherche" CssClass="tbRecherhce"></asp:TextBox>
+                <asp:LinkButton runat="server" id="btnRecherche" OnClick="UpdateFiltre">
+                            <div class="glyphicon glyphicon-search"></div>
+                </asp:LinkButton> 
+            </div>
+            <div class="input-group">
+                <asp:HiddenField runat="server" ID="hfTitre" Value="true"/>
+                <asp:CheckBox runat="server" class="form-check-input" id="cbTitre" Checked="true" OnCheckedChanged="Check" AutoPostBack="False"/>
+                <label class="form-check-label" for="cbTitre">Titre</label>
 
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-        <asp:HiddenField runat="server" ID="hfPersonne" Value="false"/>
-        <asp:CheckBox runat="server" class="form-check-input" id="cbPersonne" OnCheckedChanged="Check" AutoPostBack="True"/>
-        <label class="form-check-label" for="cbPersonne">Propriétaire</label>
+                <asp:HiddenField runat="server" ID="hfPersonne" Value="false"/>
+                <asp:CheckBox runat="server" class="form-check-input" id="cbPersonne" Checked="true"  OnCheckedChanged="Check" AutoPostBack="False"/>
+                <label class="form-check-label" for="cbPersonne">Propriétaire</label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label class="form-check-label">Trier par :</label>
+            <asp:Button runat="server" ID="btnTriTitre" Text="Titre" onclick="trierTitre" CssClass="btn btn-default btn-primary"/>
+            <asp:Button runat="server" ID="btnTriPersonne" Text="Personne" onclick="trierPersonne" CssClass="btn btn-default btn-primary"/>
+            <asp:Button runat="server" ID="btnTriPersonneTitre" Text="Titre et Personne" onclick="TrierLesDeux" CssClass="btn btn-default btn-primary"/>
+        </div>
     </div>
     <hr />
 

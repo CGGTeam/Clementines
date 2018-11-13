@@ -61,27 +61,26 @@ public partial class _Default : System.Web.UI.Page
 
     private void Page_Load(object sender, EventArgs e)
     {
+        //if (!Page.IsPostBack) { 
+
+
+            string img = "../Static/images/flavicon.png";
+            for (int i = 1; i <= 32; i++)
+            {
+                filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
+            }
+            films = filmsOG.ToList();
+        //}
         InitialiserCheckBoxState();
         InitialiserSearch();
         InitialiserNoPage();
-
-
-        string img = "../Static/images/flavicon.png";
-        for (int i = 1; i <= 32; i++)
-        {
-            filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
-        }
-        films = filmsOG.ToList();
 
         Panel row = librairie.divDYN(phDynamique, "row", "row");
         col1 = librairie.divDYN(row, "col1", "col-sm-6");
         col2 = librairie.divDYN(row, "col2", "col-sm-6");
 
         row2 = librairie.divDYN(phDynamique, "row2", "row");
-        AfficherLesFilms(col1, col2, row2);
-
         FilterList();
-
     }
     private void Page_LoadComplete(object sender, EventArgs e)
     {
@@ -156,9 +155,9 @@ public partial class _Default : System.Web.UI.Page
         Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel à " + film.personne);
         btn1.Click += new EventHandler(EnvoyerUnCourriel);
         Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée de " + film.nom);
-        btn1.Click += new EventHandler(AfficherDetails);
+        btn2.Click += new EventHandler(AfficherDetails);
         Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier le " + film.nom);
-        btn1.Click += new EventHandler(ApproprierDVD);
+        btn3.Click += new EventHandler(ApproprierDVD);
 
         Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
         Panel divProprietaire = librairie.divDYN(content, film.nom + "Personne", "pull-right");
@@ -168,11 +167,17 @@ public partial class _Default : System.Web.UI.Page
     }
     public void AfficherDetails(object sender, EventArgs e)
     {
-        Response.Redirect("~/Pages/AffichageDetaille.aspx");
+        String url = "~/Pages/AffichageDetaille.aspx";
+        Response.Redirect(url, true);
     }
     public void ApproprierDVD(object sender, EventArgs e)
     {
         // TODO : S'approprier un DVD
+    }
+    private void EnvoyerUnCourriel(object sender, EventArgs e)
+    {
+        String url = "~/Pages/Courriel.aspx";
+        Response.Redirect(url, true);
     }
 
     private void AfficherPager(Control control)
@@ -209,8 +214,17 @@ public partial class _Default : System.Web.UI.Page
 
         control.Controls.Add(pager);
     }
-    private void EnvoyerUnCourriel(object sender, EventArgs e)
+
+    protected void trierTitre(object sender, EventArgs e)
     {
-        Response.Redirect("~/Pages/Courriel.aspx");
+        films.OrderBy(film => film.nom).ToList();
+    }
+    protected void trierPersonne(object sender, EventArgs e)
+    {
+
+    }
+    protected void TrierLesDeux(object sender, EventArgs e)
+    {
+
     }
 }
