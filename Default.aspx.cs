@@ -152,17 +152,18 @@ public partial class _Default : System.Web.UI.Page
 
         Panel panelCache = librairie.divDYN(content, "panel-cache_" + film.nom, "boutons-caches row ");
 
-        Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel");
+        Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel à "+film.personne);
         btn1.Click += new EventHandler(EnvoyerUnCourriel);
-        Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée");
+        Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée de "+film.nom);
         btn1.Click += new EventHandler(AfficherDetails);
-        Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier");
+        Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier le " +film.nom);
         btn1.Click += new EventHandler(ApproprierDVD);
 
 
         Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
-
-        Label lblPersonne = librairie.lblDYN(content, "lblPersonne" + film.nom, film.personne);
+        Panel divProprietaire = librairie.divDYN(content, film.nom + "Personne", "pull-right");
+        librairie.brDYN(divProprietaire);
+            Label lblPersonne = librairie.lblDYN(divProprietaire, "lblPersonne" + film.nom, film.personne);
         Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
     }
     public void AfficherDetails(object sender, EventArgs e)
