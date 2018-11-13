@@ -33,3 +33,9 @@
         min-width: 60%;
         margin-bottom:5px;
     }
+
+    .titre-film {
+        font-weight: bold;
+        font-size: 15px;
+        text-align:center;
+    }

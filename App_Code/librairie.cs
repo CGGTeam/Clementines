@@ -69,7 +69,20 @@ static public class librairie
         Conteneur.Controls.Add(lbl);
         return lbl;
     }
-    static public TextBox tbDYN(Control Conteneur, String strID, String strClass)
+
+   static public Label lblDYN(Control Conteneur, String strID, String strValeur, String strClass)
+   {
+      Label lbl = new Label()
+      {
+         ID = strID,
+         Text = strValeur,
+         CssClass = strClass
+      };
+      Conteneur.Controls.Add(lbl);
+      return lbl;
+   }
+
+   static public TextBox tbDYN(Control Conteneur, String strID, String strClass)
     {
         TextBox tb = new TextBox()
         {
