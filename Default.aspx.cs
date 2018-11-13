@@ -147,27 +147,33 @@ public partial class _Default : System.Web.UI.Page
     {
         Panel div = librairie.divDYN(container, film.nom, "panel panel-warning");
         Panel header = librairie.divDYN(div, "header" + film.nom, "panel-heading");
-        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body mask rgba-red-strong");
-        Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
+        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body vignette");
+
+
+        Panel panelCache = librairie.divDYN(content, "panel-cache_" + film.nom, "boutons-caches row ");
+
+        Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel");
+        btn1.Click += new EventHandler(EnvoyerUnCourriel);
+        Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée");
+        btn1.Click += new EventHandler(AfficherDetails);
+        Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier");
+        btn1.Click += new EventHandler(ApproprierDVD);
+
+
         Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
+
         Label lblPersonne = librairie.lblDYN(content, "lblPersonne" + film.nom, film.personne);
-
-        LinkButton email = new LinkButton()
-        {
-            ID = "btnEmail"+film.personne,
-            CssClass = "btn btn-primary",           
-        };
-        email.Click += new EventHandler(EnvoyerUnCourriel);
-        content.Controls.Add(email);
-
-        Panel glyphEmail = new Panel()
-        {
-            CssClass = "glyphicon glyphicon-envelope col-sm-2",
-            ID = "email" + film.personne,
-        };
-        email.Controls.Add(glyphEmail);
+        Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
     }
-
+    public void AfficherDetails(object sender, EventArgs e)
+    {
+        Response.Redirect("~/Pages/AffichageDetaille.aspx");
+    }
+    public void ApproprierDVD(object sender, EventArgs e)
+    {
+        // TODO : S'approprier un DVD
+    }
+    
     private void AfficherPager(Control control)
     {
         LiteralControl pager = new LiteralControl();
