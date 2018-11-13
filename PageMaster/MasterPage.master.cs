@@ -14,11 +14,11 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
 
     protected void PageLogin(Object sender, EventArgs e)
     {
-        Response.Redirect("~/Pages/login.aspx");
+        Response.Redirect("~/Default.aspx");
     }
     protected void Search(Object sender, EventArgs e)
     {
         string str = tbNavSearch.Text;
-        Response.Redirect("~/Default.aspx?Page=1&Filtre=" + str, false);
+        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + str, false);
     }
 }

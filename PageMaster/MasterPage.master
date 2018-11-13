@@ -29,9 +29,11 @@
             <a class="navbar-brand a"> Clémentine</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a href="../Default.aspx" class="a">Accueil</a></li>
+            <li><a href="../Pages/Accueil.aspx" class="a">Accueil</a></li>
             <li><a href="../Pages/DVDEnMain.aspx" class="a">Mes DVDs</a></li>
             <li><a href="../Pages/AjoutFilm.aspx" class="a">Ajouter un DVD</a></li>
+            <li><a href="../Pages/Personnalisation.aspx" class="a">Personnalisation</a></li>
+            <li><a href="../Pages/Courriel.aspx" class="a">Courriel</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -44,7 +46,7 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </asp:LinkButton>
                 </div>
-                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="S'identifer" OnClick="PageLogin" />
+                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="se déconnecter" OnClick="PageLogin" />
             </li>
         </ul>
     </div>
