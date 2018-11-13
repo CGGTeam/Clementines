@@ -9,7 +9,7 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        tbNavSearch.Attributes.Add("onkeydown", "return (event.keyCode!=13);");
     }
 
     protected void PageLogin(Object sender, EventArgs e)

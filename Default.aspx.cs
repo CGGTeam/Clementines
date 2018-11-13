@@ -159,7 +159,6 @@ public partial class _Default : System.Web.UI.Page
         Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier le " +film.nom);
         btn1.Click += new EventHandler(ApproprierDVD);
 
-
         Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
         Panel divProprietaire = librairie.divDYN(content, film.nom + "Personne", "pull-right");
         librairie.brDYN(divProprietaire);
@@ -168,6 +167,7 @@ public partial class _Default : System.Web.UI.Page
     }
     public void AfficherDetails(object sender, EventArgs e)
     {
+        System.Diagnostics.Debug.WriteLine("details");
         Response.Redirect("~/Pages/AffichageDetaille.aspx");
     }
     public void ApproprierDVD(object sender, EventArgs e)
