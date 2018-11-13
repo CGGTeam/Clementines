@@ -10,5 +10,6 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
     <asp:PlaceHolder id="phVignettes" runat="server" />
+    <asp:PlaceHolder id="phChangerPage" runat="server" />
 
 </asp:Content>
