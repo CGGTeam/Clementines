@@ -8,7 +8,7 @@
         <%: Page.Title %> - Clémentine
     </title>
     <link rel="stylesheet" href="~/Static/styles/StyleSheet.css" runat="server" media="screen">
-    <script src="Static/scripts/JavaScript.js" ></script>
+    <script src="../Static/scripts/JavaScript.js" ></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -42,9 +42,7 @@
 <!-- barre menu -->
 
     <div id="main-content" class="container">
-        <asp:ContentPlaceHolder id="contentBody" runat="server">
-        
-        </asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder id="contentBody" runat="server" />
     </div>
     </form>
 

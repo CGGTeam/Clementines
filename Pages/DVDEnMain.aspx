@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/PageMaster/MasterPage.master" CodeFile="DVDEnMain.aspx.cs" Inherits="Pages_DVDEnMain" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/PageMaster/MasterPage.master" CodeFile="DVDEnMain.aspx.cs" AutoEventWireup="true" Inherits="Pages_DVDEnMain" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" Runat="Server">
     <!-- Pour ajouter des imports dans le head -->
@@ -9,7 +9,10 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <asp:PlaceHolder id="phVignettes" runat="server" />
-    <asp:PlaceHolder id="phChangerPage" runat="server" />
+    
+        <asp:PlaceHolder id="phVignettes" runat="server" />
+        <asp:PlaceHolder id="phChangerPage" runat="server" />
+    
 
 </asp:Content>
+

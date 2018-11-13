@@ -46,9 +46,11 @@ static public class librairie
       conteneur.Controls.Add(btn);
       return btn;
    }
-   
 
-    static public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
+ 
+
+
+   static public Image imgDYN(Control Conteneur, String strID, String strImg, String strClass)
     {
         Image img = new Image
         {
@@ -135,7 +137,7 @@ static public class librairie
         Conteneur.Controls.Add(t);
         return t;
     }
-   
 
+  
 
 }

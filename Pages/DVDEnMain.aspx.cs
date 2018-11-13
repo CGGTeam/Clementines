@@ -13,16 +13,14 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
    protected void Page_Load(object sender, EventArgs e)
    {
+
       // Vérifier la page courante
       initialiserNoPage();
-      
-      if (!Page.IsPostBack)
-      {
 
-         lstFilms.Add(new EntiteFilm(1, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
+      lstFilms.Add(new EntiteFilm(1, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
          lstFilms.Add(new EntiteFilm(2, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
          lstFilms.Add(new EntiteFilm(3, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
-         lstFilms.Add(new EntiteFilm(4, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
+         lstFilms.Add(new EntiteFilm(4, "Ley retour de JFL", "../Static/images/logo.png", "JFL"));
          lstFilms.Add(new EntiteFilm(5, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
          lstFilms.Add(new EntiteFilm(6, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
          lstFilms.Add(new EntiteFilm(7, "Le retour de JFL", "../Static/images/logo.png", "JFL"));
@@ -42,7 +40,6 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
          afficherPageVignettes(lstFilms);
          afficherPager(phChangerPage);
-      }
    }
 
    public void afficherPageVignettes(List<EntiteFilm> lstFilms)
@@ -58,15 +55,17 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
          Table table = librairie.tableDYN(panelCache, "table_" + lstFilms[i].id, "tableau-boutons");
 
          TableRow tr1 = librairie.trDYN(table);
-         TableCell td1 = librairie.tdDYN(tr1, "td_" + lstFilms[i].id, "");
+         TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilms[i].id, "");
          Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + lstFilms[i].id, "btn btn-default boutons-options-film", "Affichage détaillée");
+         btn1.Click += new EventHandler(affichageDetailleonClick);
 
          TableRow tr2 = librairie.trDYN(table);
-         TableCell td2 = librairie.tdDYN(tr2, "td_" + lstFilms[i].id, "");
+         TableCell td2 = librairie.tdDYN(tr2, "td_modifier_" + lstFilms[i].id, "");
          Button btn2 = librairie.btnDYN(td2, "modifier_" + lstFilms[i].id, "btn btn-default boutons-options-film", "Modifier");
+         btn2.Click += new EventHandler(modifieronClick);
 
          TableRow tr3 = librairie.trDYN(table);
-         TableCell td3 = librairie.tdDYN(tr3, "td_" + lstFilms[i].id, "");
+         TableCell td3 = librairie.tdDYN(tr3, "td_supprimer_" + lstFilms[i].id, "");
          Button btn3 = librairie.btnDYN(td3, "supprimer_" + lstFilms[i].id, "btn btn-default boutons-options-film", "Supprimer");
 
          Image img = librairie.imgDYN(panelBody, "img_" + lstFilms[i].id, lstFilms[i].vignette, "");
@@ -124,5 +123,23 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
       control.Controls.Add(pager);
    }
+
+   public void affichageDetailleonClick(Object sender, EventArgs e)
+   {
+      Button btn = (Button)sender;
+      System.Diagnostics.Debug.WriteLine("Affichage Detaille: " + btn.ID);
+      String url = "~/Pages/AffichageDetaille.aspx";
+      Response.Redirect(url, true);
+   }
+
+   public void modifieronClick(Object sender, EventArgs e)
+   {
+      Button btn = (Button)sender;
+      System.Diagnostics.Debug.WriteLine("Modifier: " + btn.ID);
+      String url = "~/Pages/ModifierFilm.aspx";
+      Response.Redirect(url, true);
+   }
+
+  
 
 }
