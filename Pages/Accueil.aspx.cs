@@ -62,12 +62,14 @@ public partial class _Default : System.Web.UI.Page
     }
     public void UpdateFiltre(object sender, EventArgs e)
     {
+        
         bool blnfiltreTitre = cbTitre.Checked;
         bool blnfiltrePersonne = cbPersonne.Checked;
 
+        string strOrderby = ddlOrdeyBy.SelectedValue;
         string strFiltre = tbRecherche.Text;
 
-        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre+ "&Personne="+ blnfiltrePersonne + "&Titre=" + blnfiltreTitre+ "Orderby="+orderBy.ToString(), false);
+        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre+ "&Personne="+ blnfiltrePersonne + "&Titre=" + blnfiltreTitre+ "&Orderby="+ strOrderby, false);
     }
 
     private void Page_Load(object sender, EventArgs e)
@@ -95,11 +97,14 @@ public partial class _Default : System.Web.UI.Page
     {
         tbRecherche.Text = filtre;
         InitialiserCheckBoxState();
+        InitialiserDDLState();
+    }
+    private void InitialiserDDLState()
+    {
         ddlOrdeyBy.SelectedValue = orderBy.ToString();
     }
     private void AfficherLesFilms(Control col1, Control col2, Control row2)
     {
-        System.Diagnostics.Debug.WriteLine("afficher : " + orderBy);
         col1.Controls.Clear();
         col2.Controls.Clear();
         row2.Controls.Clear();
@@ -122,7 +127,6 @@ public partial class _Default : System.Web.UI.Page
     }
     private void OrderBy()
     {
-        System.Diagnostics.Debug.WriteLine("ORDER : "+orderBy);
         switch (orderBy)
         {
             case TypeOrderBy.TitrePersonne:
