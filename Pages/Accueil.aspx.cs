@@ -216,7 +216,7 @@ public partial class _Default : System.Web.UI.Page
         LiteralControl pager = new LiteralControl();
         decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
 
-        string strFiltre = filtre == "" ? "" : "&Filtre=" + filtre;
+        string strFiltreComplet = "&Filtre=" + filtre+"&Personne=" + filtrePersonne + "&Titre=" + filtreTitre;
 
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
@@ -224,13 +224,13 @@ public partial class _Default : System.Web.UI.Page
 
         string strDebut = "<nav aria - label = 'Page navigation example' >" +
                                 "<ul class='pagination justify-content-center'>" +
-                                    "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + strFiltre + "'> Previous</a></li>";
+                                    "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + strFiltreComplet + "'> Previous</a></li>";
 
         pager.Text += strDebut;
         for (int i = 1; i <= nbPages; i++)
         {
             strClass = noPage == i ? "page-item active" : "page-item";
-            string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + strFiltre + "'>" + i + "</a></li>";
+            string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + strFiltreComplet + "'>" + i + "</a></li>";
             pager.Text += strMillieu;
         }
 
@@ -238,7 +238,7 @@ public partial class _Default : System.Web.UI.Page
         strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
         next = next >= nbPages + 1 ? noPage : next;
 
-        string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + strFiltre + "'>Next</a></li>" +
+        string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + strFiltreComplet + "'>Next</a></li>" +
                                 "</ul>" +
                             "</nav>";
         pager.Text += strFin;
