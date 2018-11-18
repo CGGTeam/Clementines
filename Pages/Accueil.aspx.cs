@@ -10,6 +10,8 @@ public partial class _Default : System.Web.UI.Page
     private int nbElementsParPage = 10;
     private int noPage = 1;
     private string filtre;
+    private bool filtreTitre = true;
+    private bool filtrePersonne = false;
 
     private List<Film> filmsOG = new List<Film>();
     private List<Film> films = new List<Film>();
@@ -34,44 +36,49 @@ public partial class _Default : System.Web.UI.Page
     }
     public void FilterList()
     {
-        InitialiserSearch();
-
-        bool rechercheParTitre = cbTitre.Checked;
-        bool rechercheParPersonne = cbPersonne.Checked;
-
         films.Clear();
-        if (rechercheParTitre && rechercheParPersonne)
+        if (filtreTitre && filtrePersonne)
+        {
+            System.Diagnostics.Debug.WriteLine("filtre all");
             films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower()) || film.personne.ToLower().Contains(filtre.ToLower())).ToList();
-        else if (rechercheParPersonne)
-            films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
-        else if (rechercheParTitre)
+        }
+        else if (filtreTitre)
+        {
+            System.Diagnostics.Debug.WriteLine("filtre titre");
             films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower())).ToList();
+        }
+        else if (filtrePersonne)
+        {
+            System.Diagnostics.Debug.WriteLine("filtre personne");
+            films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
+        }
         else
-            films = filmsOG.ToList();
+        {
+            System.Diagnostics.Debug.WriteLine("else");
+            films = new List<Film>();
+        }
 
         AfficherLesFilms(col1, col2, row2);
 
     }
     public void UpdateFiltre(object sender, EventArgs e)
     {
+        bool blnfiltreTitre = cbTitre.Checked;
+        bool blnfiltrePersonne = cbPersonne.Checked;
+
         string strFiltre = tbRecherche.Text;
-        System.Diagnostics.Debug.WriteLine("in");
-        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre, false);
+        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre+ "&Personne="+ blnfiltrePersonne + "&Titre=" + blnfiltreTitre, false);
     }
 
     private void Page_Load(object sender, EventArgs e)
     {
-        //if (!Page.IsPostBack) { 
+        string img = "../Static/images/flavicon.png";
+        for (int i = 1; i <= 32; i++)
+        {
+            filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
+        }
+        films = filmsOG.ToList();
 
-
-            string img = "../Static/images/flavicon.png";
-            for (int i = 1; i <= 32; i++)
-            {
-                filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
-            }
-            films = filmsOG.ToList();
-        //}
-        InitialiserCheckBoxState();
         InitialiserSearch();
         InitialiserNoPage();
 
@@ -84,7 +91,9 @@ public partial class _Default : System.Web.UI.Page
     }
     private void Page_LoadComplete(object sender, EventArgs e)
     {
+
         tbRecherche.Text = filtre;
+        InitialiserCheckBoxState();
     }
     private void AfficherLesFilms(Control col1, Control col2, Control row2)
     {
@@ -92,14 +101,21 @@ public partial class _Default : System.Web.UI.Page
         col2.Controls.Clear();
         row2.Controls.Clear();
 
-        for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+        if (films.Count() <= 0)
         {
-            if (i % 2 != 0)
-                AfficherFilm(films[i - 1], col1);
-            else
-                AfficherFilm(films[i - 1], col2);
+            Label lblTitre = librairie.lblDYN(row2, "lblvide", "Il n'y a aucun film");
         }
-        AfficherPager(row2);
+        else
+        {
+            for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+            {
+                if (i % 2 != 0)
+                    AfficherFilm(films[i - 1], col1);
+                else
+                    AfficherFilm(films[i - 1], col2);
+            }
+            AfficherPager(row2);
+        }
     }
     private void InitialiserNoPage()
     {
@@ -123,25 +139,40 @@ public partial class _Default : System.Web.UI.Page
         {
             filtre = Request.QueryString["Filtre"];
         }
-    }
-    public void Check(object sender, EventArgs e)
-    {
-        CheckBox cb = (CheckBox)sender;
-        System.Diagnostics.Debug.WriteLine(cb.ID);
-        if (cb == cbPersonne)
+        //personne
+        if (Request.QueryString["Personne"] == null)
         {
-            hfPersonne.Value = cbPersonne.Checked ? "true" : "false";
+            filtrePersonne = true;
         }
-        else if (cb == cbTitre)
+        else
         {
-            hfTitre.Value = cbTitre.Checked ? "true" : "false";
+            if (Request.QueryString["Personne"].ToLower() == "True".ToLower())
+                filtrePersonne = true;
+            else if (Request.QueryString["Personne"].ToLower() == "False".ToLower())
+                filtrePersonne = false;
+            else
+                filtrePersonne = true;
         }
-        System.Diagnostics.Debug.WriteLine(hfPersonne.Value);
+        //titre
+        if (Request.QueryString["Titre"] == null)
+        {
+            filtreTitre = true;
+        }
+        else
+        {
+            if (Request.QueryString["Titre"].ToLower() == "True".ToLower())
+                filtreTitre = true;
+            else if (Request.QueryString["Titre"].ToLower() == "False".ToLower())
+                filtreTitre = false;
+            else
+                filtreTitre = true;
+        }
+
     }
     private void InitialiserCheckBoxState()
     {
-        cbPersonne.Checked = Convert.ToBoolean(hfPersonne.Value);
-        cbTitre.Checked = Convert.ToBoolean(hfTitre.Value);
+        cbTitre.Checked = filtreTitre;
+        cbPersonne.Checked = filtrePersonne;
     }
     private void AfficherFilm(Film film, Control container)
     {
