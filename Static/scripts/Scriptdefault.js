@@ -21,6 +21,8 @@ function filtrer() {
     var titre = $("#contentBody_cbTitre").is(':checked');
     var personne = $("#contentBody_cbPersonne").is(':checked');
 
-    window.location = "../Pages/Accueil.aspx?Page=1&Filtre=" + str + "&Titre=" + titre + "&Personne=" + personne;
+    var order = $("#contentBody_ddlOrdeyBy").val();
+
+    window.location = "../Pages/Accueil.aspx?Page=1&Filtre=" + str + "&Titre=" + titre + "&Personne=" + personne + "&Orderby=" + order;
     return false;
 }

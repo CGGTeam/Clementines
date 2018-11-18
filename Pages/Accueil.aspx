@@ -34,11 +34,13 @@
                 <label class="form-check-label" for="cbPersonne">Propriétaire</label>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-2 pull-right ">
             <label class="form-check-label">Trier par :</label>
-            <asp:Button runat="server" ID="btnTriTitre" Text="Titre" onclick="trierTitre" CssClass="btn btn-default btn-primary"/>
-            <asp:Button runat="server" ID="btnTriPersonne" Text="Personne" onclick="trierPersonne" CssClass="btn btn-default btn-primary"/>
-            <asp:Button runat="server" ID="btnTriPersonneTitre" Text="Titre et Personne" onclick="TrierLesDeux" CssClass="btn btn-default btn-primary"/>
+            <asp:DropDownList ID="ddlOrdeyBy" runat="server" CssClass="form-control" onchange="filtrer()">
+                <asp:ListItem Enabled="true" Text="Titre et personne" Value="TitrePersonne"></asp:ListItem>
+                <asp:ListItem Text="Titre" Value="Titre"></asp:ListItem>
+                <asp:ListItem Text="Personne" Value="Personne"></asp:ListItem>
+            </asp:DropDownList>
         </div>
     </div>
     

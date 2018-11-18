@@ -7,11 +7,14 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : System.Web.UI.Page
 {
+
     private int nbElementsParPage = 10;
     private int noPage = 1;
+
     private string filtre;
     private bool filtreTitre = true;
     private bool filtrePersonne = false;
+    private TypeOrderBy orderBy;
 
     private List<Film> filmsOG = new List<Film>();
     private List<Film> films = new List<Film>();
@@ -39,25 +42,21 @@ public partial class _Default : System.Web.UI.Page
         films.Clear();
         if (filtreTitre && filtrePersonne)
         {
-            System.Diagnostics.Debug.WriteLine("filtre all");
             films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower()) || film.personne.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtreTitre)
         {
-            System.Diagnostics.Debug.WriteLine("filtre titre");
             films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtrePersonne)
         {
-            System.Diagnostics.Debug.WriteLine("filtre personne");
             films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine("else");
             films = new List<Film>();
         }
-
+        OrderBy();
         AfficherLesFilms(col1, col2, row2);
 
     }
@@ -67,7 +66,8 @@ public partial class _Default : System.Web.UI.Page
         bool blnfiltrePersonne = cbPersonne.Checked;
 
         string strFiltre = tbRecherche.Text;
-        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre+ "&Personne="+ blnfiltrePersonne + "&Titre=" + blnfiltreTitre, false);
+
+        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre+ "&Personne="+ blnfiltrePersonne + "&Titre=" + blnfiltreTitre+ "Orderby="+orderBy.ToString(), false);
     }
 
     private void Page_Load(object sender, EventArgs e)
@@ -77,8 +77,10 @@ public partial class _Default : System.Web.UI.Page
         {
             filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
         }
+        filmsOG.Add(new Film("XXXXX", img, "AAAA"));
         films = filmsOG.ToList();
 
+        InitialiserOrderBy();
         InitialiserSearch();
         InitialiserNoPage();
 
@@ -91,12 +93,13 @@ public partial class _Default : System.Web.UI.Page
     }
     private void Page_LoadComplete(object sender, EventArgs e)
     {
-
         tbRecherche.Text = filtre;
         InitialiserCheckBoxState();
+        ddlOrdeyBy.SelectedValue = orderBy.ToString();
     }
     private void AfficherLesFilms(Control col1, Control col2, Control row2)
     {
+        System.Diagnostics.Debug.WriteLine("afficher : " + orderBy);
         col1.Controls.Clear();
         col2.Controls.Clear();
         row2.Controls.Clear();
@@ -117,6 +120,25 @@ public partial class _Default : System.Web.UI.Page
             AfficherPager(row2);
         }
     }
+    private void OrderBy()
+    {
+        System.Diagnostics.Debug.WriteLine("ORDER : "+orderBy);
+        switch (orderBy)
+        {
+            case TypeOrderBy.TitrePersonne:
+                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                break;
+            case TypeOrderBy.Personne:
+                films.Sort((x, y) => x.personne.CompareTo(y.personne));
+                break;
+            case TypeOrderBy.Titre:
+                films.Sort((x, y) => x.nom.CompareTo(y.nom));
+                break;
+            default:
+                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                break;
+        }
+    }
     private void InitialiserNoPage()
     {
         int n;
@@ -127,6 +149,24 @@ public partial class _Default : System.Web.UI.Page
         else
         {
             noPage = n;
+        }
+    }
+    private void InitialiserOrderBy()
+    {
+        if (Request.QueryString["Orderby"] == null)
+        {
+            orderBy = TypeOrderBy.TitrePersonne;
+        }
+        else
+        {
+            if (Request.QueryString["Orderby"] == "TitrePersonne")
+                orderBy = TypeOrderBy.TitrePersonne;
+            else if(Request.QueryString["Orderby"] == "Titre")
+                orderBy = TypeOrderBy.Titre;
+            else if(Request.QueryString["Orderby"] == "Personne")
+                orderBy = TypeOrderBy.Personne;
+            else
+                orderBy = TypeOrderBy.TitrePersonne;
         }
     }
     private void InitialiserSearch()
@@ -216,7 +256,7 @@ public partial class _Default : System.Web.UI.Page
         LiteralControl pager = new LiteralControl();
         decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
 
-        string strFiltreComplet = "&Filtre=" + filtre+"&Personne=" + filtrePersonne + "&Titre=" + filtreTitre;
+        string strFiltreComplet = "&Filtre=" + filtre+"&Personne=" + filtrePersonne + "&Titre=" + filtreTitre + "Orderby=" + orderBy.ToString();
 
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
@@ -244,18 +284,5 @@ public partial class _Default : System.Web.UI.Page
         pager.Text += strFin;
 
         control.Controls.Add(pager);
-    }
-
-    protected void trierTitre(object sender, EventArgs e)
-    {
-        films.OrderBy(film => film.nom).ToList();
-    }
-    protected void trierPersonne(object sender, EventArgs e)
-    {
-
-    }
-    protected void TrierLesDeux(object sender, EventArgs e)
-    {
-
     }
 }
