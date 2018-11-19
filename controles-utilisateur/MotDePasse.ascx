@@ -13,7 +13,7 @@
 <asp:TextBox ID="tb" runat="server"
    MaxLength="25"
     placeholder="Doit être présent"
-    type="password"
+     TextMode="Password"
     />
 
 
@@ -24,6 +24,6 @@
 
 <asp:RegularExpressionValidator ID="ValidatorFormat" runat="server"
    ControlToValidate="tb"
-   ValidationExpression="^[a-zA-ZÀ-ÖØ-öø-ÿ]*([,'\- ]{1}[a-zA-ZÀ-ÖØ-öø-ÿ]+)*[a-zA-ZÀ-ÖØ-öø-ÿ]*$"
+   ValidationExpression="^\d+$"
    EnableClientScript="false"
    Display="None" />

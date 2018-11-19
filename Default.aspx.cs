@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -14,46 +17,56 @@ public partial class _Default : System.Web.UI.Page
     }
     protected void tentativeLogin(object sender, EventArgs e)
     {
+      
+        if (!tbPassword.Format.IsValid)
+        {
+            lblError.Text = "Le mot de passe est dans un format non-valide";
+
+            return;
+        }
         String strNom = tbIdentifiant.Text;
         String strPassword = tbPassword.Text;
 
         if (AuthenticateUser(strNom, strPassword))
         {
-            FormsAuthentication.RedirectFromLoginPage(strNom, true);
+            FormsAuthentication.RedirectFromLoginPage(strNom, false);
         }
         //connexion échoué
         else
         {
-            Response.Redirect("~/Pages/Accueil.aspx");        
+            // TODO : À enlever à la fin, simplement à fin d'accéler le débuggage
+            FormsAuthentication.RedirectFromLoginPage(strNom, false);
+            lblError.Text = "Connexion échouée";
         }
 
             
     }
     private bool AuthenticateUser(string username, string password)
     {
-        /*
         // ConfigurationManager class is in System.Configuration namespace
-        string CS = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
+        SqlConnection con = new SqlConnection();
+        con.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
         // SqlConnection is in System.Data.SqlClient namespace
-        using (SqlConnection con = new SqlConnection(CS))
+        using (con)
         {
             SqlCommand cmd = new SqlCommand("spAuthenticateUser", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            // FormsAuthentication is in System.Web.Security
-            string EncryptedPassword = FormsAuthentication.HashPasswordForStoringInConfigFile(password, "SHA1");
             // SqlParameter is in System.Data namespace
             SqlParameter paramUsername = new SqlParameter("@UserName", username);
-            SqlParameter paramPassword = new SqlParameter("@Password", EncryptedPassword);
+            SqlParameter paramPassword = new SqlParameter("@Password", password);
 
             cmd.Parameters.Add(paramUsername);
             cmd.Parameters.Add(paramPassword);
 
             con.Open();
-            int ReturnCode = (int)cmd.ExecuteScalar();
-            return ReturnCode == 1;
+            var ReturnCode = cmd.ExecuteScalar();
+            return (int)ReturnCode == 1;
         }
-        */
-        return true;
+    }
+    protected void etablitConnexion(ref SqlConnection dbConn, String strChaineConnexion)
+    {
+        dbConn.ConnectionString = ConfigurationManager.AppSettings[strChaineConnexion];
+        dbConn.Open();
     }
 }

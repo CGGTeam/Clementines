@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Login" Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
 <%@ Register tagprefix="pers" TagName="Identifiant" Src="controles-utilisateur/Identifiant.ascx" %>
-<%@ Register tagprefix="pers" TagName="Password" Src="controles-utilisateur/Identifiant.ascx" %>
+<%@ Register tagprefix="pers" TagName="Password" Src="controles-utilisateur/MotDePasse.ascx" %>
 
 <!DOCTYPE html>
 
@@ -37,14 +37,18 @@
         <br />
 
         <label for="tbPassword" class="sr-only">Password</label>
-        <pers:Identifiant runat="server" id="tbPassword" placeholder="Votre mot de passe" CssClass="form-control"></pers:Identifiant>
+        <pers:Password runat="server" id="tbPassword" placeholder="Votre mot de passe" CssClass="form-control" ></pers:Password>
 
         <div class="checkbox">
           <hr />
         </div>
         <asp:Button runat="server" CssClass="btn btn-lg btn-primary btn-block" OnClick="tentativeLogin" Text="Se connecter"/>
+          <div class="invalid-feedback">
+              <font color="red">
+             <asp:Label runat="server" ID="lblError"></asp:Label>
+            </font>
+          </div>
     </div>
-         
  </div>
         </form>
 </body>
