@@ -22,7 +22,7 @@ public partial class _Default : System.Web.UI.Page
     private List<EntiteFilm> lstFilms = new List<EntiteFilm>();
     private List<EntiteFilm> lstFilmsAfficher = new List<EntiteFilm>();
 
-    public void FilterList()
+    public void FilterList(Label lblMessage)
     {
         lstFilmsAfficher.Clear();
         if (filtreTitre && filtrePersonne)
@@ -42,7 +42,7 @@ public partial class _Default : System.Web.UI.Page
             lstFilmsAfficher = new List<EntiteFilm>();
         }
         OrderBy();
-        AfficherLesFilms();
+        AfficherLesFilms(lblMessage);
 
     }
     public void UpdateFiltre(object sender, EventArgs e)
@@ -60,6 +60,7 @@ public partial class _Default : System.Web.UI.Page
     private void Page_Load(object sender, EventArgs e)
     {
         // Établir connection BD
+        Label lblMessage = librairie.lblDYN(phDynamique, "message_vignettes", "", "message_vignettes");
         SqlConnection dbConn = new SqlConnection();
         try
         {
@@ -68,8 +69,7 @@ public partial class _Default : System.Web.UI.Page
         }
         catch (Exception Ex)
         {
-            // peut-être rajouter un message d'erreur...
-            System.Diagnostics.Debug.Write("Erreur");
+            lblMessage.Text = "Oops... Un problème s'est glissé lors du téléchargement des films! (*′☉.̫☉)";
         }
 
         lstFilmsAfficher = lstFilms.ToList();
@@ -78,7 +78,7 @@ public partial class _Default : System.Web.UI.Page
         InitialiserSearch();
         InitialiserNoPage();
 
-        FilterList();
+        FilterList(lblMessage);
     }
     private void Page_LoadComplete(object sender, EventArgs e)
     {
@@ -90,11 +90,11 @@ public partial class _Default : System.Web.UI.Page
     {
         ddlOrdeyBy.SelectedValue = orderBy.ToString();
     }
-    private void AfficherLesFilms()
+    private void AfficherLesFilms(Label lblMessage)
     {
         System.Diagnostics.Debug.Write("afficher");
         Controls.Remove(phDynamique);
-        Label lblMessage = librairie.lblDYN(phDynamique, "message_vignettes", "", "message_vignettes");
+        
         if (lstFilmsAfficher.Count() <= 0)
         {
             Label lblTitre = librairie.lblDYN(lblMessage, "lblvide", "Il n'y a aucun film ! (◕‿◕✿)");
