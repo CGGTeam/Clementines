@@ -7,9 +7,14 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : System.Web.UI.Page
 {
+
     private int nbElementsParPage = 10;
     private int noPage = 1;
+
     private string filtre;
+    private bool filtreTitre = true;
+    private bool filtrePersonne = false;
+    private TypeOrderBy orderBy;
 
     private List<Film> filmsOG = new List<Film>();
     private List<Film> films = new List<Film>();
@@ -34,44 +39,50 @@ public partial class _Default : System.Web.UI.Page
     }
     public void FilterList()
     {
-        InitialiserSearch();
-
-        bool rechercheParTitre = cbTitre.Checked;
-        bool rechercheParPersonne = cbPersonne.Checked;
-
         films.Clear();
-        if (rechercheParTitre && rechercheParPersonne)
+        if (filtreTitre && filtrePersonne)
+        {
             films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower()) || film.personne.ToLower().Contains(filtre.ToLower())).ToList();
-        else if (rechercheParPersonne)
-            films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
-        else if (rechercheParTitre)
+        }
+        else if (filtreTitre)
+        {
             films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower())).ToList();
+        }
+        else if (filtrePersonne)
+        {
+            films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
+        }
         else
-            films = filmsOG.ToList();
-
+        {
+            films = new List<Film>();
+        }
+        OrderBy();
         AfficherLesFilms(col1, col2, row2);
 
     }
     public void UpdateFiltre(object sender, EventArgs e)
     {
+        
+        bool blnfiltreTitre = cbTitre.Checked;
+        bool blnfiltrePersonne = cbPersonne.Checked;
+
+        string strOrderby = ddlOrdeyBy.SelectedValue;
         string strFiltre = tbRecherche.Text;
-        System.Diagnostics.Debug.WriteLine("in");
-        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre, false);
+
+        Response.Redirect("~/Pages/Accueil.aspx?Page=1&Filtre=" + strFiltre+ "&Personne="+ blnfiltrePersonne + "&Titre=" + blnfiltreTitre+ "&Orderby="+ strOrderby, false);
     }
 
     private void Page_Load(object sender, EventArgs e)
     {
-        //if (!Page.IsPostBack) { 
+        string img = "../Static/images/flavicon.png";
+        for (int i = 1; i <= 32; i++)
+        {
+            filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
+        }
+        filmsOG.Add(new Film("XXXXX", img, "AAAA"));
+        films = filmsOG.ToList();
 
-
-            string img = "../Static/images/flavicon.png";
-            for (int i = 1; i <= 32; i++)
-            {
-                filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
-            }
-            films = filmsOG.ToList();
-        //}
-        InitialiserCheckBoxState();
+        InitialiserOrderBy();
         InitialiserSearch();
         InitialiserNoPage();
 
@@ -85,6 +96,12 @@ public partial class _Default : System.Web.UI.Page
     private void Page_LoadComplete(object sender, EventArgs e)
     {
         tbRecherche.Text = filtre;
+        InitialiserCheckBoxState();
+        InitialiserDDLState();
+    }
+    private void InitialiserDDLState()
+    {
+        ddlOrdeyBy.SelectedValue = orderBy.ToString();
     }
     private void AfficherLesFilms(Control col1, Control col2, Control row2)
     {
@@ -92,14 +109,39 @@ public partial class _Default : System.Web.UI.Page
         col2.Controls.Clear();
         row2.Controls.Clear();
 
-        for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+        if (films.Count() <= 0)
         {
-            if (i % 2 != 0)
-                AfficherFilm(films[i - 1], col1);
-            else
-                AfficherFilm(films[i - 1], col2);
+            Label lblTitre = librairie.lblDYN(row2, "lblvide", "Il n'y a aucun film");
         }
-        AfficherPager(row2);
+        else
+        {
+            for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+            {
+                if (i % 2 != 0)
+                    AfficherFilm(films[i - 1], col1);
+                else
+                    AfficherFilm(films[i - 1], col2);
+            }
+            AfficherPager(row2);
+        }
+    }
+    private void OrderBy()
+    {
+        switch (orderBy)
+        {
+            case TypeOrderBy.TitrePersonne:
+                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                break;
+            case TypeOrderBy.Personne:
+                films.Sort((x, y) => x.personne.CompareTo(y.personne));
+                break;
+            case TypeOrderBy.Titre:
+                films.Sort((x, y) => x.nom.CompareTo(y.nom));
+                break;
+            default:
+                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                break;
+        }
     }
     private void InitialiserNoPage()
     {
@@ -113,6 +155,24 @@ public partial class _Default : System.Web.UI.Page
             noPage = n;
         }
     }
+    private void InitialiserOrderBy()
+    {
+        if (Request.QueryString["Orderby"] == null)
+        {
+            orderBy = TypeOrderBy.TitrePersonne;
+        }
+        else
+        {
+            if (Request.QueryString["Orderby"] == "TitrePersonne")
+                orderBy = TypeOrderBy.TitrePersonne;
+            else if(Request.QueryString["Orderby"] == "Titre")
+                orderBy = TypeOrderBy.Titre;
+            else if(Request.QueryString["Orderby"] == "Personne")
+                orderBy = TypeOrderBy.Personne;
+            else
+                orderBy = TypeOrderBy.TitrePersonne;
+        }
+    }
     private void InitialiserSearch()
     {
         if (Request.QueryString["Filtre"] == null)
@@ -123,25 +183,40 @@ public partial class _Default : System.Web.UI.Page
         {
             filtre = Request.QueryString["Filtre"];
         }
-    }
-    public void Check(object sender, EventArgs e)
-    {
-        CheckBox cb = (CheckBox)sender;
-        System.Diagnostics.Debug.WriteLine(cb.ID);
-        if (cb == cbPersonne)
+        //personne
+        if (Request.QueryString["Personne"] == null)
         {
-            hfPersonne.Value = cbPersonne.Checked ? "true" : "false";
+            filtrePersonne = true;
         }
-        else if (cb == cbTitre)
+        else
         {
-            hfTitre.Value = cbTitre.Checked ? "true" : "false";
+            if (Request.QueryString["Personne"].ToLower() == "True".ToLower())
+                filtrePersonne = true;
+            else if (Request.QueryString["Personne"].ToLower() == "False".ToLower())
+                filtrePersonne = false;
+            else
+                filtrePersonne = true;
         }
-        System.Diagnostics.Debug.WriteLine(hfPersonne.Value);
+        //titre
+        if (Request.QueryString["Titre"] == null)
+        {
+            filtreTitre = true;
+        }
+        else
+        {
+            if (Request.QueryString["Titre"].ToLower() == "True".ToLower())
+                filtreTitre = true;
+            else if (Request.QueryString["Titre"].ToLower() == "False".ToLower())
+                filtreTitre = false;
+            else
+                filtreTitre = true;
+        }
+
     }
     private void InitialiserCheckBoxState()
     {
-        cbPersonne.Checked = Convert.ToBoolean(hfPersonne.Value);
-        cbTitre.Checked = Convert.ToBoolean(hfTitre.Value);
+        cbTitre.Checked = filtreTitre;
+        cbPersonne.Checked = filtrePersonne;
     }
     private void AfficherFilm(Film film, Control container)
     {
@@ -185,7 +260,7 @@ public partial class _Default : System.Web.UI.Page
         LiteralControl pager = new LiteralControl();
         decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
 
-        string strFiltre = filtre == "" ? "" : "&Filtre=" + filtre;
+        string strFiltreComplet = "&Filtre=" + filtre+"&Personne=" + filtrePersonne + "&Titre=" + filtreTitre + "Orderby=" + orderBy.ToString();
 
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
@@ -193,13 +268,13 @@ public partial class _Default : System.Web.UI.Page
 
         string strDebut = "<nav aria - label = 'Page navigation example' >" +
                                 "<ul class='pagination justify-content-center'>" +
-                                    "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + strFiltre + "'> Previous</a></li>";
+                                    "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + strFiltreComplet + "'> Previous</a></li>";
 
         pager.Text += strDebut;
         for (int i = 1; i <= nbPages; i++)
         {
             strClass = noPage == i ? "page-item active" : "page-item";
-            string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + strFiltre + "'>" + i + "</a></li>";
+            string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + strFiltreComplet + "'>" + i + "</a></li>";
             pager.Text += strMillieu;
         }
 
@@ -207,24 +282,11 @@ public partial class _Default : System.Web.UI.Page
         strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
         next = next >= nbPages + 1 ? noPage : next;
 
-        string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + strFiltre + "'>Next</a></li>" +
+        string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + strFiltreComplet + "'>Next</a></li>" +
                                 "</ul>" +
                             "</nav>";
         pager.Text += strFin;
 
         control.Controls.Add(pager);
-    }
-
-    protected void trierTitre(object sender, EventArgs e)
-    {
-        films.OrderBy(film => film.nom).ToList();
-    }
-    protected void trierPersonne(object sender, EventArgs e)
-    {
-
-    }
-    protected void TrierLesDeux(object sender, EventArgs e)
-    {
-
     }
 }
