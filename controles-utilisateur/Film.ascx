@@ -6,7 +6,11 @@
     {
         if( !IsPostBack )
         {
-            prevPage = Request.UrlReferrer.ToString();
+            if (Request.UrlReferrer != null)
+            {
+                 prevPage = Request.UrlReferrer.ToString();
+            }
+           
         }
 
     }
@@ -30,7 +34,7 @@
         <br />
 
         <asp:Label runat="server">Producteur :</asp:Label>
-        <asp:TextBox ID="tbNomProducteur" runat="server"
+        <asp:DropDownList ID="tbNomProducteur" runat="server"
            MaxLength="25" CssClass="form-control"
             placeholder="Nom du producteur"/>
         <br />
@@ -41,10 +45,17 @@
             placeholder="Année de sortie"/>
         <br />
 
+        
         <asp:Label runat="server">Durée :</asp:Label>
-        <asp:TextBox ID="tbDurée" runat="server"
+        <asp:TextBox ID="tbDuree" runat="server"
            MaxLength="25" CssClass="form-control"
             placeholder="Durée (en minutes)"/>
+        <asp:RegularExpressionValidator ID="RegularExpressionValidator1"
+            ControlToValidate="tbDuree" runat="server"
+            ErrorMessage="Nombres entiers seulement!"
+            Style="color:red"
+            ValidationExpression="\d+">
+        </asp:RegularExpressionValidator>
         <br />
 
         <asp:Label runat="server">Nombres de disques :</asp:Label>
