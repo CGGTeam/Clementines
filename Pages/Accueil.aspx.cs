@@ -47,7 +47,7 @@ public partial class _Default : System.Web.UI.Page
     }
     public void UpdateFiltre(object sender, EventArgs e)
     {
-        
+        Controls.Remove(phDynamique);
         bool blnfiltreTitre = cbTitre.Checked;
         bool blnfiltrePersonne = cbPersonne.Checked;
 
@@ -103,8 +103,11 @@ public partial class _Default : System.Web.UI.Page
         {
             int indexVignette = 0;
             int numRow = 1;
+
+            Panel rowPagerUp = librairie.divDYN(phDynamique, "row_up" + numRow, "row");
             Panel row = row = librairie.divDYN(phDynamique, "row_" + numRow, "row");
 
+            AfficherPager(rowPagerUp);
             for (int i = ((noPage - 1) * nbElementsParPage); i < (noPage * nbElementsParPage) && i < lstFilmsAfficher.Count; i++)
             {
                 if (indexVignette % 4 == 0)
@@ -303,7 +306,7 @@ public partial class _Default : System.Web.UI.Page
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
         previous = previous <= 0 ? noPage : previous;
-
+         
         string strDebut = "<nav aria - label = 'Page navigation example' >" +
                                 "<ul class='pagination justify-content-center'>" +
                                     "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + strFiltreComplet + "'> Previous</a></li>";
