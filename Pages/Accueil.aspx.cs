@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -16,45 +18,32 @@ public partial class _Default : System.Web.UI.Page
     private bool filtrePersonne = false;
     private TypeOrderBy orderBy;
 
-    private List<Film> filmsOG = new List<Film>();
-    private List<Film> films = new List<Film>();
+    private List<EntiteFilm> lstFilms = new List<EntiteFilm>();
+    private List<EntiteFilm> lstFilmsAfficher = new List<EntiteFilm>();
 
     private Panel col1;
     private Panel col2;
 
     private Panel row2;
 
-    private class Film
-    {
-        public string nom { get; set; }
-        public string vignette { get; set; }
-        public string personne { get; set; }
-
-        public Film(string nom, string vignette, string personne)
-        {
-            this.nom = nom;
-            this.vignette = vignette;
-            this.personne = personne;
-        }
-    }
     public void FilterList()
     {
-        films.Clear();
+        lstFilmsAfficher.Clear();
         if (filtreTitre && filtrePersonne)
         {
-            films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower()) || film.personne.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.TitreFrancais.ToLower().Contains(filtre.ToLower()) || film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtreTitre)
         {
-            films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.TitreFrancais.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtrePersonne)
         {
-            films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else
         {
-            films = new List<Film>();
+            lstFilmsAfficher = new List<EntiteFilm>();
         }
         OrderBy();
         AfficherLesFilms(col1, col2, row2);
@@ -74,13 +63,20 @@ public partial class _Default : System.Web.UI.Page
 
     private void Page_Load(object sender, EventArgs e)
     {
-        string img = "../Static/images/flavicon.png";
-        for (int i = 1; i <= 32; i++)
+        // Établir connection BD
+        SqlConnection dbConn = new SqlConnection();
+        try
         {
-            filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
+            etablitConnexion(ref dbConn, "strConnexionDreamTeam");
+            populerListeFilms(dbConn);
         }
-        filmsOG.Add(new Film("XXXXX", img, "AAAA"));
-        films = filmsOG.ToList();
+        catch (Exception Ex)
+        {
+            // peut-être rajouter un message d'erreur...
+            System.Diagnostics.Debug.Write("Erreur");
+        }
+
+        lstFilmsAfficher = lstFilms.ToList();
 
         InitialiserOrderBy();
         InitialiserSearch();
@@ -109,18 +105,18 @@ public partial class _Default : System.Web.UI.Page
         col2.Controls.Clear();
         row2.Controls.Clear();
 
-        if (films.Count() <= 0)
+        if (lstFilmsAfficher.Count() <= 0)
         {
             Label lblTitre = librairie.lblDYN(row2, "lblvide", "Il n'y a aucun film");
         }
         else
         {
-            for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+            for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= lstFilmsAfficher.Count(); i++)
             {
                 if (i % 2 != 0)
-                    AfficherFilm(films[i - 1], col1);
+                    AfficherFilm(lstFilmsAfficher[i - 1], col1);
                 else
-                    AfficherFilm(films[i - 1], col2);
+                    AfficherFilm(lstFilmsAfficher[i - 1], col2);
             }
             AfficherPager(row2);
         }
@@ -130,16 +126,16 @@ public partial class _Default : System.Web.UI.Page
         switch (orderBy)
         {
             case TypeOrderBy.TitrePersonne:
-                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                lstFilmsAfficher.OrderBy(film => film.TitreFrancais).ThenBy(s => s.NomUtilisateur);
                 break;
             case TypeOrderBy.Personne:
-                films.Sort((x, y) => x.personne.CompareTo(y.personne));
+                lstFilmsAfficher.Sort((x, y) => x.NomUtilisateur.CompareTo(y.NomUtilisateur));
                 break;
             case TypeOrderBy.Titre:
-                films.Sort((x, y) => x.nom.CompareTo(y.nom));
+                lstFilmsAfficher.Sort((x, y) => x.TitreFrancais.CompareTo(y.TitreFrancais));
                 break;
             default:
-                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                lstFilmsAfficher.OrderBy(film => film.TitreFrancais).ThenBy(s => s.NomUtilisateur);
                 break;
         }
     }
@@ -218,27 +214,27 @@ public partial class _Default : System.Web.UI.Page
         cbTitre.Checked = filtreTitre;
         cbPersonne.Checked = filtrePersonne;
     }
-    private void AfficherFilm(Film film, Control container)
+    private void AfficherFilm(EntiteFilm film, Control container)
     {
-        Panel div = librairie.divDYN(container, film.nom, "panel panel-warning");
-        Panel header = librairie.divDYN(div, "header" + film.nom, "panel-heading");
-        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body vignette");
+        Panel div = librairie.divDYN(container, "section"+film.NoFilm, "panel panel-warning");
+        Panel header = librairie.divDYN(div, "header" + film.NoFilm, "panel-heading");
+        Panel content = librairie.divDYN(div, "content" + film.NoFilm, "panel-body vignette");
 
 
-        Panel panelCache = librairie.divDYN(content, "panel-cache_" + film.nom, "boutons-caches row ");
+        Panel panelCache = librairie.divDYN(content, "panel-cache_" + film.NoFilm, "boutons-caches row ");
 
-        Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel à " + film.personne);
+        Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.NoFilm, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel à " + film.NomUtilisateur);
         btn1.Click += new EventHandler(EnvoyerUnCourriel);
-        Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée de " + film.nom);
+        Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.NoFilm, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée");
         btn2.Click += new EventHandler(AfficherDetails);
-        Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier le " + film.nom);
+        Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.NoFilm, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier le film");
         btn3.Click += new EventHandler(ApproprierDVD);
 
-        Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
-        Panel divProprietaire = librairie.divDYN(content, film.nom + "Personne", "pull-right");
+        Image img = librairie.imgDYN(content, "img" + film.NoFilm, film.ImagePochette, ".img-rounded col-sm-2");
+        Panel divProprietaire = librairie.divDYN(content, film.NoFilm + "Personne", "pull-right");
         librairie.brDYN(divProprietaire);
-        Label lblPersonne = librairie.lblDYN(divProprietaire, "lblPersonne" + film.nom, film.personne);
-        Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
+        Label lblPersonne = librairie.lblDYN(divProprietaire, "lblPersonne" + film.NoFilm, film.NomUtilisateur);
+        Label lblTitre = librairie.lblDYN(header, "lbl" + film.NoFilm, film.TitreFrancais);
     }
     public void AfficherDetails(object sender, EventArgs e)
     {
@@ -258,7 +254,7 @@ public partial class _Default : System.Web.UI.Page
     private void AfficherPager(Control control)
     {
         LiteralControl pager = new LiteralControl();
-        decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
+        decimal nbPages = Math.Ceiling((decimal)lstFilmsAfficher.Count / (decimal)nbElementsParPage);
 
         string strFiltreComplet = "&Filtre=" + filtre+"&Personne=" + filtrePersonne + "&Titre=" + filtreTitre + "Orderby=" + orderBy.ToString();
 
@@ -288,5 +284,45 @@ public partial class _Default : System.Web.UI.Page
         pager.Text += strFin;
 
         control.Controls.Add(pager);
+    }
+    public void populerListeFilms(SqlConnection dbConn)
+    {
+        String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
+           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
+           "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra " +
+           "FROM Films " +
+           "LEFT JOIN Categories ON Films.Categorie = Categories.NoCategorie " +
+           "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
+           "LEFT JOIN Utilisateurs ON Films.NoUtilisateurMAJ = Utilisateurs.NoUtilisateur " +
+           "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
+           "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur;";
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstFilms.Add(new EntiteFilm((int)drDDL[0],
+               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+               (DateTime)drDDL[4],
+               (string)drDDL[5],
+               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+               (string)drDDL[11],
+               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
+        }
+        drDDL.Close();
+    }
+    protected void etablitConnexion(ref SqlConnection dbConn, String strChaineConnexion)
+    {
+        dbConn.ConnectionString = ConfigurationManager.AppSettings[strChaineConnexion];
+        dbConn.Open();
     }
 }
