@@ -59,21 +59,24 @@ public partial class _Default : System.Web.UI.Page
 
     private void Page_Load(object sender, EventArgs e)
     {
-        // Établir connection BD
         Label lblMessage = librairie.lblDYN(phDynamique, "message_vignettes", "", "message_vignettes");
-        SqlConnection dbConn = new SqlConnection();
-        try
-        {
-            SQL.Connection();
-            lstFilms = SQL.FindAllDVD();
-        }
-        catch (Exception Ex)
-        {
-            lblMessage.Text = "Oops... Un problème s'est glissé lors du téléchargement des films! (*′☉.̫☉)";
-        }
+        //if (!Page.IsPostBack)
+        //{
+            // Établir connection BD
+            
+            SqlConnection dbConn = new SqlConnection();
+            try
+            {
+                SQL.Connection();
+                lstFilms = SQL.FindAllDVD();
+            }
+            catch (Exception Ex)
+            {
+                lblMessage.Text = "Oops... Un problème s'est glissé lors du téléchargement des films! (*′☉.̫☉)";
+            }
 
-        lstFilmsAfficher = lstFilms.ToList();
-
+            lstFilmsAfficher = lstFilms.ToList();
+        //}
         InitialiserOrderBy();
         InitialiserSearch();
         InitialiserNoPage();
@@ -92,7 +95,6 @@ public partial class _Default : System.Web.UI.Page
     }
     private void AfficherLesFilms(Label lblMessage)
     {
-        System.Diagnostics.Debug.Write("afficher");
         Controls.Remove(phDynamique);
         
         if (lstFilmsAfficher.Count() <= 0)
@@ -120,7 +122,7 @@ public partial class _Default : System.Web.UI.Page
 
                 indexVignette++;
             }
-            row = row = librairie.divDYN(phDynamique, "row_" + numRow, "row");
+            row = row = librairie.divDYN(phDynamique, "row_" + ++numRow, "row");
             AfficherPager(row);
         }
     }
@@ -267,12 +269,12 @@ public partial class _Default : System.Web.UI.Page
         TableRow tr2 = librairie.trDYN(table);
         TableCell td2 = librairie.tdDYN(tr2, "td_approprier_" + lstFilmsAfficher[i].NoFilm, "");
         Button btn2 = librairie.btnDYN(td2, "approprier_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "S'approprier");
-        btn1.Click += new EventHandler(ApproprierDVD);
+        btn2.Click += new EventHandler(ApproprierDVD);
 
         TableRow tr3 = librairie.trDYN(table);
         TableCell td3 = librairie.tdDYN(tr3, "td_message_" + lstFilms[i].NoFilm, "");
-        Button btn3 = librairie.btnDYN(td3, "message_" + lstFilms[i].NoFilm, "btn btn-default boutons-options-film", "Envoyer un message");
-        btn1.Click += new EventHandler(EnvoyerUnCourriel);
+        Button btn3 = librairie.btnDYN(td3, "message_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Envoyer un message");
+        btn3.Click += new EventHandler(EnvoyerUnCourriel);
     }
     public void modifieronClick(Object sender, EventArgs e)
     {
@@ -283,6 +285,8 @@ public partial class _Default : System.Web.UI.Page
     }
     public void AfficherDetails(object sender, EventArgs e)
     {
+        Button btn = (Button)sender;
+        System.Diagnostics.Debug.WriteLine("Affichage Detaille: " + btn.ID);
         String url = "~/Pages/AffichageDetaille.aspx";
         Response.Redirect(url, true);
     }
@@ -292,7 +296,12 @@ public partial class _Default : System.Web.UI.Page
     }
     private void EnvoyerUnCourriel(object sender, EventArgs e)
     {
-        String url = "~/Pages/Courriel.aspx";
+        Button btn = (Button)sender;
+        String destinataire = btn.ID;
+
+        System.Diagnostics.Debug.WriteLine("message: " + btn.ID);
+
+        String url = "~/Pages/Courriel.aspx?Destinataire="+ destinataire;
         Response.Redirect(url, true);
     }
 
