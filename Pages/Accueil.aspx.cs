@@ -263,7 +263,7 @@ public partial class _Default : System.Web.UI.Page
 
         TableRow tr1 = librairie.trDYN(table);
         TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "");
-        Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
+        Button btn1 = librairie.btnDYN(td1, "affichage_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
         btn1.Click += new EventHandler(AfficherDetails);
 
         TableRow tr2 = librairie.trDYN(table);
@@ -288,8 +288,9 @@ public partial class _Default : System.Web.UI.Page
     public void AfficherDetails(object sender, EventArgs e)
     {
         Button btn = (Button)sender;
-        System.Diagnostics.Debug.WriteLine("Affichage Detaille: " + btn.ID);
-        String url = "~/Pages/AffichageDetaille.aspx";
+        String id = btn.ID.Substring(btn.ID.LastIndexOf('_') + 1);
+
+        String url = "~/Pages/AffichageDetaille.aspx?Film="+ id;
         Response.Redirect(url, true);
     }
     public void ApproprierDVD(object sender, EventArgs e)
@@ -300,8 +301,6 @@ public partial class _Default : System.Web.UI.Page
     {
         Button btn = (Button)sender;
         String destinataire = btn.ID.Substring(btn.ID.LastIndexOf('_') + 1);
-
-        System.Diagnostics.Debug.WriteLine("message: " + btn.ID);
 
         String url = "~/Pages/Courriel.aspx?Destinataire="+ destinataire;
         Response.Redirect(url, true);
