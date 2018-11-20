@@ -71,5 +71,115 @@ static public class SQL
         return lstProducteurs;
     }
 
+    //Cette fonction permet de retourner une liste de Réalisateur 
+    public static List<EntiteRealisateur> FindAllRealisateur()
+    {
+        List<EntiteRealisateur> lstRealisateurs = new List<EntiteRealisateur>();
+        String strRequete = "select * from Realisateurs";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstRealisateurs.Add(new EntiteRealisateur((int)drDDL[0], (string)drDDL[1]));
+        }
+
+        drDDL.Close();
+        return lstRealisateurs;
+    }
+
+    /// <summary>
+    /// Cette fonction retourne une lise de format
+    /// </summary>
+    /// <returns> lstFormats</returns>
     
+    public static List<EntiteFormat> FindAllFormat()
+    {
+        List<EntiteFormat> lstFormats = new List<EntiteFormat>();
+        String strRequete = "select * from Formats";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstFormats.Add(new EntiteFormat((int)drDDL[0], (string)drDDL[1]));
+        }
+
+        drDDL.Close();
+        return lstFormats;
+    }
+
+    /// <summary>
+    /// Cette fonction retourne une liste de catégories
+    /// </summary>
+    /// <returns> lstCategories</returns>
+
+    public static List<EntiteCategorie> FindAllCategorie()
+    {
+        List<EntiteCategorie> lstCategories = new List<EntiteCategorie>();
+        String strRequete = "select * from Categories";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstCategories.Add(new EntiteCategorie((int)drDDL[0], (string)drDDL[1]));
+        }
+        drDDL.Close();
+        return lstCategories;
+    }
+
+    /// <summary>
+    /// Cette fonction retourne une liste d'acteurs
+    /// </summary>
+    /// <returns> lstActeurs</returns>
+
+    public static List<EntiteActeur> FindAllActeurs()
+    {
+        List<EntiteActeur> lstActeurs = new List<EntiteActeur>();
+        String strRequete = "select * from Acteurs";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstActeurs.Add(new EntiteActeur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2]));
+        }
+        drDDL.Close();
+        return lstActeurs;
+    }
+
+    /// <summary>
+    /// Cette fonction retourne une liste de langues
+    /// </summary>
+    /// <returns> lstLangues</returns>
+
+    public static List<EntiteLangue> FindAllLangue()
+    {
+        List<EntiteLangue> lstLangues = new List<EntiteLangue>();
+        String strRequete = "select * from Langues";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstLangues.Add(new EntiteLangue((int)drDDL[0], (string)drDDL[1]));
+        }
+        drDDL.Close();
+        return lstLangues;
+    }
+
+    /// <summary>
+    /// Cette fonction retourne une liste de sous-titres
+    /// </summary>
+    /// <returns> lstSousTitres</returns>
+
+    public static List<EntiteSousTitres> FindAllSousTitre()
+    {
+        List<EntiteSousTitres> lstSousTitres = new List<EntiteSousTitres>();
+        String strRequete = "select * from SousTitres";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstSousTitres.Add(new EntiteSousTitres((int)drDDL[0], (string)drDDL[1]));
+        }
+        drDDL.Close();
+        return lstSousTitres;
+    }
 }
