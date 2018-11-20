@@ -64,8 +64,8 @@ public partial class _Default : System.Web.UI.Page
         SqlConnection dbConn = new SqlConnection();
         try
         {
-            etablitConnexion(ref dbConn, "strConnexionDreamTeam");
-            populerListeFilms(dbConn);
+            SQL.Connection();
+            lstFilms = SQL.FindAllDVD();
         }
         catch (Exception Ex)
         {
@@ -256,7 +256,7 @@ public partial class _Default : System.Web.UI.Page
     }
     private void afficherOptionsAutreFilm(int i, Panel panelCache)
     {
-        panelCache.BackColor = Color.Orange;
+        //panelCache.BackColor = Color.Orange;
         Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].NoFilm, "tableau-boutons");
 
         TableRow tr1 = librairie.trDYN(table);
@@ -329,45 +329,5 @@ public partial class _Default : System.Web.UI.Page
         pager.Text += strFin;
 
         control.Controls.Add(pager);
-    }
-    public void populerListeFilms(SqlConnection dbConn)
-    {
-        String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
-           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
-           "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra " +
-           "FROM Films " +
-           "LEFT JOIN Categories ON Films.Categorie = Categories.NoCategorie " +
-           "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
-           "LEFT JOIN Utilisateurs ON Films.NoUtilisateurMAJ = Utilisateurs.NoUtilisateur " +
-           "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
-           "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur;";
-        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
-        SqlDataReader drDDL = cmdDDL.ExecuteReader();
-        while (drDDL.Read())
-        {
-            lstFilms.Add(new EntiteFilm((int)drDDL[0],
-               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
-               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
-               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
-               (DateTime)drDDL[4],
-               (string)drDDL[5],
-               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
-               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
-               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
-               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
-               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
-               (string)drDDL[11],
-               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
-               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
-               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
-               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
-               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
-        }
-        drDDL.Close();
-    }
-    protected void etablitConnexion(ref SqlConnection dbConn, String strChaineConnexion)
-    {
-        dbConn.ConnectionString = ConfigurationManager.AppSettings[strChaineConnexion];
-        dbConn.Open();
     }
 }
