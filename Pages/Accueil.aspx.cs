@@ -273,8 +273,10 @@ public partial class _Default : System.Web.UI.Page
 
         TableRow tr3 = librairie.trDYN(table);
         TableCell td3 = librairie.tdDYN(tr3, "td_message_" + lstFilms[i].NoFilm, "");
-        Button btn3 = librairie.btnDYN(td3, "message_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Envoyer un message");
+        Button btn3 = librairie.btnDYN(td3, "message" + lstFilmsAfficher[i].NoFilm+"_"+lstFilmsAfficher[i].NomUtilisateur, "btn btn-default boutons-options-film", "Envoyer un message");
         btn3.Click += new EventHandler(EnvoyerUnCourriel);
+         
+        
     }
     public void modifieronClick(Object sender, EventArgs e)
     {
@@ -297,7 +299,7 @@ public partial class _Default : System.Web.UI.Page
     private void EnvoyerUnCourriel(object sender, EventArgs e)
     {
         Button btn = (Button)sender;
-        String destinataire = btn.ID;
+        String destinataire = btn.ID.Substring(btn.ID.LastIndexOf('_') + 1);
 
         System.Diagnostics.Debug.WriteLine("message: " + btn.ID);
 

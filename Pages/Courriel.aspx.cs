@@ -16,11 +16,13 @@ public partial class _Default : System.Web.UI.Page
     {
         if (Request.QueryString["Destinataire"] == null)
         {
-            strDestinataire = "";
+            destinaire.Text = "";
         }
         else
         {
-            destinaire.Text = Request.QueryString["Destinataire"];
+            strDestinataire = Request.QueryString["Destinataire"];
+            destinaire.Text = strDestinataire;
+            destinaire.Enabled = false;
         }
     }
 }
