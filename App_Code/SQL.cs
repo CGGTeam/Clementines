@@ -203,4 +203,23 @@ static public class SQL
         drDDL.Close();
         return lstSousTitres;
     }
+
+    /// <summary>
+    /// Cette fonction retourne une liste de suppléments
+    /// </summary>
+    /// <returns> lstSupplements</returns>
+
+    public static List<EntiteSupplements> FindAllSupplement()
+    {
+        List<EntiteSupplements> lstSupplements = new List<EntiteSupplements>();
+        String strRequete = "select * from Supplements";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstSupplements.Add(new EntiteSupplements((int)drDDL[0], (string)drDDL[1]));
+        }
+        drDDL.Close();
+        return lstSupplements;
+    }
 }
