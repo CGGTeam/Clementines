@@ -166,7 +166,8 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
          "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
          "LEFT JOIN Utilisateurs ON Films.NoUtilisateurMAJ = Utilisateurs.NoUtilisateur " +
          "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
-         "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur;";
+         "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur " +
+         "WHERE NoUtilisateurMAJ = " + noUtilisateurCourrant + ";";
       SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
       while (drDDL.Read())
