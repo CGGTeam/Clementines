@@ -54,28 +54,6 @@ static public class SQL
         drDDL.Close();
         return lstFilms;
     }
-    /// Permet de récuper l'utilisateur avec l'id donné
-    /// <param name="id"></param>
-    /// EntiteUtilisateur
-    public static EntiteUtilisateur FindUtilisateurById(int id)
-    {
-        EntiteUtilisateur utilisateur = null;
-        String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
-        SqlParameter paramUsername = new SqlParameter("@id", id);
-
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
-        cmdDDL.Parameters.Add(paramUsername);
-
-        SqlDataReader drDDL = cmdDDL.ExecuteReader();
-        while (drDDL.Read())
-        {
-            utilisateur = new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], (char)drDDL[4]);
-        }
-
-        drDDL.Close();
-        return utilisateur;
-    }
-
     //Cette fonction permet de retourner une liste de producteur 
     public static List<EntiteProducteur> FindAllProducteur()
     {
@@ -112,7 +90,7 @@ static public class SQL
     /// Cette fonction retourne une lise de format
     /// </summary>
     /// <returns> lstFormats</returns>
-    
+
     public static List<EntiteFormat> FindAllFormat()
     {
         List<EntiteFormat> lstFormats = new List<EntiteFormat>();
@@ -221,5 +199,72 @@ static public class SQL
         }
         drDDL.Close();
         return lstSupplements;
+    }
+
+    /// Permet de récuper le dvd avec l'id donné
+    /// <param name="id"></param>
+    /// EntiteUtilisateur
+    public static EntiteUtilisateur FindUtilisateurById(int id)
+    {
+        EntiteUtilisateur utilisateur = null;
+        String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
+        SqlParameter paramUsername = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            utilisateur = new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], (char)drDDL[4]);
+        }
+
+        drDDL.Close();
+        return utilisateur;
+    }
+    /// Permet de récuper le dvd avec l'id donné
+    /// <param name="id"></param>
+    /// EntiteFilm
+    public static EntiteFilm FindFilmById(int id)
+    {
+        EntiteFilm film = null;
+        String strRequete = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
+           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
+           "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra " +
+           "FROM Films " +
+           "LEFT JOIN Categories ON Films.Categorie = Categories.NoCategorie " +
+           "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
+           "LEFT JOIN Utilisateurs ON Films.NoUtilisateurMAJ = Utilisateurs.NoUtilisateur " +
+           "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
+           "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur where Films.NoFilm = @id;";
+        SqlParameter paramUsername = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            film = new EntiteFilm((int)drDDL[0],
+               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+               (DateTime)drDDL[4],
+               (string)drDDL[5],
+               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+               (string)drDDL[11],
+               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
+        }
+
+        drDDL.Close();
+        return film;
     }
 }
