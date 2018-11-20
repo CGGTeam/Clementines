@@ -5,18 +5,83 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if( !IsPostBack )
+        if (!IsPostBack)
         {
             if (Request.UrlReferrer != null)
             {
                 prevPage = Request.UrlReferrer.ToString();
             }
-            chargeListeAnneeSortie();
-            chargeListeNbCD();
+            foreach (Control c in this.Controls)
+            {
+                if (c is Personne_Ddl_Ajout)
+                    chargeListeRequete((Personne_Ddl_Ajout) c);
+            }
+            chargeListeSupplements();
 
         }
+    }
+
+
+    protected void chargeListeRequete(Personne_Ddl_Ajout control)
+    {
+        SQL.Connection();
+        if(control == choixProducteur)
+        {
+            List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
+            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            foreach (EntiteProducteur producteur in lstProducteurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(producteur.Nom, producteur.NoProducteur.ToString()));
+            }
+        }else if (control == choixRealisateur)
+        {
+            List<EntiteRealisateur> lstRealisateurs  = SQL.FindAllRealisateur();
+            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            foreach (EntiteRealisateur realisa in lstRealisateurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(realisa.Nom, realisa.NoRealisateur.ToString()));
+            }
+        }else if (control == choixActeur1)
+        {
+            List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
+            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            foreach (EntiteActeur acteur in lstActeurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
+            }
+        }else if (control == choixActeur2)
+        {
+            List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
+            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            foreach (EntiteActeur acteur in lstActeurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
+            }
+        }else if (control == choixActeur3)
+        {
+            List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
+            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            foreach (EntiteActeur acteur in lstActeurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
+            }
+        }
+
 
     }
+
+    protected void chargeListeSupplements()
+    {
+        SQL.Connection();
+        List<EntiteSupplements> lstSupplements = SQL.FindAllSupplement();
+        lbSupplements.Items.Add(new ListItem("-- (Aucun) --", "0"));
+        foreach (EntiteSupplements supplement in lstSupplements)
+        {
+            lbSupplements.Items.Add(new ListItem(supplement.Description, supplement.NoSupplement.ToString()));
+        }
+        lbSupplements.Rows = lbSupplements.Items.Count;
+    }
+
     protected void Retour(object sender, EventArgs e)
     {
         Response.Redirect(prevPage);
@@ -35,7 +100,7 @@
         {
             ddlAnnee.Items.Add(i.ToString());
         }
-        
+
     }
     protected void chargeListeNbCD()
     {
@@ -44,7 +109,7 @@
         {
             ddlNbDisques.Items.Add(i.ToString());
         }
-        
+
     }
 </script>
 
@@ -125,12 +190,24 @@
            MaxLength="25" CssClass="form-control"
             placeholder="Titre originale"/>
         <br />
-        <!-- Suppléments Requete -->
+
         <asp:Label runat="server">Suppléments :</asp:Label>
-        <asp:DropDownList ID="ddlSupplements" runat="server"
-           MaxLength="25" CssClass="form-control"
-           placeholder="Année de sortie"/>
-        <br />
+          <div class="panel panel-default">
+             <button class="form-control" type="button" 
+                 data-toggle="collapse" data-target="#collapseExample" 
+                 aria-expanded="false" aria-controls="collapseExample" 
+                 style="text-align:left">
+                Afficher
+              </button>
+            <div id="collapseExample" class="panel-collapse collapse out">
+             
+               
+                <asp:ListBox ID="lbSupplements" runat="server"
+                     CssClass="form-control" Width="100%" Height="100%" style="overflow:hidden"/>
+              
+            </div>
+          </div>
+
         <!-- Producteur Requete-->
         <asp:Label runat="server">Producteur :</asp:Label>
         <pers:Personne ID="choixProducteur" runat="server"/>

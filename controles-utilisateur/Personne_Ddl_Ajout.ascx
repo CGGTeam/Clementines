@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" ClassName="Personne_Ddl_Ajout" %>
 
 <script runat="server">
+    public DropDownList ControleDDL { get { return ddlPersonne; } }
     private void ChangerVisibilie(object sender, EventArgs e)
     {
         ddlPersonne.Visible = ddlPersonne.Visible ? false : true;
