@@ -54,6 +54,27 @@ static public class SQL
         drDDL.Close();
         return lstFilms;
     }
+    /// Permet de récuper l'utilisateur avec l'id donné
+    /// <param name="id"></param>
+    /// EntiteUtilisateur
+    public static EntiteUtilisateur FindUtilisateurById(int id)
+    {
+        EntiteUtilisateur utilisateur = null;
+        String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
+        SqlParameter paramUsername = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            utilisateur = new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], (char)drDDL[4]);
+        }
+
+        drDDL.Close();
+        return utilisateur;
+    }
 
     //Cette fonction permet de retourner une liste de producteur 
     public static List<EntiteProducteur> FindAllProducteur()
