@@ -9,6 +9,9 @@ public partial class _Default :  System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        SQL.Connection();
 
+        List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
+        System.Diagnostics.Debug.WriteLine(lstProducteurs);
     }
 }

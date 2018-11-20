@@ -81,7 +81,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
             Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstFilms[i].NoFilm, "panel-footer");
             Label lblTitre = librairie.lblDYN(panelFooter, "titre-film_" + lstFilms[i].NoFilm, lstFilms[i].TitreFrancais, "titre-film");
-
+            
             indexVignette++;
          }
 
@@ -166,7 +166,8 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
          "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
          "LEFT JOIN Utilisateurs ON Films.NoUtilisateurMAJ = Utilisateurs.NoUtilisateur " +
          "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
-         "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur;";
+         "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur " +
+         "WHERE NoUtilisateurMAJ = " + noUtilisateurCourrant + ";";
       SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
       while (drDDL.Read())
@@ -188,6 +189,8 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
             (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
             (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
             (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
+
+         System.Diagnostics.Debug.WriteLine((string)drDDL[11]);
       }
       drDDL.Close();
    }
