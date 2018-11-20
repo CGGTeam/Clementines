@@ -17,7 +17,11 @@ static public class SQL
         dbConn.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
         dbConn.Open();
     }
-    public static List<EntiteFilm> FindAllDVD()
+    /// <summary>
+    /// Permet de récupérer la liste de film
+    /// </summary>
+    /// <returns>List<EntiteFilm></returns>
+    public static List<EntiteFilm> FindAllFilm()
     {
         List<EntiteFilm> lstFilms = new List<EntiteFilm>();
         String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
@@ -261,7 +265,7 @@ static public class SQL
                (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
                (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
                (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
-               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
+               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]);
         }
 
         drDDL.Close();

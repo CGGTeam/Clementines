@@ -68,7 +68,7 @@ public partial class _Default : System.Web.UI.Page
             try
             {
                 SQL.Connection();
-                lstFilms = SQL.FindAllDVD();
+                lstFilms = SQL.FindAllFilm();
             }
             catch (Exception Ex)
             {
