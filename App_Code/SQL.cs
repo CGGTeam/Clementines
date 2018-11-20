@@ -54,4 +54,22 @@ static public class SQL
         drDDL.Close();
         return lstFilms;
     }
+
+    //Cette fonction permet de retourner une liste de producteur 
+    public static List<EntiteProducteur> FindAllProducteur()
+    {
+        List<EntiteProducteur> lstProducteurs = new List<EntiteProducteur>();
+        String strRequete = "select * from Producteurs";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstProducteurs.Add(new EntiteProducteur((int)drDDL[0], (string)drDDL[1]));
+        }
+
+        drDDL.Close();
+        return lstProducteurs;
+    }
+
+    
 }
