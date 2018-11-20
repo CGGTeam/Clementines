@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -16,53 +19,35 @@ public partial class _Default : System.Web.UI.Page
     private bool filtrePersonne = false;
     private TypeOrderBy orderBy;
 
-    private List<Film> filmsOG = new List<Film>();
-    private List<Film> films = new List<Film>();
+    private List<EntiteFilm> lstFilms = new List<EntiteFilm>();
+    private List<EntiteFilm> lstFilmsAfficher = new List<EntiteFilm>();
 
-    private Panel col1;
-    private Panel col2;
-
-    private Panel row2;
-
-    private class Film
+    public void FilterList(Label lblMessage)
     {
-        public string nom { get; set; }
-        public string vignette { get; set; }
-        public string personne { get; set; }
-
-        public Film(string nom, string vignette, string personne)
-        {
-            this.nom = nom;
-            this.vignette = vignette;
-            this.personne = personne;
-        }
-    }
-    public void FilterList()
-    {
-        films.Clear();
+        lstFilmsAfficher.Clear();
         if (filtreTitre && filtrePersonne)
         {
-            films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower()) || film.personne.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.TitreFrancais.ToLower().Contains(filtre.ToLower()) || film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtreTitre)
         {
-            films = filmsOG.Where(film => film.nom.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.TitreFrancais.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtrePersonne)
         {
-            films = filmsOG.Where(film => film.personne.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else
         {
-            films = new List<Film>();
+            lstFilmsAfficher = new List<EntiteFilm>();
         }
         OrderBy();
-        AfficherLesFilms(col1, col2, row2);
+        AfficherLesFilms(lblMessage);
 
     }
     public void UpdateFiltre(object sender, EventArgs e)
     {
-        
+        Controls.Remove(phDynamique);
         bool blnfiltreTitre = cbTitre.Checked;
         bool blnfiltrePersonne = cbPersonne.Checked;
 
@@ -74,24 +59,29 @@ public partial class _Default : System.Web.UI.Page
 
     private void Page_Load(object sender, EventArgs e)
     {
-        string img = "../Static/images/flavicon.png";
-        for (int i = 1; i <= 32; i++)
-        {
-            filmsOG.Add(new Film("Film" + i, img, "Personne" + i));
-        }
-        filmsOG.Add(new Film("XXXXX", img, "AAAA"));
-        films = filmsOG.ToList();
+        Label lblMessage = librairie.lblDYN(phDynamique, "message_vignettes", "", "message_vignettes");
+        //if (!Page.IsPostBack)
+        //{
+            // Établir connection BD
+            
+            SqlConnection dbConn = new SqlConnection();
+            try
+            {
+                SQL.Connection();
+                lstFilms = SQL.FindAllDVD();
+            }
+            catch (Exception Ex)
+            {
+                lblMessage.Text = "Oops... Un problème s'est glissé lors du téléchargement des films! (*′☉.̫☉)";
+            }
 
+            lstFilmsAfficher = lstFilms.ToList();
+        //}
         InitialiserOrderBy();
         InitialiserSearch();
         InitialiserNoPage();
 
-        Panel row = librairie.divDYN(phDynamique, "row", "row");
-        col1 = librairie.divDYN(row, "col1", "col-sm-6");
-        col2 = librairie.divDYN(row, "col2", "col-sm-6");
-
-        row2 = librairie.divDYN(phDynamique, "row2", "row");
-        FilterList();
+        FilterList(lblMessage);
     }
     private void Page_LoadComplete(object sender, EventArgs e)
     {
@@ -103,26 +93,37 @@ public partial class _Default : System.Web.UI.Page
     {
         ddlOrdeyBy.SelectedValue = orderBy.ToString();
     }
-    private void AfficherLesFilms(Control col1, Control col2, Control row2)
+    private void AfficherLesFilms(Label lblMessage)
     {
-        col1.Controls.Clear();
-        col2.Controls.Clear();
-        row2.Controls.Clear();
-
-        if (films.Count() <= 0)
+        Controls.Remove(phDynamique);
+        
+        if (lstFilmsAfficher.Count() <= 0)
         {
-            Label lblTitre = librairie.lblDYN(row2, "lblvide", "Il n'y a aucun film");
+            Label lblTitre = librairie.lblDYN(lblMessage, "lblvide", "Il n'y a aucun film ! (◕‿◕✿)");
         }
         else
         {
-            for (int i = (noPage * nbElementsParPage) - (nbElementsParPage - 1); i <= nbElementsParPage * noPage && i <= films.Count(); i++)
+            int indexVignette = 0;
+            int numRow = 1;
+
+            Panel rowPagerUp = librairie.divDYN(phDynamique, "row_up" + numRow, "row");
+            Panel row = row = librairie.divDYN(phDynamique, "row_" + numRow, "row");
+
+            AfficherPager(rowPagerUp);
+            for (int i = ((noPage - 1) * nbElementsParPage); i < (noPage * nbElementsParPage) && i < lstFilmsAfficher.Count; i++)
             {
-                if (i % 2 != 0)
-                    AfficherFilm(films[i - 1], col1);
-                else
-                    AfficherFilm(films[i - 1], col2);
+                if (indexVignette % 4 == 0)
+                {
+                    numRow++;
+                    row = row = librairie.divDYN(phDynamique, "row_" + numRow, "row");
+                }
+
+                AfficherFilm(i, row);
+
+                indexVignette++;
             }
-            AfficherPager(row2);
+            row = row = librairie.divDYN(phDynamique, "row_" + ++numRow, "row");
+            AfficherPager(row);
         }
     }
     private void OrderBy()
@@ -130,16 +131,16 @@ public partial class _Default : System.Web.UI.Page
         switch (orderBy)
         {
             case TypeOrderBy.TitrePersonne:
-                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                lstFilmsAfficher.OrderBy(film => film.TitreFrancais).ThenBy(s => s.NomUtilisateur);
                 break;
             case TypeOrderBy.Personne:
-                films.Sort((x, y) => x.personne.CompareTo(y.personne));
+                lstFilmsAfficher.Sort((x, y) => x.NomUtilisateur.CompareTo(y.NomUtilisateur));
                 break;
             case TypeOrderBy.Titre:
-                films.Sort((x, y) => x.nom.CompareTo(y.nom));
+                lstFilmsAfficher.Sort((x, y) => x.TitreFrancais.CompareTo(y.TitreFrancais));
                 break;
             default:
-                films.OrderBy(film => film.nom).ThenBy(s => s.personne);
+                lstFilmsAfficher.OrderBy(film => film.TitreFrancais).ThenBy(s => s.NomUtilisateur);
                 break;
         }
     }
@@ -218,30 +219,76 @@ public partial class _Default : System.Web.UI.Page
         cbTitre.Checked = filtreTitre;
         cbPersonne.Checked = filtrePersonne;
     }
-    private void AfficherFilm(Film film, Control container)
+    private void AfficherFilm(int i, Control row)
     {
-        Panel div = librairie.divDYN(container, film.nom, "panel panel-warning");
-        Panel header = librairie.divDYN(div, "header" + film.nom, "panel-heading");
-        Panel content = librairie.divDYN(div, "content" + film.nom, "panel-body vignette");
+        Panel col = librairie.divDYN(row, "col_" + lstFilmsAfficher[i].NoFilm, "col-sm-3");
+        Panel panel = librairie.divDYN(col, "panel_" + lstFilmsAfficher[i].NoFilm, "panel panel-default");
 
+        Panel panelHeader = librairie.divDYN(panel, "panel-heading" + lstFilmsAfficher[i].NoFilm, "panel-heading");
+        Label lblTitre = librairie.lblDYN(panelHeader, "titre-film" + lstFilmsAfficher[i].NoFilm, lstFilmsAfficher[i].TitreFrancais, "titre-film");
 
-        Panel panelCache = librairie.divDYN(content, "panel-cache_" + film.nom, "boutons-caches row ");
+        Panel panelBody = librairie.divDYN(panel, "panel-body_" + lstFilmsAfficher[i].NoFilm, "panel-body vignette");
+        Panel panelCache = librairie.divDYN(panelBody, "panel-cache_" + lstFilmsAfficher[i].NoFilm, "boutons-caches");
 
-        Button btn1 = librairie.btnDYN(panelCache, "courriel_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Envoyer un courriel à " + film.personne);
-        btn1.Click += new EventHandler(EnvoyerUnCourriel);
-        Button btn2 = librairie.btnDYN(panelCache, "affichage_detaillee_" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "Affichage détaillée de " + film.nom);
-        btn2.Click += new EventHandler(AfficherDetails);
-        Button btn3 = librairie.btnDYN(panelCache, "approprier" + film.nom, "btn btn-sm btn-default boutons-options-film col-xs-6 pull-right", "S'approprier le " + film.nom);
-        btn3.Click += new EventHandler(ApproprierDVD);
+        if (HttpContext.Current.User.Identity.Name == lstFilmsAfficher[i].NomUtilisateur) afficherOptionPropreFilm(i, panelCache);
+        else afficherOptionsAutreFilm(i, panelCache);
 
-        Image img = librairie.imgDYN(content, "img" + film.nom, film.vignette, ".img-rounded col-sm-2");
-        Panel divProprietaire = librairie.divDYN(content, film.nom + "Personne", "pull-right");
-        librairie.brDYN(divProprietaire);
-        Label lblPersonne = librairie.lblDYN(divProprietaire, "lblPersonne" + film.nom, film.personne);
-        Label lblTitre = librairie.lblDYN(header, "lbl" + film.nom, film.nom);
+        System.Web.UI.WebControls.Image img = librairie.imgDYN(panelBody, "img_" + lstFilmsAfficher[i].NoFilm, lstFilmsAfficher[i].ImagePochette, "image-vignette");
+
+        Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstFilmsAfficher[i].NoFilm, "panel-footer");
+        Label lblProprietaire = librairie.lblDYN(panelFooter, "titre-proprietaire_" + lstFilmsAfficher[i].NoFilm, "Propriétaire : "+ lstFilmsAfficher[i].NomUtilisateur, "titre-film");
+    }
+    private void afficherOptionPropreFilm(int i, Control panelCache)
+    {
+        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].NoFilm, "tableau-boutons");
+
+        TableRow tr1 = librairie.trDYN(table);
+        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "");
+        Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
+        btn1.Click += new EventHandler(AfficherDetails);
+
+        TableRow tr2 = librairie.trDYN(table);
+        TableCell td2 = librairie.tdDYN(tr2, "td_modifier_" + lstFilmsAfficher[i].NoFilm, "");
+        Button btn2 = librairie.btnDYN(td2, "modifier_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Modifier");
+        btn2.Click += new EventHandler(modifieronClick);
+
+        TableRow tr3 = librairie.trDYN(table);
+        TableCell td3 = librairie.tdDYN(tr3, "td_supprimer_" + lstFilmsAfficher[i].NoFilm, "");
+        Button btn3 = librairie.btnDYN(td3, "supprimer_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Supprimer");
+    }
+    private void afficherOptionsAutreFilm(int i, Panel panelCache)
+    {
+        //panelCache.BackColor = Color.Orange;
+        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].NoFilm, "tableau-boutons");
+
+        TableRow tr1 = librairie.trDYN(table);
+        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "");
+        Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
+        btn1.Click += new EventHandler(AfficherDetails);
+
+        TableRow tr2 = librairie.trDYN(table);
+        TableCell td2 = librairie.tdDYN(tr2, "td_approprier_" + lstFilmsAfficher[i].NoFilm, "");
+        Button btn2 = librairie.btnDYN(td2, "approprier_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "S'approprier");
+        btn2.Click += new EventHandler(ApproprierDVD);
+
+        TableRow tr3 = librairie.trDYN(table);
+        TableCell td3 = librairie.tdDYN(tr3, "td_message_" + lstFilms[i].NoFilm, "");
+        Button btn3 = librairie.btnDYN(td3, "message" + lstFilmsAfficher[i].NoFilm+"_"+lstFilmsAfficher[i].NomUtilisateur, "btn btn-default boutons-options-film", "Envoyer un message");
+        btn3.Click += new EventHandler(EnvoyerUnCourriel);
+         
+        
+    }
+    public void modifieronClick(Object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        System.Diagnostics.Debug.WriteLine("Modifier: " + btn.ID);
+        String url = "~/Pages/ModifierFilm.aspx";
+        Response.Redirect(url, true);
     }
     public void AfficherDetails(object sender, EventArgs e)
     {
+        Button btn = (Button)sender;
+        System.Diagnostics.Debug.WriteLine("Affichage Detaille: " + btn.ID);
         String url = "~/Pages/AffichageDetaille.aspx";
         Response.Redirect(url, true);
     }
@@ -251,21 +298,26 @@ public partial class _Default : System.Web.UI.Page
     }
     private void EnvoyerUnCourriel(object sender, EventArgs e)
     {
-        String url = "~/Pages/Courriel.aspx";
+        Button btn = (Button)sender;
+        String destinataire = btn.ID.Substring(btn.ID.LastIndexOf('_') + 1);
+
+        System.Diagnostics.Debug.WriteLine("message: " + btn.ID);
+
+        String url = "~/Pages/Courriel.aspx?Destinataire="+ destinataire;
         Response.Redirect(url, true);
     }
 
     private void AfficherPager(Control control)
     {
         LiteralControl pager = new LiteralControl();
-        decimal nbPages = Math.Ceiling((decimal)films.Count / (decimal)nbElementsParPage);
+        decimal nbPages = Math.Ceiling((decimal)lstFilmsAfficher.Count / (decimal)nbElementsParPage);
 
         string strFiltreComplet = "&Filtre=" + filtre+"&Personne=" + filtrePersonne + "&Titre=" + filtreTitre + "Orderby=" + orderBy.ToString();
 
         int previous = noPage - 1;
         string strClass = previous <= 0 ? "page-item disabled" : "page-item";
         previous = previous <= 0 ? noPage : previous;
-
+         
         string strDebut = "<nav aria - label = 'Page navigation example' >" +
                                 "<ul class='pagination justify-content-center'>" +
                                     "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + strFiltreComplet + "'> Previous</a></li>";
