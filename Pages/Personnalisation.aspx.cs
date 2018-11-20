@@ -11,7 +11,7 @@ public partial class _Default :  System.Web.UI.Page
     {
         SQL.Connection();
 
-        List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
+        List<EntiteSousTitres> lstProducteurs  = SQL.FindAllSousTitre();
         System.Diagnostics.Debug.WriteLine(lstProducteurs);
     }
 }

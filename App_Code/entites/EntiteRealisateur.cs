@@ -8,13 +8,13 @@ using System.Web;
 /// </summary>
 public class EntiteRealisateur
 {
-   public int NoProducteur { get; set; }
+   public int NoRealisateur { get; set; }
    public String Nom { get; set; }
   
 
-   public EntiteRealisateur (int noProducteur, String nom)
+   public EntiteRealisateur (int noRealisateur, String nom)
     {
-        NoProducteur = noProducteur;
+        NoRealisateur = noRealisateur;
         Nom = nom;
     }
 
