@@ -172,23 +172,26 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
       while (drDDL.Read())
       {
-         lstFilms.Add(new EntiteFilm((int)drDDL[0],
-            (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
-            (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
-            (drDDL[3].ToString() == "") ? "" : (string)drDDL[3], 
-            (DateTime)drDDL[4],
-            (string)drDDL[5],
-            (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
-            (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7], 
-            (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
-            (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
-            (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10], 
-            (string)drDDL[11],
-            (drDDL[12].ToString() == "") ? "" : (string)drDDL[12], 
-            (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
-            (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
-            (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
-            (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
+        EntiteFilm film = new EntiteFilm((int)drDDL[0],
+        (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+        (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+        (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+        (DateTime)drDDL[4],
+        (string)drDDL[5],
+        (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+        (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+        (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+        (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+        (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+        (string)drDDL[11],
+        (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+        (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+        (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+        (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+        (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]);
+
+
+         lstFilms.Add(film);
 
          System.Diagnostics.Debug.WriteLine((string)drDDL[11]);
       }
