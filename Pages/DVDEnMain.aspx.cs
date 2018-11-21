@@ -132,8 +132,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    public void affichageDetailleonClick(Object sender, EventArgs e)
    {
       Button btn = (Button)sender;
-      System.Diagnostics.Debug.WriteLine("Affichage Detaille: " + btn.ID);
-      String url = "~/Pages/AffichageDetaille.aspx";
+      String url = "~/Pages/AffichageDetaille.aspx?Film=" + btn.ID.Replace("affichage_detaillee_", "");
       Response.Redirect(url, true);
    }
 
@@ -144,6 +143,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
       String url = "~/Pages/ModifierFilm.aspx";
       Response.Redirect(url, true);
    }
+   
 
    public void populerListeFilms()
    {

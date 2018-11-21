@@ -105,12 +105,12 @@ static public class SQL
    public static List<EntiteUtilisateur> FindAllUtilisateur()
    {
       List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
-      String strRequete = "select * from Utilisateurs";
+      String strRequete = "select * from Utilisateurs;";
       SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
       while (drDDL.Read())
       {
-         lstUtilisateur.Add(new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], (char)drDDL[4]));
+         lstUtilisateur.Add(new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], Convert.ToChar((string)drDDL[4])));
       }
 
       drDDL.Close();
@@ -280,7 +280,7 @@ static public class SQL
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
-            utilisateur = new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], (char)drDDL[4]);
+            utilisateur = new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], Convert.ToChar((string)drDDL[4]));
         }
 
         drDDL.Close();

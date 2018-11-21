@@ -9,15 +9,21 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 {
    List<EntiteFilm> lstFilms = new List<EntiteFilm>();
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
-   private int noUtilisateurCourrant = 3; // {valeur déterminé lors de la connexion}
+   private int noUtilisateurCourrant;
    private int pageCourante;
 
    protected void Page_Load(object sender, EventArgs e)
    {
+      initialiserNoUtilisateur();
+
+      if (!Page.IsPostBack)
+      {
+         // charger la liste des utilisateurs
+         chargeListeUtilisateurs();
+      }
+
       // initialiser label pour message erreur et autres
       Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
-
-      populerListeFilms();
 
       // Vérifier la page courante
       initialiserNoPage();
@@ -27,11 +33,12 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
    public void afficherPageVignettes(Label lblMessage)
    {
-      if (lstFilms.Count == 0)
+      System.Diagnostics.Debug.WriteLine(noUtilisateurCourrant.ToString());
+      if (lstFilms.Count == 0 && noUtilisateurCourrant != 0)
       {
-         lblMessage.Text = "Vous avez ajouté aucun film ! (◕‿◕✿)";
+         lblMessage.Text = "Cet utilisateur n'a ajouté aucun film ! (◕‿◕✿)";
       }
-      else
+      else if (noUtilisateurCourrant != 0)
       {
          int indexVignette = 0;
          int numRow = 1;
@@ -94,6 +101,19 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
       }
    }
 
+   private void initialiserNoUtilisateur()
+   {
+      int n;
+      if (Request.QueryString["Utilisateur"] == null || !int.TryParse(Request.QueryString["Utilisateur"], out n))
+      {
+         this.noUtilisateurCourrant = 0;
+      }
+      else
+      {
+         this.noUtilisateurCourrant = n;
+      }
+   }
+
    private void afficherPager(Control control)
    {
       LiteralControl pager = new LiteralControl();
@@ -105,13 +125,13 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
       string strDebut = "<nav aria - label = 'Page navigation example' >" +
                               "<ul class='pagination justify-content-center'>" +
-                                  "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "'> Previous</a></li>";
+                                  "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "&Utilisateur=" + noUtilisateurCourrant + "'> Previous</a></li>";
 
       pager.Text += strDebut;
       for (int i = 1; i <= nbPages; i++)
       {
          strClass = pageCourante == i ? "page-item active" : "page-item";
-         string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + "'>" + i + "</a></li>";
+         string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + "&Utilisateur=" + noUtilisateurCourrant + "'>" + i + "</a></li>";
          pager.Text += strMillieu;
       }
 
@@ -119,7 +139,7 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
       strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
       next = next >= nbPages + 1 ? pageCourante : next;
 
-      string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "'>Next</a></li>" +
+      string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "&Utilisateur=" + noUtilisateurCourrant + "'>Next</a></li>" +
                               "</ul>" +
                           "</nav>";
       pager.Text += strFin;
@@ -130,7 +150,6 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    public void affichageDetailleonClick(Object sender, EventArgs e)
    {
       Button btn = (Button)sender;
-      System.Diagnostics.Debug.WriteLine("Affichage Detaille: " + btn.ID);
       String url = "~/Pages/AffichageDetaille.aspx";
       Response.Redirect(url, true);
    }
@@ -138,7 +157,6 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    public void modifieronClick(Object sender, EventArgs e)
    {
       Button btn = (Button)sender;
-      System.Diagnostics.Debug.WriteLine("Modifier: " + btn.ID);
       String url = "~/Pages/ModifierFilm.aspx";
       Response.Redirect(url, true);
    }
@@ -147,6 +165,41 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    {
       SQL.Connection();
       lstFilms = SQL.FindAllUserFilm(noUtilisateurCourrant);
+   }
+
+   protected void chargeListeUtilisateurs()
+   {
+      SQL.Connection();
+      List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllUtilisateur();
+      ddlUtilisateur.Items.Add(new ListItem("-- Aucun --", "0"));
+      foreach (EntiteUtilisateur utilisateur in lstUtilisateurs)
+      {
+         ddlUtilisateur.Items.Add(new ListItem(utilisateur.NomUtilisateur, utilisateur.NoUtilisateur.ToString()));
+      }
+
+      if (noUtilisateurCourrant != 0)
+      {
+         ddlUtilisateur.SelectedValue = noUtilisateurCourrant.ToString();
+         populerListeFilms();
+
+         SQL.Connection();
+         EntiteUtilisateur utilisateur = SQL.FindUtilisateurById(noUtilisateurCourrant);
+
+         lblNomUtilisateur.Text = "Vous visualisez les DVDs de " + utilisateur.NomUtilisateur;
+      }
+      else
+      {
+         lblNomUtilisateur.Text = "Vous devez d'abord slectionner un utilisateur ! (✿◠‿◠)";
+      }
+   }
+
+   public void onDdlUtilisateurChanged(Object sender, EventArgs e)
+   {
+      string strNoSelected = ddlUtilisateur.SelectedValue;
+      noUtilisateurCourrant = int.Parse(strNoSelected);
+
+      String url = "~/Pages/DVDsAutreUtilisateur.aspx?Utilisateur=" + noUtilisateurCourrant;
+      Response.Redirect(url, true);
    }
 
 }
