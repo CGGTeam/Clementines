@@ -54,13 +54,7 @@ static public class SQL
                 (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
                 (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
                 (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
-                (drDDL[16].ToString() == "") ? "" : (string)drDDL[16])
-            {
-                lstActeurs = getLstActeur(id),
-                lstLangues = getLstLangue(id),
-                lstSousTitres = getLstSousTitres(id),
-                lstSupplements = getLstSupplements(id)
-            };
+                (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]);
             lstFilms.Add(film);
         }
         drDDL.Close();
