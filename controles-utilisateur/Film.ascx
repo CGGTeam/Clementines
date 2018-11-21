@@ -17,7 +17,12 @@
                     chargeListeRequete((Personne_Ddl_Ajout) c);
             }
             chargeListeSupplements();
-
+            chargeListeSousTitres();
+            chargeListeLangues();
+            chargeListeNbCD();
+            chargeListeAnneeSortie();
+            chargeListeFormats();
+            chargeListeCategories();
         }
     }
 
@@ -28,7 +33,7 @@
         if(control == choixProducteur)
         {
             List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
-            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
             foreach (EntiteProducteur producteur in lstProducteurs)
             {
                 control.ControleDDL.Items.Add(new ListItem(producteur.Nom, producteur.NoProducteur.ToString()));
@@ -36,7 +41,7 @@
         }else if (control == choixRealisateur)
         {
             List<EntiteRealisateur> lstRealisateurs  = SQL.FindAllRealisateur();
-            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
             foreach (EntiteRealisateur realisa in lstRealisateurs)
             {
                 control.ControleDDL.Items.Add(new ListItem(realisa.Nom, realisa.NoRealisateur.ToString()));
@@ -44,7 +49,7 @@
         }else if (control == choixActeur1)
         {
             List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
-            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
             foreach (EntiteActeur acteur in lstActeurs)
             {
                 control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
@@ -52,7 +57,7 @@
         }else if (control == choixActeur2)
         {
             List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
-            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
             foreach (EntiteActeur acteur in lstActeurs)
             {
                 control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
@@ -60,7 +65,7 @@
         }else if (control == choixActeur3)
         {
             List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
-            control.ControleDDL.Items.Add(new ListItem("...", "0"));
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
             foreach (EntiteActeur acteur in lstActeurs)
             {
                 control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
@@ -74,12 +79,61 @@
     {
         SQL.Connection();
         List<EntiteSupplements> lstSupplements = SQL.FindAllSupplement();
-        lbSupplements.Items.Add(new ListItem("-- (Aucun) --", "0"));
+        lbSupplements.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteSupplements supplement in lstSupplements)
         {
             lbSupplements.Items.Add(new ListItem(supplement.Description, supplement.NoSupplement.ToString()));
         }
         lbSupplements.Rows = lbSupplements.Items.Count;
+        lbSupplements.Items.FindByValue("0").Selected = true;
+    }
+
+     protected void chargeListeSousTitres()
+    {
+        SQL.Connection();
+        List<EntiteSousTitres> lstSousTitres = SQL.FindAllSousTitre();
+        lbSousTitre.Items.Add(new ListItem("-- Aucun --", "0"));
+        foreach (EntiteSousTitres sousTitres in lstSousTitres)
+        {
+            lbSousTitre.Items.Add(new ListItem(sousTitres.LangueSousTitre, sousTitres.NoSousTitre.ToString()));
+        }
+        lbSousTitre.Rows = lbSousTitre.Items.Count;
+        lbSousTitre.Items.FindByValue("0").Selected = true;
+    }
+
+     protected void chargeListeLangues()
+    {
+        SQL.Connection();
+        List<EntiteLangue> lstLangues = SQL.FindAllLangue();
+        lbLangue.Items.Add(new ListItem("-- Aucune --", "0"));
+        foreach (EntiteLangue langue in lstLangues)
+        {
+            lbLangue.Items.Add(new ListItem(langue.Langue, langue.NoLangue.ToString()));
+        }
+        lbLangue.Rows = lbLangue.Items.Count;
+        lbLangue.Items.FindByValue("0").Selected = true;
+    }
+
+     protected void chargeListeFormats()
+    {
+        SQL.Connection();
+        List<EntiteFormat> lstFormat = SQL.FindAllFormat();
+        ddlFormat.Items.Add(new ListItem("-- Aucun --", "0"));
+        foreach (EntiteFormat format in lstFormat)
+        {
+            ddlFormat.Items.Add(new ListItem(format.Description, format.NoFormat.ToString()));
+        }
+    }
+
+      protected void chargeListeCategories()
+    {
+        SQL.Connection();
+        List<EntiteCategorie> lstCategorie = SQL.FindAllCategorie();
+        ddlCategorie.Items.Add(new ListItem("-- Aucune --", "0"));
+        foreach (EntiteCategorie categorie in lstCategorie)
+        {
+            ddlCategorie.Items.Add(new ListItem(categorie.Description, categorie.NoCategorie.ToString()));
+        }
     }
 
     protected void Retour(object sender, EventArgs e)
@@ -95,7 +149,7 @@
     {
         int annee = DateTime.Now.Year;
 
-        ddlAnnee.Items.Add("...");
+        ddlAnnee.Items.Add(new ListItem("-- Aucune --", "0"));
         for (int i = 1900; i <= annee; i++)
         {
             ddlAnnee.Items.Add(i.ToString());
@@ -104,7 +158,7 @@
     }
     protected void chargeListeNbCD()
     {
-        ddlNbDisques.Items.Add("...");
+        ddlNbDisques.Items.Add(new ListItem("-- Aucun --", "0"));
         for (int i = 1; i <= 10; i++)
         {
             ddlNbDisques.Items.Add(i.ToString());
@@ -162,16 +216,40 @@
         <br />
 
         <!-- Langue Requete -->
-        <asp:Label runat="server">Langue :</asp:Label>
-        <asp:DropDownList ID="ddlLangue" runat="server"
-            CssClass="form-control"/>
-        <br />
-        <!-- Sous-titre Requete-->
-        <asp:Label runat="server">Sous-titres :</asp:Label>
-        <asp:DropDownList ID="ddlSousTitre" runat="server"
-           CssClass="form-control"/>
-        <br />
+        <asp:Label runat="server">Langues :</asp:Label>
+          <div class="panel panel-default">
+             <button class="form-control" type="button" 
+                 data-toggle="collapse" data-target="#collapseLangue" 
+                 aria-expanded="false" aria-controls="collapseLangue" 
+                 style="text-align:left">
+                Afficher les langues disponnibles
+              </button>
+            <div id="collapseLangue" class="panel-collapse collapse out">
+             
+               <div>
+                <asp:ListBox ID="lbLangue" runat="server" SelectionMode="Multiple"
+                     CssClass="form-control" Width="100%" Height="100%" style="overflow:hidden; background-color:rgb(239, 239, 239)"/>
+               </div>
+            </div>
+          </div>
 
+        <!-- Sous-titre Requete-->
+         <asp:Label runat="server">Sous-Titres :</asp:Label>
+          <div class="panel panel-default">
+             <button class="form-control" type="button" 
+                 data-toggle="collapse" data-target="#collapseST" 
+                 aria-expanded="false" aria-controls="collapseST" 
+                 style="text-align:left">
+                Afficher les sous-titres disponnibles
+              </button>
+            <div id="collapseST" class="panel-collapse collapse out">
+             
+               <div>
+                <asp:ListBox ID="lbSousTitre" runat="server" SelectionMode="Multiple"
+                     CssClass="form-control" Width="100%" Height="100%" style="overflow:hidden; background-color:rgb(239, 239, 239)"/>
+               </div>
+            </div>
+          </div>
         
         <!-- Image incertain-->
         <asp:Label runat="server">Image de la pochette :</asp:Label>
@@ -191,20 +269,21 @@
             placeholder="Titre originale"/>
         <br />
 
+        <!-- Suppléments Requete -->
         <asp:Label runat="server">Suppléments :</asp:Label>
           <div class="panel panel-default">
              <button class="form-control" type="button" 
                  data-toggle="collapse" data-target="#collapseExample" 
                  aria-expanded="false" aria-controls="collapseExample" 
                  style="text-align:left">
-                Afficher
+                Afficher les suppléments disponnibles
               </button>
             <div id="collapseExample" class="panel-collapse collapse out">
              
-               
-                <asp:ListBox ID="lbSupplements" runat="server"
-                     CssClass="form-control" Width="100%" Height="100%" style="overflow:hidden"/>
-              
+               <div>
+                <asp:ListBox ID="lbSupplements" runat="server" SelectionMode="Multiple"
+                     CssClass="form-control" Width="100%" Height="100%" style="overflow:hidden; background-color:rgb(239, 239, 239)"/>
+               </div>
             </div>
           </div>
 
@@ -251,12 +330,24 @@
         <br />
 
         <!-- Resume film -->
-        <asp:Label runat="server">Résumé du film :</asp:Label>
-        <asp:TextBox ID="tbResume" runat="server"
-            TextMode="MultiLine"
-             style="max-width:100%; min-width:100%; min-height:180px;max-height:180px;"
-           CssClass="form-control"/>
-        <br />
+        <asp:Label runat="server">Résumé :</asp:Label>
+          <div class="panel panel-default">
+             <button class="form-control" type="button" 
+                 data-toggle="collapse" data-target="#collapseResume" 
+                 aria-expanded="false" aria-controls="collapseResume" 
+                 style="text-align:left">
+                Afficher la boîte de saisie du résumé
+              </button>
+            <div id="collapseResume" class="panel-collapse collapse out">             
+               <div>
+                 <asp:TextBox ID="tbResume" runat="server"
+                    TextMode="MultiLine"
+                     style="max-width:100%; min-width:100%; min-height:180px;max-height:180px;"
+                     CssClass="form-control"/>
+               </div>
+            </div>
+          </div>
+
     </div>
 </div>
 <!-- TODO : ajouter d'autres champs, modifier textbox pour des dropdown list  -->
