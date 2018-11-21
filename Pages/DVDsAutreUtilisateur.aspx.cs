@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class Pages_DVDEnMain : System.Web.UI.Page
+public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 {
    List<EntiteFilm> lstFilms = new List<EntiteFilm>();
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
@@ -18,7 +16,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    {
       // initialiser label pour message erreur et autres
       Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
-      
+
       populerListeFilms();
 
       // Vérifier la page courante
@@ -41,7 +39,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
          for (int i = ((pageCourante - 1) * nbVignettesParPage); i < (pageCourante * nbVignettesParPage) && i < lstFilms.Count; i++)
          {
-            if (indexVignette%4 == 0)
+            if (indexVignette % 4 == 0)
             {
                numRow++;
                row = row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
@@ -65,12 +63,12 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
             TableRow tr3 = librairie.trDYN(table);
             TableCell td3 = librairie.tdDYN(tr3, "td_supprimer_" + lstFilms[i].NoFilm, "");
             Button btn3 = librairie.btnDYN(td3, "supprimer_" + lstFilms[i].NoFilm, "btn btn-default boutons-options-film", "Supprimer");
-            
+
             Image img = librairie.imgDYN(panelBody, "img_" + lstFilms[i].NoFilm, lstFilms[i].ImagePochette, "image-vignette");
 
             Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstFilms[i].NoFilm, "panel-footer");
             Label lblTitre = librairie.lblDYN(panelFooter, "titre-film_" + lstFilms[i].NoFilm, lstFilms[i].TitreFrancais, "titre-film");
-            
+
             indexVignette++;
          }
 
@@ -79,7 +77,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
          afficherPager(phChangerPage);
       }
 
-      
+
 
    }
 
@@ -150,7 +148,5 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
       SQL.Connection();
       lstFilms = SQL.FindAllUserFilm(noUtilisateurCourrant);
    }
-
-
 
 }
