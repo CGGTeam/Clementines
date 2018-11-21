@@ -35,17 +35,27 @@
         int.TryParse(id, out no);
         try
         {
+            string na = "N/A";
             SQL.Connection();
             film = SQL.FindFilmById(no);
-            PHTitreOriginal.Text = film.TitreOriginal!=string.Empty ? film.TitreOriginal : "N/A";
-            PHTitreFrancais.Text = film.TitreFrancais!=string.Empty ? film.TitreFrancais : "N/A";
-            PHNomRealisateur.Text = film.NomRealisateur!=string.Empty ? film.NomRealisateur : "N/A";
-            PHNomProducteur.Text =film.NomProducteur!=string.Empty ? film.NomProducteur : "N/A";
-            PHAnneeSortie.Text =film.AnneeSortie.ToString()!=string.Empty ? film.AnneeSortie.ToString() : "N/A";
-            PHNbDisques.Text =film.NbDisques.ToString()!=string.Empty ? film.NbDisques.ToString() : "N/A";
-            PHCategorie.Text =film.Categorie!=string.Empty ? film.Categorie : "N/A";
-            PHDurée.Text = film.Duree.ToString()!=string.Empty ? film.Duree + " min" : "N/A";
-            PHProprietaire.Text = film.NomUtilisateur!=string.Empty ? film.NomUtilisateur : "N/A";
+
+            title.InnerText += film.TitreFrancais;
+            PHVignette.ImageUrl = film.ImagePochette!=String.Empty ? film.ImagePochette : "../Static/images/pas-de-vignette.png";
+
+            PHTitreOriginal.Text = film.TitreOriginal!=string.Empty ? film.TitreOriginal : na;
+            PHTitreFrancais.Text = film.TitreFrancais!=string.Empty ? film.TitreFrancais : na;
+            PHNomRealisateur.Text = film.NomRealisateur!=string.Empty ? film.NomRealisateur : na;
+            PHNomProducteur.Text =film.NomProducteur!=string.Empty ? film.NomProducteur : na;
+            PHAnneeSortie.Text =film.AnneeSortie!=-1 ? film.AnneeSortie.ToString() : na;
+            PHNbDisques.Text =film.NbDisques!=-1 ? film.NbDisques.ToString() : na;
+            PHCategorie.Text =film.Categorie!=string.Empty ? film.Categorie : na;
+            PHDurée.Text = film.Duree!=-1 ? film.Duree + " min" : na;
+            PHProprietaire.Text = film.NomUtilisateur!=string.Empty ? film.NomUtilisateur : na;
+            PHFormat.Text = film.Format!=string.Empty ? film.Format : na;
+
+            PHMiseAJourDate.Text = film.DateMAJ.ToString("yyyy-MM-dd") !=string.Empty ? film.DateMAJ.ToString("yyyy-MM-dd") : na;
+            PHMiseAJourDatePar.Text = film.NomUtilisateur!=string.Empty ? film.NomUtilisateur : na;
+
             
         }
         catch(Exception e)
@@ -54,12 +64,13 @@
         }
     }
 </script>
+    <h1 runat="server" ID="title">Affichage détaillé du film </h1>
+    <hr />
 
  <div class="panel panel-default">
         <div class="panel-body">
-            <div class="row">
         <div class="col-sm-3">
-            <img src="../Static/images/logo.png" class="vignette"/>
+            <asp:Image ID="PHVignette" runat="server" class="vignette"/>
         </div>
 
         <div class="col-sm-8">
@@ -143,10 +154,34 @@
                         <asp:Label ID="PHProprietaire" runat="server" CssClass="label-non-gras"></asp:Label>       
                     </div>
                 </div>
-         </div>
-    </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <asp:Label ID="Label10" runat="server" CssClass="label-gras">Format</asp:Label>       
+                    </div>
+                    <div class="col-sm-7">
+                        <asp:Label ID="PHFormat" runat="server" CssClass="label-non-gras"></asp:Label>       
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                        <div class="col-sm-5">
+                            <asp:Label ID="Label11" runat="server" CssClass="label-gras">Dernière mise à jour</asp:Label>       
+                        </div>
+                        <div class="col-sm-7">
+                            <asp:Label ID="PHMiseAJourDate" runat="server" CssClass="label-non-gras"></asp:Label>       
+                        </div>
+                    </div>
+                 <div class="row">
+                    <div class="col-sm-5">
+                        <asp:Label ID="Label14" runat="server" CssClass="label-gras">Par</asp:Label>       
+                    </div>
+                    <div class="col-sm-7">
+                        <asp:Label ID="PHMiseAJourDatePar" runat="server" CssClass="label-non-gras"></asp:Label>       
+                    </div>
+                </div>
+             </div>
+        </div>
 </div>
-<!-- TODO : ajouter d'autres champs, modifier textbox pour des dropdown list  -->
-<div class="row">
-        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Retour" onclick="Retour"/>
+    <div class="row">
+    <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Retour" onclick="Retour"/>
 </div>
