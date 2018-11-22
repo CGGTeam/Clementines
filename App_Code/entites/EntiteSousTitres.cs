@@ -15,4 +15,9 @@ public class EntiteSousTitres
         NoSousTitre = noSousTitre;
         LangueSousTitre = langueSousTitre;
     }
+
+    public override string ToString()
+    {
+        return LangueSousTitre;
+    }
 }

@@ -9,8 +9,6 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <h1>Affichage détaillé du film [Mettre titre du film]</h1>
-    <hr />
 
    <AffichageDetaille:Film runat="server"></AffichageDetaille:Film>
 

@@ -26,6 +26,13 @@ public class EntiteFilm
    public string NomProducteur { get; set; }
    public string LienInternet { get; set; }
 
+   public List<EntiteActeur> lstActeurs { get; set; }
+   public List<EntiteLangue> lstLangues { get; set; }
+   public List<EntiteSousTitres> lstSousTitres { get; set; }
+   public List<EntiteSupplements> lstSupplements { get; set; }
+
+
+
    public EntiteFilm(int noFilm, int anneeSortie, string categorie, string format, DateTime dateMAJ, string nomUtilisateur, string resume, int duree, bool filmOriginal, string imagePochette, int nbDisques, string titreFrancais, string titreOriginal, bool versionEtendue, string nomRealisateur, string nomProducteur, string lienInternet)
    {
       NoFilm = noFilm;

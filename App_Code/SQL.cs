@@ -37,28 +37,129 @@ static public class SQL
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
-            lstFilms.Add(new EntiteFilm((int)drDDL[0],
-               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
-               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
-               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
-               (DateTime)drDDL[4],
-               (string)drDDL[5],
-               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
-               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
-               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
-               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
-               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
-               (string)drDDL[11],
-               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
-               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
-               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
-               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
-               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
+            int id = (int)drDDL[0];
+            EntiteFilm film = new EntiteFilm(id,
+                (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+                (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+                (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+                (DateTime)drDDL[4],
+                (string)drDDL[5],
+                (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+                (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+                (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+                (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+                (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+                (string)drDDL[11],
+                (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+                (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+                (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+                (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+                (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]);
+            lstFilms.Add(film);
         }
         drDDL.Close();
         return lstFilms;
     }
+    /// <summary>
+    /// Creation d'une 2e connexion pour éviter l'erreur "An unhandled exception of type 'System.InvalidOperationException' occurred in System.Data.dll"
+    /// </summary>
+    /// <returns>la connection</returns>
+    static private SqlConnection Connection2()
+    {
+        SqlConnection dbConn2 = new SqlConnection();
+        dbConn2.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
+        dbConn2.Open();
 
+        return dbConn2;
+    }
+    static private List<EntiteActeur> getLstActeur(int id)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        List<EntiteActeur> lstActeurs = new List<EntiteActeur>();
+        String strRequete = "select Acteurs.NoActeur , Acteurs.Nom , Acteurs.Sexe from FilmsActeurs " +
+            "LEFT JOIN Acteurs ON FilmsActeurs.NoActeur = Acteurs.NoActeur  " +
+            "where NoFilm = @id";
+
+        SqlParameter param = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL2 = new SqlCommand(strRequete, dbConn2);
+        cmdDDL2.Parameters.Add(param);
+        SqlDataReader drDDL2 = cmdDDL2.ExecuteReader();
+        while (drDDL2.Read())
+        {
+            lstActeurs.Add(new EntiteActeur((int)drDDL2[0], (string)drDDL2[1], (string)drDDL2[2]));
+        }
+
+        dbConn2.Close();
+        return lstActeurs;
+    }
+    static private List<EntiteLangue> getLstLangue(int id)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        List<EntiteLangue> lstLangues = new List<EntiteLangue>();
+        String strRequete = "select Langues.NoLangue , Langues.Langue from FilmsLangues " +
+            "LEFT JOIN Langues ON FilmsLangues.NoLangue = Langues.NoLangue  " +
+            "where NoFilm = @id";
+
+        SqlParameter param = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL2 = new SqlCommand(strRequete, dbConn2);
+        cmdDDL2.Parameters.Add(param);
+        SqlDataReader drDDL2 = cmdDDL2.ExecuteReader();
+        while (drDDL2.Read())
+        {
+            lstLangues.Add(new EntiteLangue((int)drDDL2[0], (string)drDDL2[1]));
+        }
+
+        dbConn2.Close();
+        return lstLangues;
+    }
+    static private List<EntiteSousTitres> getLstSousTitres(int id)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        List<EntiteSousTitres> lstSousTitres = new List<EntiteSousTitres>();
+        String strRequete = "select SousTitres.NoSousTitre , SousTitres.LangueSousTitre from FilmsSousTitres " +
+            "LEFT JOIN SousTitres ON SousTitres.NoSousTitre = FilmsSousTitres.NoSousTitre  " +
+            "where NoFilm = @id";
+
+        SqlParameter param = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL2 = new SqlCommand(strRequete, dbConn2);
+        cmdDDL2.Parameters.Add(param);
+        SqlDataReader drDDL2 = cmdDDL2.ExecuteReader();
+        while (drDDL2.Read())
+        {
+            lstSousTitres.Add(new EntiteSousTitres((int)drDDL2[0], (string)drDDL2[1]));
+        }
+
+        dbConn2.Close();
+        return lstSousTitres;
+    }
+    static private List<EntiteSupplements> getLstSupplements(int id)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        List<EntiteSupplements> lstSupplements = new List<EntiteSupplements>();
+        String strRequete = "select Supplements.NoSupplement , Supplements.Description from FilmsSupplements " +
+            "LEFT JOIN Supplements ON Supplements.NoSupplement = FilmsSupplements.NoSupplement  " +
+            "where NoFilm = @id";
+
+        SqlParameter param = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL2 = new SqlCommand(strRequete, dbConn2);
+        cmdDDL2.Parameters.Add(param);
+        SqlDataReader drDDL2 = cmdDDL2.ExecuteReader();
+        while (drDDL2.Read())
+        {
+            lstSupplements.Add(new EntiteSupplements((int)drDDL2[0], (string)drDDL2[1]));
+        }
+
+        dbConn2.Close();
+        return lstSupplements;
+    }
    public static List<EntiteFilm> FindAllUserFilm(int id)
    {
       List<EntiteFilm> lstFilms = new List<EntiteFilm>();
@@ -309,23 +410,30 @@ static public class SQL
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
-            film = new EntiteFilm((int)drDDL[0],
-               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
-               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
-               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
-               (DateTime)drDDL[4],
-               (string)drDDL[5],
-               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
-               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
-               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
-               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
-               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
-               (string)drDDL[11],
-               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
-               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
-               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
-               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
-               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]);
+            int idFilm = (int)drDDL[0];
+            film = new EntiteFilm(idFilm,               
+                (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+                (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+                (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+                (DateTime)drDDL[4],
+                (string)drDDL[5],
+                (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+                (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+                (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+                (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+                (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+                (string)drDDL[11],
+                (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+                (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+                (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+                (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+                (drDDL[16].ToString() == "") ? "" : (string)drDDL[16])
+                {
+                lstActeurs = getLstActeur(idFilm),
+                lstLangues = getLstLangue(idFilm),
+                lstSousTitres = getLstSousTitres(idFilm),
+                lstSupplements = getLstSupplements(idFilm)
+            };
         }
 
         drDDL.Close();
