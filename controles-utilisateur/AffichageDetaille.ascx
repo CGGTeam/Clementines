@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" %>
 <script runat="server">
     static string prevPage = String.Empty;
-    private EntiteFilm film;
+    private EntiteExemplaire film;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -39,34 +39,34 @@
             string sep = ", ";
 
             SQL.Connection();
-            film = SQL.FindFilmById(no);
+            film = SQL.FindExemplaireById(no);
 
-            PHVignette.ImageUrl = film.ImagePochette!=String.Empty ? film.ImagePochette : "../Static/images/pas-de-vignette.png";
+            PHVignette.ImageUrl = film.film.ImagePochette!=String.Empty ? film.film.ImagePochette : "../Static/images/pas-de-vignette.png";
 
-            PHTitreOriginal.Text = film.TitreOriginal!=string.Empty ? film.TitreOriginal : na;
-            PHTitreFrancais.Text = film.TitreFrancais!=string.Empty ? film.TitreFrancais : na;
-            PHNomRealisateur.Text = film.NomRealisateur!=string.Empty ? film.NomRealisateur : na;
-            PHNomProducteur.Text =film.NomProducteur!=string.Empty ? film.NomProducteur : na;
-            PHActeurs.Text = film.lstActeurs.Count() != 0? String.Join(sep, film.lstActeurs) : na;
+            PHTitreOriginal.Text = film.film.TitreOriginal!=string.Empty ? film.film.TitreOriginal : na;
+            PHTitreFrancais.Text = film.film.TitreFrancais!=string.Empty ? film.film.TitreFrancais : na;
+            PHNomRealisateur.Text = film.film.NomRealisateur!=string.Empty ? film.film.NomRealisateur : na;
+            PHNomProducteur.Text =film.film.NomProducteur!=string.Empty ? film.film.NomProducteur : na;
+            PHActeurs.Text = film.film.lstActeurs.Count() != 0? String.Join(sep, film.film.lstActeurs) : na;
 
-            PHAnneeSortie.Text =film.AnneeSortie!=-1 ? film.AnneeSortie.ToString() : na;
-            PHNbDisques.Text =film.NbDisques!=-1 ? film.NbDisques.ToString() : na;
-            PHCategorie.Text =film.Categorie!=string.Empty ? film.Categorie : na;
-            PHDurée.Text = film.Duree!=-1 ? film.Duree + " min" : na;
-            PHFormat.Text = film.Format!=string.Empty ? film.Format : na;
+            PHAnneeSortie.Text =film.film.AnneeSortie!=-1 ? film.film.AnneeSortie.ToString() : na;
+            PHNbDisques.Text =film.film.NbDisques!=-1 ? film.film.NbDisques.ToString() : na;
+            PHCategorie.Text =film.film.Categorie!=string.Empty ? film.film.Categorie : na;
+            PHDurée.Text = film.film.Duree!=-1 ? film.film.Duree + " min" : na;
+            PHFormat.Text = film.film.Format!=string.Empty ? film.film.Format : na;
 
-            PHLangue.Text = film.lstLangues.Count() != 0? String.Join(sep, film.lstLangues) : na;
-            PHSousTitre.Text = film.lstSousTitres.Count() != 0? String.Join(sep, film.lstSousTitres) : na;
+            PHLangue.Text = film.film.lstLangues.Count() != 0? String.Join(sep, film.film.lstLangues) : na;
+            PHSousTitre.Text = film.film.lstSousTitres.Count() != 0? String.Join(sep, film.film.lstSousTitres) : na;
 
-            PHMiseAJourDate.Text = film.DateMAJ.ToString("yyyy-MM-dd") !=string.Empty ? film.DateMAJ.ToString("yyyy-MM-dd") : na;
-            PHMiseAJourDatePar.Text = film.NomUtilisateur!=string.Empty ? film.NomUtilisateur : na;
-            PHProprietaire.Text = film.NomUtilisateur!=string.Empty ? film.NomUtilisateur : na;
+            PHMiseAJourDate.Text = film.film.DateMAJ.ToString("yyyy-MM-dd") !=string.Empty ? film.film.DateMAJ.ToString("yyyy-MM-dd") : na;
+            PHMiseAJourDatePar.Text = film.film.NomUtilisateur!=string.Empty ? film.film.NomUtilisateur : na;
+            PHProprietaire.Text = film.proprietaire.NomUtilisateur!=string.Empty ? film.proprietaire.NomUtilisateur : na;
 
-            PHSupplement.Text = film.lstSupplements.Count() != 0? String.Join(sep, film.lstSupplements) : na;
-            PHOriginale.Text = film.FilmOriginal ? "Oui" : "Non";
-            PHEtendue.Text = film.VersionEtendue ? "Oui" : "Non";
+            PHSupplement.Text = film.film.lstSupplements.Count() != 0? String.Join(sep, film.film.lstSupplements) : na;
+            PHOriginale.Text = film.film.FilmOriginal ? "Oui" : "Non";
+            PHEtendue.Text = film.film.VersionEtendue ? "Oui" : "Non";
 
-            PHResume.Text = film.Resume!=string.Empty ? film.Resume : na;
+            PHResume.Text = film.film.Resume!=string.Empty ? film.film.Resume : na;
 
 
         }
@@ -76,7 +76,7 @@
         }
     }
 </script>
-    <h1>Affichage détaillé du film <span style="color:darkred;"><%= film.TitreFrancais %></span></h1> 
+    <h1>Affichage détaillé du film <span style="color:darkred;"></span></h1> 
         <asp:LinkButton runat="server" class="btn btn-danger" Text="Retour" onclick="Retour">
             <span class="glyphicon glyphicon-chevron-left"></span>Retour
         </asp:LinkButton>
@@ -113,7 +113,7 @@
                 </div> 
                 <div class="row">
                     <div class="col-sm-5">
-                        <asp:Label ID="Label2" runat="server" CssClass="label-gras">Nom du producteur</asp:Label>       
+                        <asp:Label ID="Label2" runat="server" CssClass="label-gras">Producteur</asp:Label>       
                     </div>
                     <div class="col-sm-7">
                         <asp:Label ID="PHNomProducteur" runat="server" CssClass="label-non-gras"></asp:Label>       
@@ -121,7 +121,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-5">
-                        <asp:Label ID="Label3" runat="server" CssClass="label-gras">Nom du réalisateur</asp:Label>       
+                        <asp:Label ID="Label3" runat="server" CssClass="label-gras">Réalisateur</asp:Label>       
                     </div>
                     <div class="col-sm-7">
                         <asp:Label ID="PHNomRealisateur" runat="server" CssClass="label-non-gras"></asp:Label>       
@@ -129,7 +129,7 @@
                 </div> 
                 <div class="row">
                     <div class="col-sm-5">
-                        <asp:Label ID="Label13" runat="server" CssClass="label-gras">Nom des principaux acteurs</asp:Label>       
+                        <asp:Label ID="Label13" runat="server" CssClass="label-gras">Acteurs</asp:Label>       
                     </div>
                     <div class="col-sm-7">
                         <asp:Label ID="PHActeurs" runat="server" CssClass="label-non-gras"></asp:Label>       
