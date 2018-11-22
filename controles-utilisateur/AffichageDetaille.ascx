@@ -41,7 +41,6 @@
             SQL.Connection();
             film = SQL.FindFilmById(no);
 
-            title.InnerText += film.TitreFrancais;
             PHVignette.ImageUrl = film.ImagePochette!=String.Empty ? film.ImagePochette : "../Static/images/pas-de-vignette.png";
 
             PHTitreOriginal.Text = film.TitreOriginal!=string.Empty ? film.TitreOriginal : na;
@@ -77,7 +76,10 @@
         }
     }
 </script>
-    <h1 runat="server" ID="title">Affichage détaillé du film </h1> <asp:Button runat="server" class="btn btn-danger" Text="Retour" onclick="Retour"/>
+    <h1 runat="server" ID="title">Affichage détaillé du film "<%= film.TitreFrancais %>"</h1> 
+        <asp:LinkButton runat="server" class="btn btn-danger" Text="Retour" onclick="Retour">
+            <span class="glyphicon glyphicon-chevron-left"></span>Retour
+        </asp:LinkButton>
     <hr />
 
  <div class="panel panel-default">
