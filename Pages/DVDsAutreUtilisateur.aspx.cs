@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 {
    List<EntiteFilm> lstFilms = new List<EntiteFilm>();
-   private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
+   private int nbVignettesParPage = 20; // {valeur déterminé dans les préférences de l'utilisateur}
    private int noUtilisateurCourrant;
    private int pageCourante;
 
