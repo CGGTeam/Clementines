@@ -12,10 +12,7 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <h1>CLÉMENTINE</h1>
-    <hr />
-
-    
+  
 
     <div class="row">
         <div class="col-sm-6">

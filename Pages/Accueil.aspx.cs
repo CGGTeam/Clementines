@@ -19,27 +19,27 @@ public partial class _Default : System.Web.UI.Page
     private bool filtrePersonne = false;
     private TypeOrderBy orderBy;
 
-    private List<EntiteFilm> lstFilms = new List<EntiteFilm>();
-    private List<EntiteFilm> lstFilmsAfficher = new List<EntiteFilm>();
+    private List<EntiteExemplaire> lstFilms = new List<EntiteExemplaire>();
+    private List<EntiteExemplaire> lstFilmsAfficher = new List<EntiteExemplaire>();
 
     public void FilterList(Label lblMessage)
     {
         lstFilmsAfficher.Clear();
         if (filtreTitre && filtrePersonne)
         {
-            lstFilmsAfficher = lstFilms.Where(film => film.TitreFrancais.ToLower().Contains(filtre.ToLower()) || film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.film.TitreFrancais.ToLower().Contains(filtre.ToLower()) || film.film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtreTitre)
         {
-            lstFilmsAfficher = lstFilms.Where(film => film.TitreFrancais.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.film.TitreFrancais.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else if (filtrePersonne)
         {
-            lstFilmsAfficher = lstFilms.Where(film => film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
+            lstFilmsAfficher = lstFilms.Where(film => film.film.NomUtilisateur.ToLower().Contains(filtre.ToLower())).ToList();
         }
         else
         {
-            lstFilmsAfficher = new List<EntiteFilm>();
+            lstFilmsAfficher = new List<EntiteExemplaire>();
         }
         OrderBy();
         AfficherLesFilms(lblMessage);
@@ -68,7 +68,7 @@ public partial class _Default : System.Web.UI.Page
             try
             {
                 SQL.Connection();
-                lstFilms = SQL.FindAllFilm();
+                lstFilms = SQL.FindAllExemplaires();
             }
             catch (Exception Ex)
             {
@@ -131,16 +131,16 @@ public partial class _Default : System.Web.UI.Page
         switch (orderBy)
         {
             case TypeOrderBy.TitrePersonne:
-                lstFilmsAfficher.OrderBy(film => film.TitreFrancais).ThenBy(s => s.NomUtilisateur);
+                lstFilmsAfficher.OrderBy(film => film.film.TitreFrancais).ThenBy(s => s.proprietaire.NomUtilisateur);
                 break;
             case TypeOrderBy.Personne:
-                lstFilmsAfficher.Sort((x, y) => x.NomUtilisateur.CompareTo(y.NomUtilisateur));
+                lstFilmsAfficher.Sort((x, y) => x.proprietaire.NomUtilisateur.CompareTo(y.proprietaire.NomUtilisateur));
                 break;
             case TypeOrderBy.Titre:
-                lstFilmsAfficher.Sort((x, y) => x.TitreFrancais.CompareTo(y.TitreFrancais));
+                lstFilmsAfficher.Sort((x, y) => x.film.TitreFrancais.CompareTo(y.film.TitreFrancais));
                 break;
             default:
-                lstFilmsAfficher.OrderBy(film => film.TitreFrancais).ThenBy(s => s.NomUtilisateur);
+                lstFilmsAfficher.OrderBy(film => film.film.TitreFrancais).ThenBy(s => s.proprietaire.NomUtilisateur);
                 break;
         }
     }
@@ -221,59 +221,59 @@ public partial class _Default : System.Web.UI.Page
     }
     private void AfficherFilm(int i, Control row)
     {
-        Panel col = librairie.divDYN(row, "col_" + lstFilmsAfficher[i].NoFilm, "col-sm-3");
-        Panel panel = librairie.divDYN(col, "panel_" + lstFilmsAfficher[i].NoFilm, "panel panel-default");
+        Panel col = librairie.divDYN(row, "col_" + lstFilmsAfficher[i].film.NoFilm, "col-sm-3");
+        Panel panel = librairie.divDYN(col, "panel_" + lstFilmsAfficher[i].film.NoFilm, "panel panel-default");
 
-        Panel panelHeader = librairie.divDYN(panel, "panel-heading" + lstFilmsAfficher[i].NoFilm, "panel-heading");
-        Label lblTitre = librairie.lblDYN(panelHeader, "titre-film" + lstFilmsAfficher[i].NoFilm, lstFilmsAfficher[i].TitreFrancais, "titre-film");
+        Panel panelHeader = librairie.divDYN(panel, "panel-heading" + lstFilmsAfficher[i].film.NoFilm, "panel-heading");
+        Label lblTitre = librairie.lblDYN(panelHeader, "titre-film" + lstFilmsAfficher[i].film.NoFilm, lstFilmsAfficher[i].film.TitreFrancais, "titre-film");
 
-        Panel panelBody = librairie.divDYN(panel, "panel-body_" + lstFilmsAfficher[i].NoFilm, "panel-body vignette");
-        Panel panelCache = librairie.divDYN(panelBody, "panel-cache_" + lstFilmsAfficher[i].NoFilm, "boutons-caches");
+        Panel panelBody = librairie.divDYN(panel, "panel-body_" + lstFilmsAfficher[i].film.NoFilm, "panel-body vignette");
+        Panel panelCache = librairie.divDYN(panelBody, "panel-cache_" + lstFilmsAfficher[i].film.NoFilm, "boutons-caches");
 
-        if (HttpContext.Current.User.Identity.Name == lstFilmsAfficher[i].NomUtilisateur) afficherOptionPropreFilm(i, panelCache);
+        if (HttpContext.Current.User.Identity.Name == lstFilmsAfficher[i].proprietaire.NomUtilisateur) afficherOptionPropreFilm(i, panelCache);
         else afficherOptionsAutreFilm(i, panelCache);
 
-        System.Web.UI.WebControls.Image img = librairie.imgDYN(panelBody, "img_" + lstFilmsAfficher[i].NoFilm, lstFilmsAfficher[i].ImagePochette, "image-vignette");
+        System.Web.UI.WebControls.Image img = librairie.imgDYN(panelBody, "img_" + lstFilmsAfficher[i].film.NoFilm, lstFilmsAfficher[i].film.ImagePochette, "image-vignette");
 
-        Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstFilmsAfficher[i].NoFilm, "panel-footer");
-        Label lblProprietaire = librairie.lblDYN(panelFooter, "titre-proprietaire_" + lstFilmsAfficher[i].NoFilm, "Propriétaire : "+ lstFilmsAfficher[i].NomUtilisateur, "titre-film");
+        Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstFilmsAfficher[i].film.NoFilm, "panel-footer");
+        Label lblProprietaire = librairie.lblDYN(panelFooter, "titre-proprietaire_" + lstFilmsAfficher[i].film.NoFilm, "Propriétaire : "+ lstFilmsAfficher[i].film.NomUtilisateur, "titre-film");
     }
     private void afficherOptionPropreFilm(int i, Control panelCache)
     {
-        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].NoFilm, "tableau-boutons");
+        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].film.NoFilm, "tableau-boutons");
 
         TableRow tr1 = librairie.trDYN(table);
-        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "");
-        Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
+        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn1 = librairie.btnDYN(td1, "affichage_detaillee_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
         btn1.Click += new EventHandler(AfficherDetails);
 
         TableRow tr2 = librairie.trDYN(table);
-        TableCell td2 = librairie.tdDYN(tr2, "td_modifier_" + lstFilmsAfficher[i].NoFilm, "");
-        Button btn2 = librairie.btnDYN(td2, "modifier_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Modifier");
+        TableCell td2 = librairie.tdDYN(tr2, "td_modifier_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn2 = librairie.btnDYN(td2, "modifier_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Modifier");
         btn2.Click += new EventHandler(modifieronClick);
 
         TableRow tr3 = librairie.trDYN(table);
-        TableCell td3 = librairie.tdDYN(tr3, "td_supprimer_" + lstFilmsAfficher[i].NoFilm, "");
-        Button btn3 = librairie.btnDYN(td3, "supprimer_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Supprimer");
+        TableCell td3 = librairie.tdDYN(tr3, "td_supprimer_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn3 = librairie.btnDYN(td3, "supprimer_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Supprimer");
     }
     private void afficherOptionsAutreFilm(int i, Panel panelCache)
     {
         //panelCache.BackColor = Color.Orange;
-        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].NoFilm, "tableau-boutons");
+        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].film.NoFilm, "tableau-boutons");
 
         TableRow tr1 = librairie.trDYN(table);
-        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].NoFilm, "");
-        Button btn1 = librairie.btnDYN(td1, "affichage_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
+        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn1 = librairie.btnDYN(td1, "affichage_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
         btn1.Click += new EventHandler(AfficherDetails);
 
         TableRow tr2 = librairie.trDYN(table);
-        TableCell td2 = librairie.tdDYN(tr2, "td_approprier_" + lstFilmsAfficher[i].NoFilm, "");
-        Button btn2 = librairie.btnDYN(td2, "approprier_" + lstFilmsAfficher[i].NoFilm, "btn btn-default boutons-options-film", "S'approprier");
+        TableCell td2 = librairie.tdDYN(tr2, "td_approprier_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn2 = librairie.btnDYN(td2, "approprier_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "S'approprier");
         btn2.Click += new EventHandler(ApproprierDVD);
 
         TableRow tr3 = librairie.trDYN(table);
-        TableCell td3 = librairie.tdDYN(tr3, "td_message_" + lstFilms[i].NoFilm, "");
-        Button btn3 = librairie.btnDYN(td3, "message" + lstFilmsAfficher[i].NoFilm+"_"+lstFilmsAfficher[i].NomUtilisateur, "btn btn-default boutons-options-film", "Envoyer un message");
+        TableCell td3 = librairie.tdDYN(tr3, "td_message_" + lstFilms[i].film.NoFilm, "");
+        Button btn3 = librairie.btnDYN(td3, "message" + lstFilmsAfficher[i].film.NoFilm +"_"+lstFilmsAfficher[i].proprietaire.NomUtilisateur, "btn btn-default boutons-options-film", "Envoyer un message");
         btn3.Click += new EventHandler(EnvoyerUnCourriel);
          
         

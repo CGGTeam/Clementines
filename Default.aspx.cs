@@ -43,16 +43,13 @@ public partial class _Default : System.Web.UI.Page
     }
     private bool AuthenticateUser(string username, string password)
     {
-        // ConfigurationManager class is in System.Configuration namespace
         SqlConnection con = new SqlConnection();
         con.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
-        // SqlConnection is in System.Data.SqlClient namespace
         using (con)
         {
             SqlCommand cmd = new SqlCommand("spAuthenticateUser", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            // SqlParameter is in System.Data namespace
             SqlParameter paramUsername = new SqlParameter("@UserName", username);
             SqlParameter paramPassword = new SqlParameter("@Password", password);
 

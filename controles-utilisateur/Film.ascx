@@ -275,8 +275,9 @@
              <button class="form-control" type="button" 
                  data-toggle="collapse" data-target="#collapseExample" 
                  aria-expanded="false" aria-controls="collapseExample" 
-                 style="text-align:left">
-                Afficher les suppléments disponnibles
+                 style="text-align:left" onclick="changeIcon('supplement');">
+                 <span id="supplement" class="glyphicon glyphicon-chevron-down"></span>
+                Afficher les suppléments disponnibles 
               </button>
             <div id="collapseExample" class="panel-collapse collapse out">
              

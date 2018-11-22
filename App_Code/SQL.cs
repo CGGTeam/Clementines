@@ -260,8 +260,59 @@ static public class SQL
 
       return lstExemplaires;
    }
+    public static List<EntiteExemplaire> FindAllExemplaires()
+    {
+        List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
+        String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
+                          "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
+                          "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra, " +
+                            "Utilisateurs.NoUtilisateur, Utilisateurs.NomUtilisateur, Utilisateurs.Courriel, Utilisateurs.MotPasse, Utilisateurs.TypeUtilisateur " +
+                          "FROM Films " +
+                          "LEFT JOIN Categories ON Films.Categorie = Categories.NoCategorie " +
+                          "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
+                          "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
+                          "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur " +
+                          "inner join Exemplaires on Films.NoFilm = LEFT(CONVERT(NVARCHAR, Exemplaires.NoExemplaire), 6) " +
+                          "inner join Utilisateurs on Exemplaires.NoUtilisateurProprietaire = Utilisateurs.NoUtilisateur";
 
-   public static List<EntiteUtilisateur> FindAllUtilisateur()
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            EntiteExemplaire exemplaire = new EntiteExemplaire
+            {
+                film = new EntiteFilm((int)drDDL[0],
+               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+               (DateTime)drDDL[4],
+               (string)drDDL[5],
+               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+               (string)drDDL[11],
+               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]),
+
+                proprietaire = new EntiteUtilisateur((int)drDDL[17],
+               (string)drDDL[18],
+               (string)drDDL[19],
+               (int)drDDL[20],
+               Convert.ToChar((string)drDDL[21]))
+            };
+            lstExemplaires.Add(exemplaire);
+        }
+        drDDL.Close();
+
+        return lstExemplaires;
+    }
+    public static List<EntiteUtilisateur> FindAllUtilisateur()
    {
       List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
       String strRequete = "select * from Utilisateurs;";
