@@ -17,4 +17,9 @@ public class EntiteActeur
         Nom = nom;
         Sexe = sexe;
     }
+
+    public override string ToString()
+    {
+        return Nom;
+    }
 }

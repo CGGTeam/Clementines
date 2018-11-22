@@ -15,4 +15,9 @@ public class EntiteSupplements
         NoSupplement = noSupplement;
         Description = description;
     }
+
+    public override string ToString()
+    {
+        return Description;
+    }
 }

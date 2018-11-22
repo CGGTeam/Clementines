@@ -410,9 +410,9 @@ static public class SQL
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
-            int idFilm = (int)drDDL[1];
-            film = new EntiteFilm(id,
-                (drDDL[1].ToString() == "") ? -1 : idFilm,
+            int idFilm = (int)drDDL[0];
+            film = new EntiteFilm(idFilm,               
+                (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
                 (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
                 (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
                 (DateTime)drDDL[4],
@@ -428,7 +428,7 @@ static public class SQL
                 (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
                 (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
                 (drDDL[16].ToString() == "") ? "" : (string)drDDL[16])
-            {
+                {
                 lstActeurs = getLstActeur(idFilm),
                 lstLangues = getLstLangue(idFilm),
                 lstSousTitres = getLstSousTitres(idFilm),

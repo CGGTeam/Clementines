@@ -16,4 +16,9 @@ public class EntiteLangue
         NoLangue = noLangue;
         Langue = langue;
     }
+
+    public override string ToString()
+    {
+        return Langue;
+    }
 }
