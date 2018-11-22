@@ -6,12 +6,14 @@
     {
         ddlPersonne.Visible = ddlPersonne.Visible ? false : true;
         tbPersonne.Visible = tbPersonne.Visible ? false : true;
+
+        icon.CssClass = icon.CssClass == "glyphicon glyphicon-option-horizontal" ?"glyphicon glyphicon-option-vertical" : "glyphicon glyphicon-option-horizontal";
     }
 </script>
 <div class="input-group">
   <span class="input-group-addon" id="basic-addon1">   
       <asp:LinkButton runat="server" ID="btnPersonne" OnClick="ChangerVisibilie" CausesValidation="false">
-         <i class="glyphicon glyphicon-option-vertical"></i>
+         <asp:Label runat="server" ID="icon" class="glyphicon glyphicon-option-vertical"></asp:Label>
       </asp:LinkButton>
      
   </span>
