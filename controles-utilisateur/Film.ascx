@@ -221,7 +221,8 @@
              <button class="form-control" type="button" 
                  data-toggle="collapse" data-target="#collapseLangue" 
                  aria-expanded="false" aria-controls="collapseLangue" 
-                 style="text-align:left">
+                 style="text-align:left" onclick="changeIcon('langues')">
+                 <span id="langues" class="glyphicon glyphicon-chevron-down"></span>
                 Afficher les langues disponnibles
               </button>
             <div id="collapseLangue" class="panel-collapse collapse out">
@@ -239,7 +240,8 @@
              <button class="form-control" type="button" 
                  data-toggle="collapse" data-target="#collapseST" 
                  aria-expanded="false" aria-controls="collapseST" 
-                 style="text-align:left">
+                 style="text-align:left" onclick="changeIcon('soustitre')">
+                 <span id="soustitre" class="glyphicon glyphicon-chevron-down"></span>
                 Afficher les sous-titres disponnibles
               </button>
             <div id="collapseST" class="panel-collapse collapse out">
@@ -336,7 +338,8 @@
              <button class="form-control" type="button" 
                  data-toggle="collapse" data-target="#collapseResume" 
                  aria-expanded="false" aria-controls="collapseResume" 
-                 style="text-align:left">
+                 style="text-align:left" onclick="changeIcon('resume')">
+                 <span id="resume" class="glyphicon glyphicon-chevron-down"></span>
                 Afficher la boîte de saisie du résumé
               </button>
             <div id="collapseResume" class="panel-collapse collapse out">             

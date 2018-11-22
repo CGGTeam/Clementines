@@ -76,7 +76,7 @@
         }
     }
 </script>
-    <h1 runat="server" ID="title">Affichage détaillé du film "<%= film.TitreFrancais %>"</h1> 
+    <h1>Affichage détaillé du film <span style="color:darkred;"><%= film.TitreFrancais %></span></h1> 
         <asp:LinkButton runat="server" class="btn btn-danger" Text="Retour" onclick="Retour">
             <span class="glyphicon glyphicon-chevron-left"></span>Retour
         </asp:LinkButton>
