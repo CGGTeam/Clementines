@@ -8,7 +8,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
-    <%@ Register tagprefix="pers" TagName="film" Src="../controles-utilisateur/NomFilm.ascx" %>
 
     <!-- Contenu de la page -->
         

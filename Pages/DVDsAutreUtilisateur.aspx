@@ -8,7 +8,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
-    <%@ Register tagprefix="pers" TagName="film" Src="../controles-utilisateur/NomFilm.ascx" %>
 
     <!-- Contenu de la page -->
     <div class="row">
@@ -16,8 +15,7 @@
             <div class="input-group">
           <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
           <asp:DropDownList ID="ddlUtilisateur" runat="server"
-           MaxLength="25" CssClass="form-control"
-            placeholder="Nom d'utilisateur"
+              CssClass="form-control"
               OnSelectedIndexChanged="onDdlUtilisateurChanged"
               AutoPostBack="true"/>
         </div>
