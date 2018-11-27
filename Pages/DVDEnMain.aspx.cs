@@ -16,6 +16,10 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
    protected void Page_Load(object sender, EventArgs e)
    {
+        string utilisateur = HttpContext.Current.User.Identity.Name;
+        SQL.Connection();
+        noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
+
       // initialiser label pour message erreur et autres
       Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
       

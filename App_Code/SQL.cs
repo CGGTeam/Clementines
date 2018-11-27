@@ -558,6 +558,27 @@ static public class SQL
         drDDL.Close();
         return utilisateur;
     }
+
+    /// Permet de récuper le dvd avec l'id donné
+    /// <param name="id"></param>
+    /// EntiteUtilisateur
+    public static int FindNoUtilisateurByName(string name)
+    {
+        int noUtilisateur = 0;
+        String strRequete = "select NoUtilisateur from Utilisateurs where NomUtilisateur = @name";
+        SqlParameter paramUsername = new SqlParameter("@name", name);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            noUtilisateur = (int)drDDL[0];
+        }
+        drDDL.Close();
+        return noUtilisateur;
+    }
     /// Permet de récuper le dvd avec l'id donné
     /// <param name="id"></param>
     /// EntiteFilm
@@ -610,4 +631,5 @@ static public class SQL
         drDDL.Close();
         return film;
     }
+
 }
