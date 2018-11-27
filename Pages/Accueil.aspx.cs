@@ -230,7 +230,10 @@ public partial class _Default : System.Web.UI.Page
         Panel panelBody = librairie.divDYN(panel, "panel-body_" + lstFilmsAfficher[i].film.NoFilm, "panel-body vignette");
         Panel panelCache = librairie.divDYN(panelBody, "panel-cache_" + lstFilmsAfficher[i].film.NoFilm, "boutons-caches");
 
-        if (HttpContext.Current.User.Identity.Name == lstFilmsAfficher[i].proprietaire.NomUtilisateur) afficherOptionPropreFilm(i, panelCache);
+        string utilisateur = HttpContext.Current.User.Identity.Name;
+        string proprietaire = lstFilmsAfficher[i].proprietaire.NomUtilisateur;
+
+        if (utilisateur.Trim().Equals(proprietaire.Trim())) afficherOptionPropreFilm(i, panelCache);
         else afficherOptionsAutreFilm(i, panelCache);
 
         System.Web.UI.WebControls.Image img = librairie.imgDYN(panelBody, "img_" + lstFilmsAfficher[i].film.NoFilm, lstFilmsAfficher[i].film.ImagePochette, "image-vignette");
@@ -238,8 +241,9 @@ public partial class _Default : System.Web.UI.Page
         Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstFilmsAfficher[i].film.NoFilm, "panel-footer");
         Label lblProprietaire = librairie.lblDYN(panelFooter, "titre-proprietaire_" + lstFilmsAfficher[i].film.NoFilm, "Propriétaire : "+ lstFilmsAfficher[i].film.NomUtilisateur, "titre-film");
     }
-    private void afficherOptionPropreFilm(int i, Control panelCache)
+    private void afficherOptionPropreFilm(int i, Panel panelCache)
     {
+        panelCache.BackColor = Color.Orange;
         Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].film.NoFilm, "tableau-boutons");
 
         TableRow tr1 = librairie.trDYN(table);
@@ -258,7 +262,6 @@ public partial class _Default : System.Web.UI.Page
     }
     private void afficherOptionsAutreFilm(int i, Panel panelCache)
     {
-        //panelCache.BackColor = Color.Orange;
         Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].film.NoFilm, "tableau-boutons");
 
         TableRow tr1 = librairie.trDYN(table);
