@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.Security;
 
 public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
 {
@@ -14,7 +15,8 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
 
     protected void PageLogin(Object sender, EventArgs e)
     {
-        Response.Redirect("~/Default.aspx");
+        FormsAuthentication.SignOut();
+        FormsAuthentication.RedirectToLoginPage();
     }
     protected void Search(Object sender, EventArgs e)
     {

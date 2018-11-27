@@ -35,7 +35,7 @@ public partial class _Default : System.Web.UI.Page
         else
         {
             // TODO : À enlever à la fin, simplement à fin d'accéler le débuggage
-            FormsAuthentication.RedirectFromLoginPage(strNom, false);
+            //FormsAuthentication.RedirectFromLoginPage(strNom, false);
             lblError.Text = "Connexion échouée";
         }
 
