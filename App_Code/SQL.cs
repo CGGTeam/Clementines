@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -630,6 +631,51 @@ static public class SQL
 
         drDDL.Close();
         return film;
+    }
+    private static int FindNextNoFilm()
+    {
+        int noFilm = 0;
+        String strRequete = "select max(NoFilm) from Films";
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            noFilm = (int)drDDL[0];
+        }
+        drDDL.Close();
+        return noFilm +1;
+    }
+
+    /// Permet d'ajouter un film abrégé dans la BD
+    /// <param name="film"></param>
+    /// <param name="nomDeUtilisateur"></param>
+    /// <returns>Si la requete est réeussi</returns>
+    public static int AddMovieShort(List<string> lstNomFilm, string nomDeUtilisateur)
+    {
+        int intNbAjout = 0;    
+        int noUtilisateurMAJ = FindNoUtilisateurByName(nomDeUtilisateur);
+        DateTime DateMAJ = DateTime.Now;
+
+        foreach (string nomFilm in lstNomFilm)
+        {
+            int noFilm = FindNextNoFilm();
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = dbConn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "INSERT INTO Films(NoFilm, TitreFrancais, NoUtilisateurMAJ, DateMAJ) Values (@no, @titre, @noMAJ, @date)";
+                cmd.Parameters.AddWithValue("@no", noFilm);
+                cmd.Parameters.AddWithValue("@titre", nomFilm);
+                cmd.Parameters.AddWithValue("@noMAJ", noUtilisateurMAJ);
+                cmd.Parameters.AddWithValue("@date", DateMAJ);
+
+                intNbAjout += cmd.ExecuteNonQuery();
+            }
+        }
+        return intNbAjout;
+
     }
 
 }
