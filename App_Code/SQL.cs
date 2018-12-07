@@ -579,11 +579,13 @@ static public class SQL
 
     public static EntiteUtilisateur FindUtilisateurByName(string name)
     {
+        SqlConnection dbConn2 = Connection2();
+
         EntiteUtilisateur utilisateur = null;
         String strRequete = "select * from Utilisateurs where NomUtilisateur = @name";
         SqlParameter paramUsername = new SqlParameter("@name", name);
 
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramUsername);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -593,6 +595,7 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return utilisateur;
     }
 
@@ -712,6 +715,25 @@ static public class SQL
         }
         return intNbAjout;
 
+    }
+
+    public static int ApproprierDVD(int noNewOwnerNo, int noFilm)
+    {
+        string strFilm = noFilm.ToString();
+        SqlConnection dbConn2 = Connection2();
+        String strRequete = "UPDATE Exemplaires SET NoUtilisateurProprietaire = " + noNewOwnerNo + " WHERE NoExemplaire = " + strFilm + "01" + "; ";
+
+        strRequete += "UPDATE Films SET DateMAJ = " + DateTime.Now.ToShortDateString() + ", NoUtilisateurMAJ = " + noNewOwnerNo + " WHERE NoFilm = " + strFilm + "; ";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        int nbLignes = cmdDDL.ExecuteNonQuery();
+        //System.Diagnostics.Debug.WriteLine(strRequete);
+        
+        String strRequete2 = "UPDATE Films SET DateMAJ = " + "'" + DateTime.Now.ToString() + "'" + ", NoUtilisateurMAJ = " + noNewOwnerNo + " WHERE NoFilm = " + strFilm + "; ";
+        SqlCommand cmdDDL2 = new SqlCommand(strRequete2, dbConn2);
+        int nbLignes2 = cmdDDL2.ExecuteNonQuery();
+
+        dbConn2.Close();
+        return nbLignes + nbLignes2;
     }
 
     
