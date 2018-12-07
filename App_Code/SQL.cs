@@ -218,7 +218,8 @@ static public class SQL
                         "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur " +
                         "inner join Exemplaires on Films.NoFilm = LEFT(CONVERT(NVARCHAR, Exemplaires.NoExemplaire), 6) " +
                         "inner join Utilisateurs on Exemplaires.NoUtilisateurProprietaire = Utilisateurs.NoUtilisateur " +
-                        "where Exemplaires.NoUtilisateurProprietaire = @id";
+                        "where Exemplaires.NoUtilisateurProprietaire = @id " +
+                        "order by Films.TitreFrancais";
 
 
       SqlParameter paramUsername = new SqlParameter("@id", id);
@@ -391,8 +392,24 @@ static public class SQL
       return lstUtilisateur;
    }
 
-   //Cette fonction permet de retourner une liste de producteur 
-   public static List<EntiteProducteur> FindAllProducteur()
+    public static List<EntiteUtilisateur> FindAllAutresUtilisateur(int noUtilCourant)
+    {
+        List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
+        String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + " and TypeUtilisateur != 'A';";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstUtilisateur.Add(new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], Convert.ToChar((string)drDDL[4])));
+        }
+
+        drDDL.Close();
+
+        return lstUtilisateur;
+    }
+
+    //Cette fonction permet de retourner une liste de producteur 
+    public static List<EntiteProducteur> FindAllProducteur()
     {
         List<EntiteProducteur> lstProducteurs = new List<EntiteProducteur>();
         String strRequete = "select * from Producteurs";
@@ -560,6 +577,25 @@ static public class SQL
         return utilisateur;
     }
 
+    public static EntiteUtilisateur FindUtilisateurByName(string name)
+    {
+        EntiteUtilisateur utilisateur = null;
+        String strRequete = "select * from Utilisateurs where NomUtilisateur = @name";
+        SqlParameter paramUsername = new SqlParameter("@name", name);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            utilisateur = new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], Convert.ToChar((string)drDDL[4]));
+        }
+
+        drDDL.Close();
+        return utilisateur;
+    }
+
     /// Permet de récuper le dvd avec l'id donné
     /// <param name="id"></param>
     /// EntiteUtilisateur
@@ -677,5 +713,7 @@ static public class SQL
         return intNbAjout;
 
     }
+
+    
 
 }

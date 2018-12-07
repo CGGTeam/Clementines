@@ -9,8 +9,11 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 {
    List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
-   private int noUtilisateurCourrant; // {valeur déterminé lors de la connexion}
+   private int noUtilisateurCourrant = 1; // {valeur déterminé lors de la connexion}
+   private int noUtilisateurVisionne; // {valeur déterminé lors de la connexion}
    private int pageCourante;
+
+    EntiteUtilisateur utilCourant;
 
    protected void Page_Load(object sender, EventArgs e)
    {
@@ -19,7 +22,11 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
       if (!Page.IsPostBack)
       {
-         populerDDLUtilisateurs();
+            utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
+            //System.Diagnostics.Debug.WriteLine("Num: " + utilCourant.NoUtilisateur);
+            noUtilisateurCourrant = utilCourant.NoUtilisateur;
+            populerDDLUtilisateurs();
+            
       }
 
       initialiserNoUtilisateur();
@@ -33,20 +40,20 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
    protected void Page_LoadComplete(object sender, EventArgs e)
    {
-      ddlUtilisateur.SelectedValue = noUtilisateurCourrant.ToString();
+      ddlUtilisateur.SelectedValue = noUtilisateurVisionne.ToString();
    }
 
    public void afficherPageVignettes(Label lblMessage)
    {
-      if (noUtilisateurCourrant != 0)
+      if (noUtilisateurVisionne != 0)
       {
          SQL.Connection();
-         EntiteUtilisateur util = SQL.FindUtilisateurById(noUtilisateurCourrant);
+         EntiteUtilisateur util = SQL.FindUtilisateurById(noUtilisateurVisionne);
 
          lblNomUtilisateur.Text = "Vous visualisez les DVDs de " + util.NomUtilisateur;
          if (lstExemplaires.Count == 0)
          {
-            lblMessage.Text = "Vous avez ajouté aucun film ! (◕‿◕✿)";
+            lblMessage.Text = "L'utilisateur sélectionné n'a aucun film ! (◕‿◕✿)";
          }
          else
          {
@@ -123,13 +130,13 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
       string strDebut = "<nav aria - label = 'Page navigation example' >" +
                               "<ul class='pagination justify-content-center'>" +
-                                  "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "&Utilisateur=" + noUtilisateurCourrant + "'> Previous</a></li>";
+                                  "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "&Utilisateur=" + noUtilisateurVisionne + "'> Previous</a></li>";
 
       pager.Text += strDebut;
       for (int i = 1; i <= nbPages; i++)
       {
          strClass = pageCourante == i ? "page-item active" : "page-item";
-         string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + "&Utilisateur=" + noUtilisateurCourrant + "'>" + i + "</a></li>";
+         string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + "&Utilisateur=" + noUtilisateurVisionne + "'>" + i + "</a></li>";
          pager.Text += strMillieu;
       }
 
@@ -137,7 +144,7 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
       strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
       next = next >= nbPages + 1 ? pageCourante : next;
 
-      string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "&Utilisateur=" + noUtilisateurCourrant + "'>Next</a></li>" +
+      string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "&Utilisateur=" + noUtilisateurVisionne + "'>Next</a></li>" +
                               "</ul>" +
                           "</nav>";
       pager.Text += strFin;
@@ -156,13 +163,13 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    public void populerListeFilms()
    {
       SQL.Connection();
-      lstExemplaires = SQL.FindAllUserExemplaires(noUtilisateurCourrant);
+      lstExemplaires = SQL.FindAllUserExemplaires(noUtilisateurVisionne);
    }
 
    public void onDdlUtilisateurChanged(Object sender, EventArgs e)
    {
       string strNoSelected = ddlUtilisateur.SelectedValue;
-      this.noUtilisateurCourrant = int.Parse(strNoSelected.Trim());
+      this.noUtilisateurVisionne = int.Parse(strNoSelected.Trim());
       String url = "../Pages/DVDsAutreUtilisateur.aspx?Utilisateur=" + strNoSelected.Trim();
       System.Diagnostics.Debug.WriteLine(url);
       Response.Redirect(url);
@@ -173,11 +180,11 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
       int n;
       if (Request.QueryString["Utilisateur"] == null || !int.TryParse(Request.QueryString["Utilisateur"], out n))
       {
-         this.noUtilisateurCourrant = 0;
+         this.noUtilisateurVisionne = 0;
       }
       else
       {
-         this.noUtilisateurCourrant = n;
+         this.noUtilisateurVisionne = n;
       }
 
    }
@@ -186,7 +193,7 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    {
       ddlUtilisateur.Items.Clear();
       SQL.Connection();
-      List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllUtilisateur();
+      List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllAutresUtilisateur(noUtilisateurCourrant);
       ddlUtilisateur.Items.Add(new ListItem("-- Aucun --", "0"));
       foreach (EntiteUtilisateur utilisateur in lstUtilisateurs)
       {
