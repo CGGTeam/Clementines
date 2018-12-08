@@ -52,43 +52,64 @@
         SQL.Connection();
         SQL.AddMovieShort(lstNomFilm, utilisateur);
 
-    }
+        string sep = ", ";
 
-</script>
-<script type="text/javascript">
-$( document ).ready(function() {
-    $("#btnMoreTb").attr("disabled", true);
-    $("#contentBody_tbNomFilm_btnEnregistrer").attr("disabled", true);
-});
-
-var i = 2;
-function CreateTxt() {
-    $("#contentBody_tbNomFilm_btnEnregistrer").attr('value', 'Enregistrer les films');
-    if (i <= 9)
-        $("#contentBody_tbNomFilm_film" + i++).show();
-    else if (i === 10) {
-        $("#contentBody_tbNomFilm_film" + i++).show();
-
-        $("#btnMoreTb").hide();
-    }
-    valider()
-    return false;
-}
-function valider() {
-    var estValide = true;
-    for (var i = 1; i <= 10; i++) {
-        
-        if ($("#contentBody_tbNomFilm_film" + i).val() == "" && $("#contentBody_tbNomFilm_film" + i).is(":visible")) {
-            estValide = false;
-            $("hasError" + i).toggleClass("has-error");
-        } else {
-            $("hasError"+i).toggleClass("has-error");
+        if (lstNomFilm.Any())
+        {
+            succes.Visible = true;
+            lblSucces.Text = "Les DVDs suivant ont été enregistré : " + String.Join(sep, lstNomFilm);
+        }
+        if (lstMauvais.Any())
+        {
+            error.Visible = true;
+            lblError.Text = "Les DVDs suivant n'ont pu être enregistré car ils existent déjà : " + String.Join(sep, lstMauvais);
         }
     }
-    $("#btnMoreTb").attr("disabled", !estValide);
-    $("#contentBody_tbNomFilm_btnEnregistrer").attr("disabled", !estValide);
-    return false;
-}
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+    protected void fermerSucces(object sender, EventArgs e)
+    {
+        succes.Visible = false;
+    }
+    protected void fermerError(object sender, EventArgs e)
+    {
+        error.Visible = false;
+    }
+</script>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        valider();
+    });
+
+    var i = 2;
+    function CreateTxt() {
+        $("#contentBody_tbNomFilm_btnEnregistrer").attr('value', 'Enregistrer les films');
+        if (i <= 9)
+            $("#contentBody_tbNomFilm_film" + i++).show();
+        else if (i === 10) {
+            $("#contentBody_tbNomFilm_film" + i++).show();
+
+            $("#btnMoreTb").hide();
+        }
+        valider()
+        return false;
+    }
+    function valider() {
+        var estValide = true;
+        for (var i = 1; i <= 10; i++) {
+        
+            if ($("#contentBody_tbNomFilm_film" + i).val() == "" && $("#contentBody_tbNomFilm_film" + i).is(":visible")) {
+                estValide = false;
+                $("hasError" + i).toggleClass("has-error");
+            } else {
+                $("hasError"+i).toggleClass("has-error");
+            }
+        }
+        $("#btnMoreTb").attr("disabled", !estValide);
+        $("#contentBody_tbNomFilm_btnEnregistrer").attr("disabled", !estValide);
+        return false;
+    }
 </script>
 <style>
 .error{
@@ -97,6 +118,20 @@ function valider() {
 }
 </style>
     <div class="row">
+        <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
+            <asp:Label runat="server" ID="lblSucces"></asp:Label>
+            <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces">
+                <span class="glyphicon glyphicon-remove pull-right"></span>
+            </asp:LinkButton>
+        </div>
+
+        <div runat="server" Visible="false" id="error" class="alert alert-danger" role="alert">
+            <asp:Label runat="server" ID="lblError"></asp:Label>
+            <asp:LinkButton runat="server" type="button" class="btn-link pull-right"  OnClick="fermerError">
+                <span class="glyphicon glyphicon-remove"></span>
+            </asp:LinkButton>
+        </div>
+
         <div class="col-sm-4">
           <div class="panel panel-default">
             <div class="panel-heading">
