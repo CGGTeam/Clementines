@@ -754,6 +754,24 @@ static public class SQL
         return estPresent;
     }
 
-    
+    public static bool checkIfNomOriginalFilmExiste(string titre)
+    {
+        bool estPresent = false;
+        string strRequete = "SELECT COUNT(*) FROM Films" +
+            " WHERE TitreOriginal = @titre";
+        SqlParameter paramTitre = new SqlParameter("@titre", titre);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramTitre);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+
+        while (drDDL.Read())
+        {
+            estPresent = (int)drDDL[0] >= 1;
+        }
+        dbConn.Close();
+        return estPresent;
+    }
+
+
 
 }

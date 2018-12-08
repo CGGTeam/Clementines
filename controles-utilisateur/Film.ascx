@@ -155,7 +155,10 @@
         choixActeur3.ControleCustomValidator.IsValid)
         {
             //on ajoute
-            tbTitreFrancais.Text = "Aucun validator actif";
+            //tbTitreFrancais.Text = "Aucun validator actif";
+
+
+
         }
         else
         {
@@ -183,6 +186,32 @@
         }
 
     }
+
+    protected void maValidation(Object sender, ServerValidateEventArgs Arguments)
+    {
+        SQL.Connection();
+        if (SQL.checkIfNomFilmExiste(tbTitreFrancais.Text))
+        {
+            Arguments.IsValid = false;
+        }
+        else
+        {
+            Arguments.IsValid = true;
+        }
+    }
+
+    protected void maValidationTitreOriginal(Object sender, ServerValidateEventArgs Arguments)
+    {
+        SQL.Connection();
+        if (SQL.checkIfNomOriginalFilmExiste(tbTitreOriginal.Text))
+        {
+            Arguments.IsValid = false;
+        }
+        else
+        {
+            Arguments.IsValid = true;
+        }
+    }
 </script>
 
 <div class="row">
@@ -197,6 +226,14 @@
              Style="color:red" 
              controltovalidate="tbTitreFrancais" 
              errormessage="Entrez un tite!" />
+        <asp:CustomValidator ID="cv1" runat="server"
+        ControlToValidate="tbTitreFrancais"
+        OnServerValidate="maValidation"
+        EnableClientScript="false"
+        ValidateEmptyText="true"
+        Style="color:red" 
+        Display="dynamic"
+        ErrorMessage="Ce titre est déjà inscrit" />
         <br />
          <!-- Année de sortie Fait -->
         <asp:Label runat="server">Année de sortie :</asp:Label>
@@ -287,6 +324,13 @@
         <asp:TextBox ID="tbTitreOriginal" runat="server"
            MaxLength="25" CssClass="form-control"
             placeholder="Titre originale"/>
+                <asp:CustomValidator ID="CustomValidator1" runat="server"
+        ControlToValidate="tbTitreFrancais"
+        OnServerValidate="maValidationTitreOriginal"
+        EnableClientScript="false"
+        ValidateEmptyText="true"
+        Style="color:red" 
+        ErrorMessage="Ce titre est déjà inscrit" />
         <br />
 
         <!-- Suppléments Requete -->
