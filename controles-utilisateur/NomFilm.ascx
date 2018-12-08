@@ -49,10 +49,13 @@
 
 </script>
 <script type="text/javascript">
+$( document ).ready(function() {
+    $("#btnMoreTb").attr("disabled", true);
+    $("#contentBody_tbNomFilm_btnEnregistrer").attr("disabled", true);
+});
+
 var i = 2;
 function CreateTxt() {
-    var container = document.getElementById("moreTextboxs");
-
     $("#contentBody_tbNomFilm_btnEnregistrer").attr('value', 'Enregistrer les films');
     if (i <= 9)
         $("#contentBody_tbNomFilm_film" + i++).show();
@@ -61,10 +64,31 @@ function CreateTxt() {
 
         $("#btnMoreTb").hide();
     }
-    
+    valider()
+    return false;
+}
+function valider() {
+    var estValide = true;
+    for (var i = 1; i <= 10; i++) {
+        
+        if ($("#contentBody_tbNomFilm_film" + i).val() == "" && $("#contentBody_tbNomFilm_film" + i).is(":visible")) {
+            estValide = false;
+            $("hasError" + i).toggleClass("has-error");
+        } else {
+            $("hasError"+i).toggleClass("has-error");
+        }
+    }
+    $("#btnMoreTb").attr("disabled", !estValide);
+    $("#contentBody_tbNomFilm_btnEnregistrer").attr("disabled", !estValide);
     return false;
 }
 </script>
+<style>
+.error{
+	color: red;
+	margin-left: 10px;
+}
+</style>
     <div class="row">
         <div class="col-sm-4">
           <div class="panel panel-default">
@@ -77,37 +101,57 @@ function CreateTxt() {
             <div id="collapse1" class="panel-collapse collapse out">
               <div class="panel-body">
                   <label for="tbNomFilm" class="sr-only">Nom du film</label>
-                    <asp:TextBox ID="film1" runat="server"
-                       MaxLength="25"
-                        placeholder="Doit être présent"/>
+                  <div id="hasError1" class="form-group has-feedback">
+                    <asp:TextBox ID="film1" runat="server" 
+                       MaxLength="25" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error1" class="error" style="display:none;">Doit être présent</span>
+                  </div>
+                  <div id="hasError2" class="form-group has-feedback">
                     <asp:TextBox ID="film2" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film3" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film4" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film5" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film6" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film7" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film8" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film9" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-                    <asp:TextBox ID="film10" runat="server"
-                        MaxLength="25" style="display:none;"
-                        placeholder="Doit être présent"/>
-
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error2" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError3" class="form-group has-feedback">
+                      <asp:TextBox ID="film3" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error3" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError4" class="form-group has-feedback">
+                      <asp:TextBox ID="film4" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error4" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError5" class="form-group has-feedback">
+                      <asp:TextBox ID="film5" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error5" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError6" class="form-group has-feedback">
+                      <asp:TextBox ID="film6" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error6" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError7" class="form-group has-feedback">
+                      <asp:TextBox ID="film7" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error7" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError8" class="form-group has-feedback">
+                      <asp:TextBox ID="film8" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error8" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError9" class="form-group has-feedback">
+                      <asp:TextBox ID="film9" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error9" class="error" style="display:none;">Doit être présent</span>
+                    </div>
+                  <div id="hasError10" class="form-group has-feedback">
+                      <asp:TextBox ID="film10" runat="server"
+                        MaxLength="25" style="display:none;" oninput="valider();"
+                        placeholder="Doit être présent"/><span id="error10" class="error" style="display:none;">Doit être présent</span>
+                  </div>
+                      <br />
                         <button id="btnMoreTb"  onclick = "CreateTxt();return false;" class="btn btn-light">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
