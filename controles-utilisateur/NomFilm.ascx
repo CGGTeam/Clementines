@@ -23,9 +23,6 @@
                 tbFilm.Attributes.Add("placeholder", value);
             }
         } }
-    static int i = 0;
-
-
 
     protected void btnEnregistrer_Click(object sender, EventArgs e)
     {
@@ -79,7 +76,8 @@
 </script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        valider();
+        $("#btnMoreTb").attr("disabled", true);
+        $("#contentBody_tbNomFilm_btnEnregistrer").attr("disabled", true);
     });
 
     var i = 2;
