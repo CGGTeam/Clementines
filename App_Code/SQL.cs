@@ -740,9 +740,10 @@ static public class SQL
     {
         bool estPresent = false;
         string strRequete = "SELECT COUNT(*) FROM Films" +
-            " WHERE TitreFrancais = '"+ titre + "'";
-
+            " WHERE TitreFrancais = @titre";
+        SqlParameter paramTitre = new SqlParameter("@titre", titre);
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        cmdDDL.Parameters.Add(paramTitre);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
 
         while (drDDL.Read())
