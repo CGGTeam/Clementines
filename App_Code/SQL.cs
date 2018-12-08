@@ -772,6 +772,36 @@ static public class SQL
         return estPresent;
     }
 
+    public static void CreerExemplaire(int noFilm, string nomDeUtilisateur)
+    {
+        int noUtilisateur = FindNoUtilisateurByName(nomDeUtilisateur);
+        int noExemplaire = FindNextNoExemplaire(noFilm);
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "INSERT INTO EmpruntsFilms(NoExemplaire, NoUtilisateurProprietaire) Values (@no, @proprietaire)";
+            cmd.Parameters.AddWithValue("@no", noExemplaire);
+            cmd.Parameters.AddWithValue("@proprietaire", noUtilisateur);
+
+            int intNbAjout = cmd.ExecuteNonQuery();
+        }
+    }
+    private static int FindNextNoExemplaire(int noFilm)
+    {
+        String strRequete = "select max(NoFilm) from Films";
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            noFilm = (int)drDDL[0];
+        }
+        drDDL.Close();
+        return noFilm + 1;
+    }
+
 
 
 }
