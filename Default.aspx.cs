@@ -20,7 +20,7 @@ public partial class _Default : System.Web.UI.Page
       
         if (!tbPassword.Format.IsValid)
         {
-            lblError.Text = "Le mot de passe est dans un format non-valide";
+            lblError.Text = "Connexion échouée";
 
             return;
         }
@@ -30,12 +30,11 @@ public partial class _Default : System.Web.UI.Page
         if (AuthenticateUser(strNom, strPassword))
         {
             FormsAuthentication.RedirectFromLoginPage(strNom, false);
+            Response.Redirect("~/Pages/Accueil.aspx", false);
         }
         //connexion échoué
         else
         {
-            // TODO : À enlever à la fin, simplement à fin d'accéler le débuggage
-            //FormsAuthentication.RedirectFromLoginPage(strNom, false);
             lblError.Text = "Connexion échouée";
         }
 
