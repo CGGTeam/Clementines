@@ -736,6 +736,23 @@ static public class SQL
         return nbLignes + nbLignes2;
     }
 
+    public static bool checkIfNomFilmExiste(string titre)
+    {
+        bool estPresent = false;
+        string strRequete = "SELECT COUNT(*) FROM Films" +
+            " WHERE TitreFrancais = '"+ titre + "'";
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+
+        while (drDDL.Read())
+        {
+            estPresent = (int)drDDL[0]>=1;
+        }
+        dbConn.Close();
+        return estPresent;
+    }
+
     
 
 }

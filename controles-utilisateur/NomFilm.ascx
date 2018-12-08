@@ -31,20 +31,27 @@
     {
         string utilisateur = HttpContext.Current.User.Identity.Name;
         List<string> lstNomFilm = new List<string>();
+        List<string> lstMauvais = new List<string>();
 
-        for(int i = 1;i <= 10; i++)
+        for (int i = 1; i <= 10; i++)
         {
             string nomTextBox = "film" + i;
             TextBox tbFilm = this.FindControl(nomTextBox) as TextBox;
 
             if (tbFilm != null && !string.IsNullOrEmpty(tbFilm.Text))
             {
-                lstNomFilm.Add(tbFilm.Text);
+                string nom = tbFilm.Text;
+                SQL.Connection();
+                if (!SQL.checkIfNomFilmExiste(nom))
+                    lstNomFilm.Add(nom);
+                else
+                    lstMauvais.Add(nom);
             }
         }
 
         SQL.Connection();
         SQL.AddMovieShort(lstNomFilm, utilisateur);
+
     }
 
 </script>
