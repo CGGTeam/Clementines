@@ -86,6 +86,8 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
                TableRow tr3 = librairie.trDYN(table);
                TableCell td3 = librairie.tdDYN(tr3, "td_appropriation_" + lstExemplaires[i].film.NoFilm, "");
                Button btn3 = librairie.btnDYN(td3, "appropriation_" + lstExemplaires[i].film.NoFilm, "btn btn-default boutons-options-film", "Appropriation du DVD");
+               btn3.Click += new EventHandler(appropriationOnClick);
+
 
                Image img = librairie.imgDYN(panelBody, "img_" + lstExemplaires[i].film.NoFilm, lstExemplaires[i].film.ImagePochette, "image-vignette");
 
@@ -159,8 +161,15 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
       Response.Redirect(url, true);
    }
 
+    public void appropriationOnClick(Object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        String url = "~/Pages/AppropriationDVD.aspx?Film=" + btn.ID.Replace("appropriation_", "");
+        Response.Redirect(url, true);
+    }
 
-   public void populerListeFilms()
+
+    public void populerListeFilms()
    {
       SQL.Connection();
       lstExemplaires = SQL.FindAllUserExemplaires(noUtilisateurVisionne);
