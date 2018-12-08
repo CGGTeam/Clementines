@@ -88,7 +88,7 @@
         lbSupplements.Items.FindByValue("0").Selected = true;
     }
 
-     protected void chargeListeSousTitres()
+    protected void chargeListeSousTitres()
     {
         SQL.Connection();
         List<EntiteSousTitres> lstSousTitres = SQL.FindAllSousTitre();
@@ -101,7 +101,7 @@
         lbSousTitre.Items.FindByValue("0").Selected = true;
     }
 
-     protected void chargeListeLangues()
+    protected void chargeListeLangues()
     {
         SQL.Connection();
         List<EntiteLangue> lstLangues = SQL.FindAllLangue();
@@ -114,7 +114,7 @@
         lbLangue.Items.FindByValue("0").Selected = true;
     }
 
-     protected void chargeListeFormats()
+    protected void chargeListeFormats()
     {
         SQL.Connection();
         List<EntiteFormat> lstFormat = SQL.FindAllFormat();
@@ -125,7 +125,7 @@
         }
     }
 
-      protected void chargeListeCategories()
+    protected void chargeListeCategories()
     {
         SQL.Connection();
         List<EntiteCategorie> lstCategorie = SQL.FindAllCategorie();
@@ -142,7 +142,25 @@
     }
     protected void Ajouter(object sender, EventArgs e)
     {
-        Retour(sender, e);
+        /*=============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================*/
+
+        if (rerFieldValidatorTitreOriginal.IsValid && RegularExpressionDuree.IsValid &&
+        choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
+        choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
+        choixActeur3.ControleCustomValidator.IsValid)
+        {
+            //on ajoute
+            tbTitreFrancais.Text = "Aucun validator actif";
+        }
+        else
+        {
+            //on fait what ever qu'on veut, cas de validation active.
+        }
     }
 
     protected void chargeListeAnneeSortie()
