@@ -455,6 +455,7 @@ static public class SQL
 
     public static List<EntiteUtilisateur> FindAllAutresUtilisateur(int noUtilCourant)
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
         String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + " and TypeUtilisateur != 'A';";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
@@ -465,7 +466,7 @@ static public class SQL
         }
 
         drDDL.Close();
-
+        dbConn2.Close();
         return lstUtilisateur;
     }
 
