@@ -5,9 +5,6 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
-    <h1>Modification du film [mettre le nom du film ici]</h1>
-    <hr />
-
         <Personne:film runat="server"></Personne:film>
 
     <hr />
