@@ -48,7 +48,7 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </asp:LinkButton>
                 </div>
-                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="se déconnecter" OnClick="PageLogin" />
+                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="se déconnecter" OnClick="PageLogin" CausesValidation="false"/>
             </li>
         </ul>
     </div>

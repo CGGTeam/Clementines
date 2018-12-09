@@ -739,6 +739,11 @@ static public class SQL
         drDDL.Close();
         return film;
     }
+   /*
+   private static EntiteCategorie FindCategorieById(int id)
+   {
+
+   }*/
     private static int FindNextNoFilm()
     {
         int noFilm = 0;
@@ -887,6 +892,40 @@ static public class SQL
         return intNbAjout >= 1;
     }
 
+    public static bool ajoutFilmComplet(EntiteFilm entite)
+    {
+        int intNbAjout = 0;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+
+            int noFilm = FindNextNoFilm();
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "INSERT INTO Films(@no)";
+            cmd.Parameters.AddWithValue("@no", noFilm);
+            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie);
+            cmd.Parameters.AddWithValue("@categorie", entite.Categorie);
+            cmd.Parameters.AddWithValue("@format", entite.Format);
+            cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
+            cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);//doit etre le numero
+            cmd.Parameters.AddWithValue("@resume", entite.Resume);
+            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree);
+            cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
+            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette);
+            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques);
+            cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
+            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal);
+            cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
+            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur); // doit être un nombre
+            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur); // doit être un nombre
+            cmd.Parameters.AddWithValue("@extra", entite.LienInternet);
+            intNbAjout += cmd.ExecuteNonQuery();
+            cmd.Connection.Close();
+        }
+
+
+        return intNbAjout >= 1;
+    }
     public static EntitePreference GetPreferenceByNoUtilisateur(int noUtilisateur)
     {
         SqlConnection dbConn2 = Connection2();
