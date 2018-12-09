@@ -5,6 +5,13 @@
 
    protected void Page_Load(object sender, EventArgs e)
    {
+      chargeListeSupplements();
+      chargeListeSousTitres();
+      chargeListeLangues();
+      chargeListeNbCD();
+      chargeListeAnneeSortie();
+      chargeListeFormats();
+      chargeListeCategories();
       if (!IsPostBack)
       {
          if (Request.UrlReferrer != null)
@@ -21,16 +28,17 @@
             string btnModifier = Request.QueryString["Film"];
             string[] tabGuimauve = btnModifier.Split('_');
             int idFilm = int.Parse(tabGuimauve[1]);
-
+            SQL.Connection();
+            EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
             //Maintenant remplir les informations à partir de ce ID.
+            Titre.Text = "Modification du film: " + filmAModifier.TitreOriginal.ToString();
+            tbTitreFrancais.Text = filmAModifier.TitreFrancais.ToString();
+            tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
+            //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
+            ddlAnnee.Items.FindByValue(filmAModifier.AnneeSortie.ToString().Trim()).Selected = true;
+            
+            //ddlCategorie.Items.FindByValue(filmAModifier.Categorie.ToString().Trim()).Selected = true;
          }
-         chargeListeSupplements();
-         chargeListeSousTitres();
-         chargeListeLangues();
-         chargeListeNbCD();
-         chargeListeAnneeSortie();
-         chargeListeFormats();
-         chargeListeCategories();
       }
    }
 
@@ -221,6 +229,8 @@
       }
    }
 </script>
+   <asp:Label ID="Titre" runat="server" style="color: #7c795d; font-family: 'Source Sans Pro', sans-serif; font-size: 28px; font-weight: 400; line-height: 32px; margin: 0 0 24px;"/>
+<hr />
 
 <div class="row">
     <div class="col-sm-6">
