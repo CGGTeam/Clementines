@@ -205,6 +205,7 @@ static public class SQL
    }
     public static List<EntiteExemplaire> FindAllUserExemplairesEmpruntes(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
         String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
                           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
@@ -260,7 +261,7 @@ static public class SQL
             lstExemplaires.Add(exemplaire);
         }
         drDDL.Close();
-
+        dbConn2.Close();
         return lstExemplaires;
     }
 
@@ -622,6 +623,7 @@ static public class SQL
     /// EntiteUtilisateur
     public static EntiteUtilisateur FindUtilisateurById(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         EntiteUtilisateur utilisateur = null;
         String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
         SqlParameter paramUsername = new SqlParameter("@id", id);
@@ -636,6 +638,7 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return utilisateur;
     }
 
@@ -666,11 +669,12 @@ static public class SQL
     /// EntiteUtilisateur
     public static int FindNoUtilisateurByName(string name)
     {
+        SqlConnection dbConn2 = Connection2();
         int noUtilisateur = 0;
         String strRequete = "select NoUtilisateur from Utilisateurs where NomUtilisateur = @name";
         SqlParameter paramUsername = new SqlParameter("@name", name);
 
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramUsername);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -679,6 +683,7 @@ static public class SQL
             noUtilisateur = (int)drDDL[0];
         }
         drDDL.Close();
+        dbConn2.Close();
         return noUtilisateur;
     }
     /// Permet de récuper le dvd avec l'id donné
@@ -733,6 +738,11 @@ static public class SQL
         drDDL.Close();
         return film;
     }
+   /*
+   private static EntiteCategorie FindCategorieById(int id)
+   {
+
+   }*/
     private static int FindNextNoFilm()
     {
         int noFilm = 0;
@@ -886,7 +896,7 @@ static public class SQL
         int intNbAjout = 0;
         using (SqlCommand cmd = new SqlCommand())
         {
-            
+
             int noFilm = FindNextNoFilm();
             cmd.Connection = Connection2();//connection ouverte
             cmd.CommandType = CommandType.Text;
@@ -914,5 +924,51 @@ static public class SQL
 
 
         return intNbAjout >= 1;
+    }
+    public static EntitePreference GetPreferenceByNoUtilisateur(int noUtilisateur)
+    {
+        SqlConnection dbConn2 = Connection2();
+        EntitePreference preference = new EntitePreference();
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn2;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "select NoPreference, Valeur from ValeursPreferences " +
+                    "where NoUtilisateur = @No";
+            cmd.Parameters.AddWithValue("@no", noUtilisateur);
+
+            SqlDataReader drDDL = cmd.ExecuteReader();
+
+            while (drDDL.Read())
+            {
+                switch ((int)drDDL[0])
+                {
+                    case 1:
+                        preference.CouleurFond = (string)drDDL[1];
+                        break;
+                    case 2:
+                        preference.CouleurTexte = (string)drDDL[1];
+                        break;
+                    case 3:
+                        preference.CourrielSiAjout = (string)drDDL[1]=="1";
+                        break;
+                    case 4:
+                        preference.CourrielSiAppropriation = (string)drDDL[1] == "1";
+                        break;
+                    case 5:
+                        preference.CourrielSiSuppression = (string)drDDL[1] == "1";
+                        break;
+                    case 6:
+                        preference.ImageFond = (string)drDDL[1];
+                        break;
+                    case 7:
+                        preference.NbFilmParPage = int.Parse((string)drDDL[1]);
+                        break;
+                }
+            }
+        }
+        dbConn2.Close();
+
+        return preference;
     }
 }

@@ -59,6 +59,11 @@ public partial class _Default : System.Web.UI.Page
 
     private void Page_Load(object sender, EventArgs e)
     {
+        string utilisateur = HttpContext.Current.User.Identity.Name;
+        int noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
+        EntitePreference mesPreferences = SQL.GetPreferenceByNoUtilisateur(noUtilisateurCourrant);
+        nbElementsParPage = mesPreferences.NbFilmParPage;
+
         Label lblMessage = librairie.lblDYN(phDynamique, "message_vignettes", "", "message_vignettes");
         //if (!Page.IsPostBack)
         //{
