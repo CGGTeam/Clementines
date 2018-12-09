@@ -8,6 +8,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
+
+        InitialiserDestinaire();
+        
         if( !IsPostBack )
         {
             if (utilCourant.TypeUtilisateur == 'S')
@@ -22,7 +25,6 @@
             }
 
         }
-        InitialiserDestinaire();
         InitialiserVieuxRetour();
     }
 
@@ -128,10 +130,10 @@
 
     private void populerDDLIdentite()
     {
-
+        int noUtilisateurEmprunteur = SQL.GetNoUtilisateurDVDEmprunteur(film.film.NoFilm);
 
         ddlIdentite.Items.Clear();
-        List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllAutresUtilisateur(utilCourant.NoUtilisateur);
+        List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllUtilisateurSaufCourantEtEmprunteur(utilCourant.NoUtilisateur, noUtilisateurEmprunteur);
         ddlIdentite.Items.Add(new ListItem("Moi", utilCourant.NoUtilisateur.ToString()));
         foreach (EntiteUtilisateur utilisateur in lstUtilisateurs)
         {

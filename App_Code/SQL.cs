@@ -470,6 +470,23 @@ static public class SQL
         return lstUtilisateur;
     }
 
+    public static List<EntiteUtilisateur> FindAllUtilisateurSaufCourantEtEmprunteur(int noUtilCourant, int noUtilEmprunteur)
+    {
+        SqlConnection dbConn2 = Connection2();
+        List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
+        String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + "and NoUtilisateur != " + noUtilEmprunteur + " and TypeUtilisateur != 'A';";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstUtilisateur.Add(new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], Convert.ToChar((string)drDDL[4])));
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
+        return lstUtilisateur;
+    }
+
     //Cette fonction permet de retourner une liste de producteur 
     public static List<EntiteProducteur> FindAllProducteur()
     {
@@ -971,5 +988,27 @@ static public class SQL
         dbConn2.Close();
 
         return preference;
+    }
+
+    public static int GetNoUtilisateurDVDEmprunteur(int noFilm)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        int noUtilisateur = 0;
+        String strRequete = "select NoUtilisateur from EmpruntsFilms where NoExemplaire = @noExemplaire";
+        SqlParameter paramUsername = new SqlParameter("@noExemplaire", int.Parse(noFilm.ToString() + "01"));
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            noUtilisateur = (int)drDDL[0];
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
+        return noUtilisateur;
     }
 }
