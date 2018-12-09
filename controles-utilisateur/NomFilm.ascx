@@ -127,12 +127,12 @@
             </asp:LinkButton>
         </div>
 
-        <div class="col-sm-4">
+        <div class="col-sm-6">
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                Enregistrer un nouveau film</a>
+                Enregistrer un nouveau film abrégé</a>
               </h4>
             </div>
             <div id="collapse1" class="panel-collapse collapse out">
