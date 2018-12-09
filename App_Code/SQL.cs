@@ -772,9 +772,9 @@ static public class SQL
 
                 intNbAjout += cmd.ExecuteNonQuery();
             }
+            CreerExemplaire(noFilm, noUtilisateurMAJ);     
         }
         return intNbAjout;
-
     }
 
     public static int ApproprierDVD(int noNewOwnerNo, int noFilm)
@@ -830,21 +830,32 @@ static public class SQL
         return estPresent;
     }
 
-    public static bool CreerExemplaire(int noFilm, string nomDeUtilisateur)
+    public static bool CreerExemplaire(int noFilm, int noUtilisateur)
     {
-        int intNbAjout;
-
-        int noUtilisateur = FindNoUtilisateurByName(nomDeUtilisateur);
+        int intNbAjout =0;
+        DateTime now = DateTime.Now;
         int noExemplaire = (int.Parse(noFilm + "01"));
         using (SqlCommand cmd = new SqlCommand())
         {
             cmd.Connection = dbConn;
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "INSERT INTO EmpruntsFilms(NoExemplaire, NoUtilisateurProprietaire) Values (@no, @proprietaire)";
+            cmd.CommandText = "INSERT INTO Exemplaires(NoExemplaire, NoUtilisateurProprietaire) Values (@no, @proprietaire)";
             cmd.Parameters.AddWithValue("@no", noExemplaire);
             cmd.Parameters.AddWithValue("@proprietaire", noUtilisateur);
 
-            intNbAjout = cmd.ExecuteNonQuery();
+            intNbAjout += cmd.ExecuteNonQuery();
+        }
+        if (intNbAjout == 0) return false;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "INSERT INTO EmpruntsFilms(NoExemplaire, NoUtilisateur, DateEmprunt) Values (@no, @proprietaire, @date)";
+            cmd.Parameters.AddWithValue("@no", noExemplaire);
+            cmd.Parameters.AddWithValue("@proprietaire", noUtilisateur);
+            cmd.Parameters.AddWithValue("@date", now);
+
+            intNbAjout += cmd.ExecuteNonQuery();
         }
         return intNbAjout >= 1;
     }
