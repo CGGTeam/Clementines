@@ -152,7 +152,7 @@
         if (rerFieldValidatorTitreOriginal.IsValid && RegularExpressionDuree.IsValid &&
         choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
         choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
-        choixActeur3.ControleCustomValidator.IsValid)
+        choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid)
         {
             //on ajoute
             //tbTitreFrancais.Text = "Aucun validator actif";
@@ -324,7 +324,7 @@
         <asp:TextBox ID="tbTitreOriginal" runat="server"
            MaxLength="25" CssClass="form-control"
             placeholder="Titre originale"/>
-                <asp:CustomValidator ID="CustomValidator1" runat="server"
+                <asp:CustomValidator ID="CV2" runat="server"
         ControlToValidate="tbTitreFrancais"
         OnServerValidate="maValidationTitreOriginal"
         EnableClientScript="false"
