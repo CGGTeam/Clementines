@@ -733,6 +733,11 @@ static public class SQL
         drDDL.Close();
         return film;
     }
+   /*
+   private static EntiteCategorie FindCategorieById(int id)
+   {
+
+   }*/
     private static int FindNextNoFilm()
     {
         int noFilm = 0;

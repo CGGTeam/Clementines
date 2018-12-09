@@ -5,15 +5,16 @@
 
    protected void Page_Load(object sender, EventArgs e)
    {
-      chargeListeSupplements();
-      chargeListeSousTitres();
-      chargeListeLangues();
-      chargeListeNbCD();
-      chargeListeAnneeSortie();
-      chargeListeFormats();
-      chargeListeCategories();
+
       if (!IsPostBack)
       {
+         chargeListeSupplements();
+         chargeListeSousTitres();
+         chargeListeLangues();
+         chargeListeNbCD();
+         chargeListeAnneeSortie();
+         chargeListeFormats();
+         chargeListeCategories();
          if (Request.UrlReferrer != null)
          {
             prevPage = Request.UrlReferrer.ToString();
@@ -36,8 +37,45 @@
             tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
             //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
             ddlAnnee.Items.FindByValue(filmAModifier.AnneeSortie.ToString().Trim()).Selected = true;
-            
-            //ddlCategorie.Items.FindByValue(filmAModifier.Categorie.ToString().Trim()).Selected = true;
+            ddlCategorie.Items.FindByText(filmAModifier.Categorie.ToString().Trim()).Selected = true;
+            foreach(EntiteSupplements supplement in filmAModifier.lstSupplements)
+            {
+               lbSupplements.Items[supplement.NoSupplement].Selected = true;
+            }
+            //Producteur et réalisateurs.
+            choixProducteur.ControleDDL.Items.FindByText(filmAModifier.NomProducteur.ToString()).Selected = true;
+            choixRealisateur.ControleDDL.Items.FindByText(filmAModifier.NomRealisateur.ToString()).Selected = true;
+
+            //Les acteurs
+            for(int i = 0; i < 3; i++)
+            {
+               if((i < filmAModifier.lstActeurs.Count()) && (filmAModifier.lstActeurs.Count != 0))
+               {
+                  if(i == 0)
+                  {
+                     choixActeur1.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                  }
+                  else if (i == 1)
+                  {
+                     choixActeur2.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                  }
+                  else if (i == 2)
+                  {
+                     choixActeur3.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                  }
+               }
+            }
+            //Durée
+            tbDuree.Text = filmAModifier.Duree.ToString();
+
+            //Format
+            ddlFormat.Items.FindByText(filmAModifier.Format.ToString()).Selected = true;
+            //NbDisques
+            ddlNbDisques.Items.FindByText(filmAModifier.NbDisques.ToString()).Selected = true;
+
+            //Les options
+            cbEtendue.Checked = filmAModifier.VersionEtendue;
+            cbOriginal.Checked = filmAModifier.FilmOriginal;
          }
       }
    }
@@ -172,9 +210,6 @@
       {
          //on ajoute
          //tbTitreFrancais.Text = "Aucun validator actif";
-
-
-
       }
       else
       {
@@ -191,7 +226,6 @@
       {
          ddlAnnee.Items.Add(i.ToString());
       }
-
    }
    protected void chargeListeNbCD()
    {
@@ -431,7 +465,6 @@
                </div>
             </div>
           </div>
-
     </div>
 </div>
 <!-- TODO : ajouter d'autres champs, modifier textbox pour des dropdown list  -->
