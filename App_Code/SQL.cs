@@ -666,11 +666,12 @@ static public class SQL
     /// EntiteUtilisateur
     public static int FindNoUtilisateurByName(string name)
     {
+        SqlConnection dbConn2 = Connection2();
         int noUtilisateur = 0;
         String strRequete = "select NoUtilisateur from Utilisateurs where NomUtilisateur = @name";
         SqlParameter paramUsername = new SqlParameter("@name", name);
 
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramUsername);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -678,7 +679,7 @@ static public class SQL
         {
             noUtilisateur = (int)drDDL[0];
         }
-        drDDL.Close();
+        dbConn2.Close();
         return noUtilisateur;
     }
     /// Permet de récuper le dvd avec l'id donné
@@ -860,5 +861,52 @@ static public class SQL
             intNbAjout += cmd.ExecuteNonQuery();
         }
         return intNbAjout >= 1;
+    }
+
+    public static EntitePreference GetPreferenceByNoUtilisateur(int noUtilisateur)
+    {
+        SqlConnection dbConn2 = Connection2();
+        EntitePreference preference = new EntitePreference();
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn2;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "select NoPreference, Valeur from ValeursPreferences " +
+                    "where NoUtilisateur = @No";
+            cmd.Parameters.AddWithValue("@no", noUtilisateur);
+
+            SqlDataReader drDDL = cmd.ExecuteReader();
+
+            while (drDDL.Read())
+            {
+                switch ((int)drDDL[0])
+                {
+                    case 1:
+                        preference.CouleurFond = (string)drDDL[1];
+                        break;
+                    case 2:
+                        preference.CouleurTexte = (string)drDDL[1];
+                        break;
+                    case 3:
+                        preference.CourrielSiAjout = (string)drDDL[1]=="1";
+                        break;
+                    case 4:
+                        preference.CourrielSiAppropriation = (string)drDDL[1] == "1";
+                        break;
+                    case 5:
+                        preference.CourrielSiSuppression = (string)drDDL[1] == "1";
+                        break;
+                    case 6:
+                        preference.ImageFond = (string)drDDL[1];
+                        break;
+                    case 7:
+                        preference.NbFilmParPage = int.Parse((string)drDDL[1]);
+                        break;
+                }
+            }
+        }
+        dbConn2.Close();
+
+        return preference;
     }
 }

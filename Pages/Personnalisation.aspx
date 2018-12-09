@@ -57,22 +57,28 @@
                     
                     <hr />
                 </div>
+                <br />
+                <div class="row">
+                    <div class="col-sm-8">
+                        <label for="comments">
+                            Nombre de DVDs par page :
+                        </label>
+                    </div>
+                    <div class="col-sm-4">
+                        <asp:TextBox runat="server" ID="nbDVDPage" 
+                            CssClass="form-control" placeholder="Nouveau mot de passe" 
+                            type="number" min="10" value="10" max="100" step="5"/>
+                    </div>
+                </div>
             </div>
+        <br />
+         <hr />
             <div class="row">
                 <div class="col-sm-12 form-group">
                     <button type="submit" class="btn btn-lg btn-primary btn-block" >Modifier la personnalisation →</button>
                 </div>
             </div>
-
-        <div id="success_message" style="width:100%; height:100%; display:none; ">
-            <h3>Message envoyer sans erreure!</h3>
-        </div>
-        <div id="error_message"
-                style="width:100%; height:100%; display:none; ">
-                    <h3>Error</h3>
-                    Une erreure est survenue
-
-        </div>
+        <br />
     </div>
 </div>
 </asp:Content>
