@@ -14,19 +14,28 @@ public partial class _Default : System.Web.UI.Page
     }
     private void InitialiserDestinaire()
     {
-        if (Request.QueryString["Destinataire"] == null)
-        {
-            destinaire.Text = "";
-        }
-        else
-        {
-            strDestinataire = Request.QueryString["Destinataire"];
-            destinaire.Text = strDestinataire;
-            destinaire.Enabled = false;
+        if (!IsPostBack) { 
+            if (Request.QueryString["Destinataire"] == null)
+            {
+                destinaire.Text = "";
+            }
+            else
+            {
+                strDestinataire = Request.QueryString["Destinataire"];
+                destinaire.Text = strDestinataire;
+                destinaire.Enabled = false;
+            }
         }
     }
-
-   public void envoyerMessage(object sender, EventArgs e)
+    protected void fermerSucces(object sender, EventArgs e)
+    {
+        success_message.Visible = false;
+    }
+    protected void fermerError(object sender, EventArgs e)
+    {
+        error_message.Visible = false;
+    }
+    public void envoyerMessage(object sender, EventArgs e)
    {
       if ((string.IsNullOrEmpty(tbMessage.Text)) || (string.IsNullOrEmpty(destinaire.Text)))
       {

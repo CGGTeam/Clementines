@@ -565,6 +565,7 @@ static public class SQL
 
     public static List<EntiteLangue> FindAllLangue()
     {
+        SQL.Connection2();
         List<EntiteLangue> lstLangues = new List<EntiteLangue>();
         String strRequete = "select * from Langues";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
@@ -603,6 +604,7 @@ static public class SQL
 
     public static List<EntiteSupplements> FindAllSupplement()
     {
+        SQL.Connection2();
         List<EntiteSupplements> lstSupplements = new List<EntiteSupplements>();
         String strRequete = "select * from Supplements";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
@@ -772,9 +774,9 @@ static public class SQL
 
                 intNbAjout += cmd.ExecuteNonQuery();
             }
+            CreerExemplaire(noFilm, noUtilisateurMAJ);     
         }
         return intNbAjout;
-
     }
 
     public static int ApproprierDVD(int noNewOwnerNo, int noFilm)
@@ -849,36 +851,33 @@ static public class SQL
         return estPresent;
     }
 
-    public static void CreerExemplaire(int noFilm, string nomDeUtilisateur)
+    public static bool CreerExemplaire(int noFilm, int noUtilisateur)
     {
-        int noUtilisateur = FindNoUtilisateurByName(nomDeUtilisateur);
-        int noExemplaire = FindNextNoExemplaire(noFilm);
+        int intNbAjout =0;
+        DateTime now = DateTime.Now;
+        int noExemplaire = (int.Parse(noFilm + "01"));
         using (SqlCommand cmd = new SqlCommand())
         {
             cmd.Connection = dbConn;
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "INSERT INTO EmpruntsFilms(NoExemplaire, NoUtilisateurProprietaire) Values (@no, @proprietaire)";
+            cmd.CommandText = "INSERT INTO Exemplaires(NoExemplaire, NoUtilisateurProprietaire) Values (@no, @proprietaire)";
             cmd.Parameters.AddWithValue("@no", noExemplaire);
             cmd.Parameters.AddWithValue("@proprietaire", noUtilisateur);
 
-            int intNbAjout = cmd.ExecuteNonQuery();
+            intNbAjout += cmd.ExecuteNonQuery();
         }
-    }
-    private static int FindNextNoExemplaire(int noFilm)
-    {
-        String strRequete = "select max(NoFilm) from Films";
-
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
-
-        SqlDataReader drDDL = cmdDDL.ExecuteReader();
-        while (drDDL.Read())
+        if (intNbAjout == 0) return false;
+        using (SqlCommand cmd = new SqlCommand())
         {
-            noFilm = (int)drDDL[0];
+            cmd.Connection = dbConn;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "INSERT INTO EmpruntsFilms(NoExemplaire, NoUtilisateur, DateEmprunt) Values (@no, @proprietaire, @date)";
+            cmd.Parameters.AddWithValue("@no", noExemplaire);
+            cmd.Parameters.AddWithValue("@proprietaire", noUtilisateur);
+            cmd.Parameters.AddWithValue("@date", now);
+
+            intNbAjout += cmd.ExecuteNonQuery();
         }
-        drDDL.Close();
-        return noFilm + 1;
+        return intNbAjout >= 1;
     }
-
-
-
 }
