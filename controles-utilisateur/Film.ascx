@@ -1,6 +1,9 @@
 ﻿<%@ Control Language="C#" %>
 <%@ Register tagprefix="pers" TagName="Personne" Src="Personne_Ddl_Ajout.ascx" %>
+<%@ Import Namespace="System.IO" %>
 <script runat="server">
+
+
     static string prevPage = String.Empty;
 
     protected void Page_Load(object sender, EventArgs e)
@@ -154,16 +157,67 @@
         choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
         choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid)
         {
-            //on ajoute
-            //tbTitreFrancais.Text = "Aucun validator actif";
 
+            //faire l'ajout de nouveaux producteur et réalisateur s'il en est le cas.
+                
+            int noUtilisateurCourrant;
+            string utilisateur = HttpContext.Current.User.Identity.Name;
+            SQL.Connection();// a enlever car requete a changer et ouvre la connextion dans cet état
+            noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
+            //Récupérer toutes mes informations dans mes variables. (pour le table Film)
+            Nullable<int> anneSortie = ToNullableInt(ddlAnnee.SelectedItem.ToString());
+            string categorie = ddlCategorie.SelectedValue.ToString();//changer 0 pour null (string)
+            string format = ddlFormat.SelectedValue.ToString();//changer 0 pour null (string)
+            DateTime date = DateTime.Now;
+            string noUtilisateur = noUtilisateurCourrant.ToString();
+            string resume = tbResume.Text.Trim(); // mettre null si ""
+            Nullable<int> duree = ToNullableInt(tbDuree.Text.ToString().Trim());
+            bool filmOriginal = cbOriginal.Checked;
+            string imagePochette = "";
+            //récupération et téléchargement de l'image dans nos ressources
+            if(btnUploadImagePochette.HasFile)
+            {
+                try
+                {
+                    string filename = Path.GetFileName(btnUploadImagePochette.FileName);
+                    btnUploadImagePochette.SaveAs(Server.MapPath("~/static/images/") + filename);
+                    imagePochette = filename;
+                }
+                catch(Exception ex)
+                {
+                    //mettre une erreur?
+                }
+            }
 
+            Nullable<int> nbDisques = ToNullableInt(ddlNbDisques.SelectedItem.ToString());
+            string titreFrancais = tbTitreFrancais.Text;
+            string titreOriginal = tbTitreOriginal.Text.Trim();
+            bool versionEtendue = cbEtendue.Checked;
+            //s'organiser pour faire l'ajout des nouveaux réalisateur et producteur en premier s'il en est le cas.
+            string realisateur = ""; //mettre null a 0 (string)
+            if (!choixRealisateur.ControleTextBox.Visible)
+            {
+                realisateur = choixRealisateur.ControleDDL.SelectedValue.ToString();
+            }
+
+            string producteur = "";  //mettre null a 0 (string)
+            if (!choixProducteur.ControleTextBox.Visible)
+            {
+                producteur = choixProducteur.ControleDDL.SelectedValue.ToString();
+            }
+
+            string extras = tbExtras.Text.Trim();//mettre null si ""
+
+            tbTitreFrancais.Text = imagePochette; // mettre null si ""
         }
-        else
-        {
-            //on fait what ever qu'on veut, cas de validation active.
-        }
+    }
+
+    public int? ToNullableInt(string s)
+    {
+        int i;
+        if (int.TryParse(s, out i)) return i;
+        return null;
     }
 
     protected void chargeListeAnneeSortie()
@@ -308,14 +362,21 @@
             </div>
           </div>
         
-        <!-- Image incertain-->
+        <!-- Image -->
         <asp:Label runat="server">Image de la pochette :</asp:Label>
          <div class="input-group">
           <span class="input-group-addon">   
               <i class="glyphicon glyphicon glyphicon-file"></i>
           </span>
-           <input type="file" class="form-control">
-        </div> 
+             <asp:FileUpload id="btnUploadImagePochette" runat="server" CssClass="form-control"/>
+        </div>
+        <!-- Ajouter des extras -->
+        <br />
+          <asp:Label runat="server">Liens des extras :</asp:Label>
+        <asp:TextBox ID="tbExtras" runat="server"
+           MaxLength="25" CssClass="form-control"
+            placeholder="URL..."/>
+        <br />
     </div>
     <!-- ------------------------------------------------------------------------------------------------------------------------------------- -->
     <div class="col-sm-6">
