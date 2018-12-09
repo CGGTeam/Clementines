@@ -19,6 +19,7 @@
 
         }
         InitialiserDestinaire();
+        InitialiserVieuxRetour();
     }
 
     protected void Retour(object sender, EventArgs e)
@@ -36,6 +37,18 @@
         {
             string noFilm = Request.QueryString["Film"];
             LoadFilm(noFilm);
+        }
+    }
+    private void InitialiserVieuxRetour()
+    {
+        if (Request.QueryString["Retour"] == null)
+        {
+            
+        }
+        else
+        {
+            btnApproprier.Visible = false;
+            prevPage = Request.QueryString["Retour"];
         }
     }
     private void LoadFilm(string id)
@@ -92,7 +105,8 @@
         int nbRetour = SQL.ApproprierDVD(utilCourant.NoUtilisateur, film.film.NoFilm);
         if (nbRetour > 0)
         {
-            Response.Redirect(Request.Url.AbsoluteUri);
+            String url = "~/Pages/AppropriationDVD.aspx?Film=" + film.film.NoFilm + "&Retour=" + prevPage;
+            Response.Redirect(url);
         }
     }
 </script>
