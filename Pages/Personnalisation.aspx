@@ -18,7 +18,8 @@
                     <label for="tbNewPassword">  
                         Password
                     </label>
-                    <input id="tbNewPassword" placeholder="Nouveau mot de passe" type="text" class="glyphicon glyphicon-lock form-control"/>
+                    <asp:TextBox runat="server" ID="tbNewPassword" 
+                        CssClass="form-control" placeholder="Nouveau mot de passe" />
                 </div>
                 <hr />
                 <div id="divPersoAdmin" class="col-sm-12 form-group">
@@ -38,41 +39,46 @@
                 </div>
                 <div id="divGestionPref" class="col-sm-12 form-group">
                     <h2>Gestion préférences utilisateurs</h2>
-                    <label for="comments">
-                        Recevoir un courriel lors de l'ajout d'un ou plusieurs DVDs
-                    </label>
-                    <input id="cbCourrielLorsRetrait" type="checkbox" class="checkbox checkbox-inline" checked="checked"/>
-                    <label for="comments">
-                        Recevoir un courriel lors du retrait d'un DVD
-                    </label>
-                    <input id="cbCourrielLorsAjout" type="checkbox" class="checkbox checkbox-inline" checked="checked"/>
-                    <label for="comments">
-                        Recevoir un courriel lors de l'appropriation d'un DVD
-                    </label>
-                    <input id="cbCourrielLorsAppropriation" type="checkbox" class="checkbox checkbox-inline" checked="checked"/>
+
                     <br />
+
+                    <asp:CheckBox runat="server" class="form-check-input" id="cbCourrielRetrait" Checked="true"/>
+                    <label class="form-check-label" for="cbPersonne"> Recevoir un courriel lors de l'ajout d'un DVD</label>
+                    
+                    <br />
+
+                    <asp:CheckBox runat="server" class="form-check-input" id="cbCourrielAjout" Checked="true"/>
+                    <label class="form-check-label" for="cbPersonne"> Recevoir un courriel lors du retrait d'un DVD</label>             
+                    
+                    <br />
+                    
+                    <asp:CheckBox runat="server" class="form-check-input" id="cbRecevoirCourrielAppropiation" Checked="true" OnClick="return filtrer();" />
+                    <label class="form-check-label" for="cbPersonne">Recevoir un courriel lors de l'appropriation d'un DVD</label>
+                    
                     <hr />
-                    <label for="comments">
-                        Nombre de DVDs par page (10 à 100)
-                    </label>
-                    <input id="nbDVDPage" type="number" min="10" value="10" max="100" step="5"/>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-sm-8">
+                        <label for="comments">
+                            Nombre de DVDs par page :
+                        </label>
+                    </div>
+                    <div class="col-sm-4">
+                        <asp:TextBox runat="server" ID="nbDVDPage" 
+                            CssClass="form-control" placeholder="Nouveau mot de passe" 
+                            type="number" min="10" value="10" max="100" step="5"/>
+                    </div>
                 </div>
             </div>
+        <br />
+         <hr />
             <div class="row">
                 <div class="col-sm-12 form-group">
                     <button type="submit" class="btn btn-lg btn-primary btn-block" >Modifier la personnalisation →</button>
                 </div>
             </div>
-
-        <div id="success_message" style="width:100%; height:100%; display:none; ">
-            <h3>Message envoyer sans erreure!</h3>
-        </div>
-        <div id="error_message"
-                style="width:100%; height:100%; display:none; ">
-                    <h3>Error</h3>
-                    Une erreure est survenue
-
-        </div>
+        <br />
     </div>
 </div>
 </asp:Content>

@@ -10,7 +10,13 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        EntiteUtilisateur utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
 
+        if (utilCourant.TypeUtilisateur == 'A')
+        {
+            nav_dvdenmain.Visible = false;
+            nav_ajoutfilm.Visible = false;
+        }
     }
 
     protected void PageLogin(Object sender, EventArgs e)
