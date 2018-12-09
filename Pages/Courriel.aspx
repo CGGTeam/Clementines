@@ -14,6 +14,19 @@
             Veuillez écrire votre message:
         </p>
         <hr />
+
+        <div runat="server" Visible="false" id="error_message" class="alert alert-danger" role="alert">
+            <asp:Label runat="server" ID="lblError">Une erreure est survenue, le message et le destinataire ne peuvent pas être vide.</asp:Label>
+            <asp:LinkButton runat="server" type="button" class="btn-link pull-right"  OnClick="fermerError">
+                <span class="glyphicon glyphicon-remove"></span>
+            </asp:LinkButton>
+        </div>
+        <div runat="server" Visible="false" id="success_message" class="alert alert-success" role="alert">
+            <asp:Label runat="server" ID="lblSucces">Message envoyer sans erreure!</asp:Label>
+            <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces">
+                <span class="glyphicon glyphicon-remove pull-right"></span>
+            </asp:LinkButton>
+        </div>
             <div class="row">
                <div class="col-sm-12 form-group">
                     <label for="comments">
@@ -39,15 +52,6 @@
                     <asp:Button CssClass="btn btn-lg btn-primary btn-block" Text="Envoyer →" OnClick="envoyerMessage" runat="server"/>
                 </div>
             </div>
-
-        <div id="success_message" style="width:100%; height:100%;" runat="server" Visible="false">
-            <h3>Message envoyer sans erreure!</h3>
-        </div>
-        <div id="error_message"
-                style="width:100%; height:100%;" runat="server" Visible="false">
-                    <h3>Error</h3>
-                    Une erreure est survenue, le message et le destinataire ne peuvent pas être vide.
-        </div>
     </div>
 </div>
 </asp:Content>

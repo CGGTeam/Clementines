@@ -172,7 +172,7 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
     public void populerListeFilms()
    {
       SQL.Connection();
-      lstExemplaires = SQL.FindAllUserExemplaires(noUtilisateurVisionne);
+      lstExemplaires = SQL.FindAllUserExemplairesEmpruntes(noUtilisateurVisionne);
    }
 
    public void onDdlUtilisateurChanged(Object sender, EventArgs e)
