@@ -565,6 +565,7 @@ static public class SQL
 
     public static List<EntiteLangue> FindAllLangue()
     {
+        SQL.Connection2();
         List<EntiteLangue> lstLangues = new List<EntiteLangue>();
         String strRequete = "select * from Langues";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
@@ -603,6 +604,7 @@ static public class SQL
 
     public static List<EntiteSupplements> FindAllSupplement()
     {
+        SQL.Connection2();
         List<EntiteSupplements> lstSupplements = new List<EntiteSupplements>();
         String strRequete = "select * from Supplements";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
