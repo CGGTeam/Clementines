@@ -15,35 +15,39 @@
         </p>
         <hr />
             <div class="row">
-                <div class="col-sm-12 form-group">
+               <div class="col-sm-12 form-group">
                     <label for="comments">
-                        Destinaire :</label>
-                    <asp:TextBox runat="server" CssClass="form-control" ID="destinaire" placeholder="Votre distinaire" />
+                        Destinaire :
+                    </label>
+                   <asp:TextBox runat="server" CssClass="form-control" ID="destinaire" placeholder="Votre distinaire" />
+                    
+                   <br />
+                    <label for="comments">
+                        Message :
+                    </label>
+                    <asp:TextBox CssClass="form-control" ID="tbMessage" MaxLength="60000" Rows="7" TextMode="MultiLine" placeholder="Votre message" style="max-width:100%; max-height:600px;" runat="server"/>
+                    <asp:CustomValidator id="messagePresent"
+                       OnServerValidate="envoyerMessage"
+                       ControlToValidate="tbMessage"
+                       ValidateEmptyText="true"
+                       runat="server"/>
 
-                    <br />
-                    <label for="comments">
-                        Message :</label>
-                    <textarea class="form-control" name="comments" 
-                        id="comments" placeholder="Votre message" maxlength="6000" rows="7" style="max-width:100%; max-height:600px;"></textarea>
                 </div>
-            </div>
-
+               </div>
                         <div class="row">
                 <div class="col-sm-12 form-group">
-                    <button type="submit" class="btn btn-lg btn-primary btn-block" >Envoyer →</button>
+                    <asp:Button CssClass="btn btn-lg btn-primary btn-block" Text="Envoyer →" OnClick="envoyerMessage" runat="server"/>
                 </div>
             </div>
 
-        <div id="success_message" style="width:100%; height:100%; display:none; ">
+        <div id="success_message" style="width:100%; height:100%;" runat="server" Visible="false">
             <h3>Message envoyer sans erreure!</h3>
         </div>
         <div id="error_message"
-                style="width:100%; height:100%; display:none; ">
+                style="width:100%; height:100%;" runat="server" Visible="false">
                     <h3>Error</h3>
-                    Une erreure est survenue
-
+                    Une erreure est survenue, le message et le destinataire ne peuvent pas être vide.
         </div>
     </div>
 </div>
 </asp:Content>
-

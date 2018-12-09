@@ -203,8 +203,68 @@ static public class SQL
       drDDL.Close();
       return lstFilms;
    }
+    public static List<EntiteExemplaire> FindAllUserExemplairesEmpruntes(int id)
+    {
+        List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
+        String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
+                          "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
+                          "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra, " +
+                            "Utilisateurs.NoUtilisateur, Utilisateurs.NomUtilisateur, Utilisateurs.Courriel, Utilisateurs.MotPasse, Utilisateurs.TypeUtilisateur " +
+                          "FROM Films " +
+                          "LEFT JOIN Categories ON Films.Categorie = Categories.NoCategorie " +
+                          "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
+                          "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
+                          "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur " +
+                          "inner join EmpruntsFilms on Films.NoFilm = LEFT(CONVERT(NVARCHAR, EmpruntsFilms.NoExemplaire), 6) " +
+                          "inner join Utilisateurs on EmpruntsFilms.NoUtilisateur = Utilisateurs.NoUtilisateur " +
+                          "where EmpruntsFilms.NoUtilisateur = @id " +
+                          "order by Films.TitreFrancais";
 
-   public static List<EntiteExemplaire> FindAllUserExemplaires(int id)
+        System.Diagnostics.Debug.WriteLine(strReq);
+
+
+        SqlParameter paramUsername = new SqlParameter("@id", id);
+
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            EntiteExemplaire exemplaire = new EntiteExemplaire
+            {
+                film = new EntiteFilm((int)drDDL[0],
+               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+               (DateTime)drDDL[4],
+               (string)drDDL[5],
+               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+               (string)drDDL[11],
+               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]),
+
+                proprietaire = new EntiteUtilisateur((int)drDDL[17],
+               (string)drDDL[18],
+               (string)drDDL[19],
+               (int)drDDL[20],
+               Convert.ToChar((string)drDDL[21]))
+            };
+            lstExemplaires.Add(exemplaire);
+        }
+        drDDL.Close();
+
+        return lstExemplaires;
+    }
+
+    public static List<EntiteExemplaire> FindAllUserExemplaires(int id)
    {
       List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
       String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
@@ -721,14 +781,12 @@ static public class SQL
     {
         string strFilm = noFilm.ToString();
         SqlConnection dbConn2 = Connection2();
-        String strRequete = "UPDATE Exemplaires SET NoUtilisateurProprietaire = " + noNewOwnerNo + " WHERE NoExemplaire = " + strFilm + "01" + "; ";
-
-        strRequete += "UPDATE Films SET DateMAJ = " + DateTime.Now.ToShortDateString() + ", NoUtilisateurMAJ = " + noNewOwnerNo + " WHERE NoFilm = " + strFilm + "; ";
+        String strRequete = "UPDATE Films SET DateMAJ = '" + DateTime.Now.ToShortDateString() + "', NoUtilisateurMAJ = " + noNewOwnerNo + " WHERE NoFilm = " + strFilm + "; ";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         int nbLignes = cmdDDL.ExecuteNonQuery();
         //System.Diagnostics.Debug.WriteLine(strRequete);
         
-        String strRequete2 = "UPDATE Films SET DateMAJ = " + "'" + DateTime.Now.ToString() + "'" + ", NoUtilisateurMAJ = " + noNewOwnerNo + " WHERE NoFilm = " + strFilm + "; ";
+        String strRequete2 = "UPDATE EmpruntsFilms SET DateEmprunt = " + "'" + DateTime.Now.ToString() + "'" + ", NoUtilisateur = " + noNewOwnerNo + " WHERE NoExemplaire = " + strFilm + "01" + "; ";
         SqlCommand cmdDDL2 = new SqlCommand(strRequete2, dbConn2);
         int nbLignes2 = cmdDDL2.ExecuteNonQuery();
 

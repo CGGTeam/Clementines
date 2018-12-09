@@ -25,4 +25,18 @@ public partial class _Default : System.Web.UI.Page
             destinaire.Enabled = false;
         }
     }
+
+   public void envoyerMessage(object sender, EventArgs e)
+   {
+      if ((string.IsNullOrEmpty(tbMessage.Text)) || (string.IsNullOrEmpty(destinaire.Text)))
+      {
+         success_message.Visible = false;
+         error_message.Visible = true;
+      }
+      else
+      {
+         success_message.Visible = true;
+         error_message.Visible = false;
+      }
+   }
 }

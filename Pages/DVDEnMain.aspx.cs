@@ -144,7 +144,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    {
       Button btn = (Button)sender;
       System.Diagnostics.Debug.WriteLine("Modifier: " + btn.ID);
-      String url = "~/Pages/ModifierFilm.aspx";
+      String url = "~/Pages/ModifierFilm.aspx?Film="+btn.ID;
       Response.Redirect(url, true);
    }
    
@@ -152,7 +152,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    public void populerListeFilms()
    {
       SQL.Connection();
-      lstExemplaires = SQL.FindAllUserExemplaires(noUtilisateurCourrant);
+      lstExemplaires = SQL.FindAllUserExemplairesEmpruntes(noUtilisateurCourrant);
    }
 
 
