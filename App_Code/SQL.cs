@@ -205,6 +205,7 @@ static public class SQL
    }
     public static List<EntiteExemplaire> FindAllUserExemplairesEmpruntes(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
         String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
                           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
@@ -260,7 +261,7 @@ static public class SQL
             lstExemplaires.Add(exemplaire);
         }
         drDDL.Close();
-
+        dbConn2.Close();
         return lstExemplaires;
     }
 
@@ -622,6 +623,7 @@ static public class SQL
     /// EntiteUtilisateur
     public static EntiteUtilisateur FindUtilisateurById(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         EntiteUtilisateur utilisateur = null;
         String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
         SqlParameter paramUsername = new SqlParameter("@id", id);
@@ -636,6 +638,7 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return utilisateur;
     }
 
@@ -666,6 +669,7 @@ static public class SQL
     /// EntiteUtilisateur
     public static int FindNoUtilisateurByName(string name)
     {
+        SqlConnection dbConn2 = Connection2();
         int noUtilisateur = 0;
         String strRequete = "select NoUtilisateur from Utilisateurs where NomUtilisateur = @name";
         SqlParameter paramUsername = new SqlParameter("@name", name);
@@ -679,6 +683,7 @@ static public class SQL
             noUtilisateur = (int)drDDL[0];
         }
         drDDL.Close();
+        dbConn2.Close();
         return noUtilisateur;
     }
     /// Permet de récuper le dvd avec l'id donné

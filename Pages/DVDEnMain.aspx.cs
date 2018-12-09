@@ -17,7 +17,6 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    protected void Page_Load(object sender, EventArgs e)
    {
         string utilisateur = HttpContext.Current.User.Identity.Name;
-        SQL.Connection();
         noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
       // initialiser label pour message erreur et autres
@@ -158,7 +157,7 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
     public void populerListeFilms()
    {
-      SQL.Connection();
+      
       lstExemplaires = SQL.FindAllUserExemplairesEmpruntes(noUtilisateurCourrant);
    }
 

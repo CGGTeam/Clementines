@@ -47,7 +47,6 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    {
       if (noUtilisateurVisionne != 0)
       {
-         SQL.Connection();
          EntiteUtilisateur util = SQL.FindUtilisateurById(noUtilisateurVisionne);
 
          lblNomUtilisateur.Text = "Vous visualisez les DVDs de " + util.NomUtilisateur;
@@ -82,6 +81,7 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
                TableRow tr2 = librairie.trDYN(table);
                TableCell td2 = librairie.tdDYN(tr2, "td_courriel_" + lstExemplaires[i].film.NoFilm, "");
                Button btn2 = librairie.btnDYN(td2, "courriel_" + lstExemplaires[i].film.NoFilm, "btn btn-default boutons-options-film", "Envoyer courriel");
+                    btn2.Click += new EventHandler(EnvoyerUnCourriel);
 
                TableRow tr3 = librairie.trDYN(table);
                TableCell td3 = librairie.tdDYN(tr3, "td_appropriation_" + lstExemplaires[i].film.NoFilm, "");
@@ -165,6 +165,14 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
     {
         Button btn = (Button)sender;
         String url = "~/Pages/AppropriationDVD.aspx?Film=" + btn.ID.Replace("appropriation_", "");
+        Response.Redirect(url, true);
+    }
+
+    private void EnvoyerUnCourriel(object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        EntiteUtilisateur utilCourriel = SQL.FindUtilisateurById(noUtilisateurVisionne);
+        String url = "~/Pages/Courriel.aspx?Destinataire=" + utilCourriel.NomUtilisateur;
         Response.Redirect(url, true);
     }
 
