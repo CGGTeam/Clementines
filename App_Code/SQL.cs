@@ -797,6 +797,25 @@ static public class SQL
         return nbLignes + nbLignes2;
     }
 
+    public static int SupprimerDVD(int noFilm)
+    {
+        string strFilm = noFilm.ToString();
+        SqlConnection dbConn2 = Connection2();
+        String strRequete = "DELETE FROM FilmsActeurs WHERE NoFilm = " + noFilm + "; ";
+        strRequete += "DELETE FROM FilmsLangues WHERE NoFilm = " + noFilm + "; ";
+        strRequete += "DELETE FROM FilmsSousTitres WHERE NoFilm = " + noFilm + "; ";
+        strRequete += "DELETE FROM FilmsSupplements WHERE NoFilm = " + noFilm + "; ";
+        strRequete += "DELETE FROM Films WHERE NoFilm = " + noFilm + "; ";
+        strRequete += "DELETE FROM EmpruntsFilms WHERE NoExemplaire = " + noFilm + "01" + "; ";
+        strRequete += "DELETE FROM Exemplaires WHERE NoExemplaire = " + noFilm + "01" + "; ";
+        
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        int nbLignes = cmdDDL.ExecuteNonQuery();
+
+        dbConn2.Close();
+        return nbLignes;
+    }
+
     public static bool checkIfNomFilmExiste(string titre)
     {
         bool estPresent = false;

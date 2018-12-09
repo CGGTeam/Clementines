@@ -69,7 +69,8 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
             TableRow tr3 = librairie.trDYN(table);
             TableCell td3 = librairie.tdDYN(tr3, "td_supprimer_" + lstExemplaires[i].film.NoFilm, "");
             Button btn3 = librairie.btnDYN(td3, "supprimer_" + lstExemplaires[i].film.NoFilm, "btn btn-default boutons-options-film", "Supprimer");
-            
+            btn3.Click += new EventHandler(supprimerOnClick);
+
             Image img = librairie.imgDYN(panelBody, "img_" + lstExemplaires[i].film.NoFilm, lstExemplaires[i].film.ImagePochette, "image-vignette");
 
             Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstExemplaires[i].film.NoFilm, "panel-footer");
@@ -143,13 +144,19 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    public void modifieronClick(Object sender, EventArgs e)
    {
       Button btn = (Button)sender;
-      System.Diagnostics.Debug.WriteLine("Modifier: " + btn.ID);
-      String url = "~/Pages/ModifierFilm.aspx?Film="+btn.ID;
+      String url = "~/Pages/ModifierFilm.aspx?Film=" + btn.ID.Replace("modifier_", "");
       Response.Redirect(url, true);
    }
-   
 
-   public void populerListeFilms()
+    public void supprimerOnClick(Object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        String url = "~/Pages/SupprimerDVD.aspx?Film=" + btn.ID.Replace("supprimer_", "");
+        Response.Redirect(url, true);
+    }
+
+
+    public void populerListeFilms()
    {
       SQL.Connection();
       lstExemplaires = SQL.FindAllUserExemplairesEmpruntes(noUtilisateurCourrant);
