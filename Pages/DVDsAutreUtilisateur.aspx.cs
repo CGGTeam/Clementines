@@ -15,10 +15,21 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
     EntiteUtilisateur utilCourant;
 
-   protected void Page_Load(object sender, EventArgs e)
+    private void Refresh(object sender, EventArgs e)
+    {
+        phVignettes.Controls.Clear();
+        phChangerPageHaut.Controls.Clear();
+        phChangerPage.Controls.Clear();
+        Page_Load(sender, e);
+    }
+    protected void Page_Load(object sender, EventArgs e)
    {
-      // initialiser label pour message erreur et autres
-      Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
+        //subscribe au event d'ajout film
+        Button btnEnregistrer = (Button)filmAbrege.FindControl("btnEnregistrer");
+        btnEnregistrer.Click += new EventHandler(Refresh);
+
+        // initialiser label pour message erreur et autres
+        Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
 
         utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
         noUtilisateurCourrant = utilCourant.NoUtilisateur;

@@ -54,7 +54,7 @@
                     &nbsp;
                     <asp:Label id="lbl_user_connected" runat="server" Text="User" CssClass="user-connected"></asp:Label>
                     &nbsp;&nbsp;
-                    <button type="button" class="btn btn-danger" runat="server" id="Button1" onserverclick="PageLogin" causesvalidation="false">
+                    <button type="button" class="btn btn-danger" runat="server" id="Button1" style="width:75px;" onserverclick="PageLogin" causesvalidation="false">
                         <span class="glyphicon glyphicon-log-out"></span>
                     </button>
                 </div>

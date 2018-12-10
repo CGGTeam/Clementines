@@ -13,7 +13,7 @@
     <!-- Contenu de la page -->
         <h1>Mes DVDs</h1>
     <hr />
-    <pers:filmAbrege runat="server" id="tbNomFilm" placeholder="Nom du film"
+    <pers:filmAbrege runat="server" id="filmAbrege" placeholder="Nom du film"
         CssClass="form-control" titre="Enregistrer un nouveau film"></pers:filmAbrege>
 
         <asp:PlaceHolder id="phChangerPageHaut" runat="server" />
