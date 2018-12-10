@@ -32,6 +32,7 @@
         
         <br />
 
+    <asp:PlaceHolder id="phChangerPageHaut" runat="server" />
         <asp:PlaceHolder id="phVignettes" runat="server" />
         <asp:PlaceHolder id="phChangerPage" runat="server" />
     

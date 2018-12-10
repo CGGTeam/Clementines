@@ -325,6 +325,7 @@ static public class SQL
    }
     public static List<EntiteExemplaire> FindAllExemplaires()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
         String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
                           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
@@ -338,7 +339,7 @@ static public class SQL
                           "inner join Exemplaires on Films.NoFilm = LEFT(CONVERT(NVARCHAR, Exemplaires.NoExemplaire), 6) " +
                           "inner join Utilisateurs on Exemplaires.NoUtilisateurProprietaire = Utilisateurs.NoUtilisateur";
 
-        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn2);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
@@ -371,7 +372,7 @@ static public class SQL
             };
             lstExemplaires.Add(exemplaire);
         }
-        drDDL.Close();
+        dbConn2.Close();
 
         return lstExemplaires;
     }
