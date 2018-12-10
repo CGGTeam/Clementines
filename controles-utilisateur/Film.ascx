@@ -213,7 +213,7 @@
                 }
             }
 
-            int nbDisques = int.Parse(ddlNbDisques.SelectedItem.ToString());
+            int nbDisques = int.Parse(ddlNbDisques.SelectedValue);
             string titreFrancais = tbTitreFrancais.Text;
             string titreOriginal = tbTitreOriginal.Text.Trim();
             bool versionEtendue = cbEtendue.Checked;
@@ -273,7 +273,7 @@
         ddlNbDisques.Items.Add(new ListItem("-- Aucun --", "0"));
         for (int i = 1; i <= 99; i++)
         {
-            ddlNbDisques.Items.Add(i.ToString());
+            ddlNbDisques.Items.Add(new ListItem(i.ToString(), i.ToString()));
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Web;
 
@@ -1033,22 +1034,22 @@ static public class SQL
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = "INSERT INTO Films VALUES(@no, @anneeSortie, @categorie, @format, @date, @noUtilisateur, @resume, @dureeMinutes, @filmOriginal, @pochette, @nbDisques, @titreFrancais, @titreOriginal, @versionEtendue, @noRealisateur, @noProducteur, @extra)";
             cmd.Parameters.AddWithValue("@no", entite.NoFilm);
-            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie);
-            cmd.Parameters.AddWithValue("@categorie", entite.Categorie);
-            cmd.Parameters.AddWithValue("@format", entite.Format);
+            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie == -1? SqlInt32.Null : entite.AnneeSortie);
+            cmd.Parameters.AddWithValue("@categorie", entite.Categorie == "0"? SqlString.Null : entite.Categorie);
+            cmd.Parameters.AddWithValue("@format", entite.Format == "0" ? SqlString.Null : entite.Format);
             cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
             cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);
-            cmd.Parameters.AddWithValue("@resume", entite.Resume);
-            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree);
+            cmd.Parameters.AddWithValue("@resume", entite.Resume == "" ? SqlString.Null : entite.Resume);
+            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree == -1? SqlInt32.Null : entite.Duree);
             cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
-            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette);
-            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques);
+            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == ""? SqlString.Null : entite.ImagePochette);
+            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0? SqlInt32.Null : entite.NbDisques);//a revoir
             cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
-            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal);
+            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal == ""? SqlString.Null : entite.TitreOriginal);
             cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
-            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur);
-            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur);
-            cmd.Parameters.AddWithValue("@extra", entite.LienInternet);
+            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur == "0"? SqlString.Null : entite.NomRealisateur);
+            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
+            cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
             cmd.Connection.Close();
         }
@@ -1056,6 +1057,8 @@ static public class SQL
 
         return intNbAjout >= 1;
     }
+
+
     public static EntitePreference GetPreferenceByNoUtilisateur(int noUtilisateur)
     {
         SqlConnection dbConn2 = Connection2();
