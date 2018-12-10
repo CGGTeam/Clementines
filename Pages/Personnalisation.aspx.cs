@@ -33,6 +33,8 @@ public partial class _Default :  System.Web.UI.Page
 
     protected void modifier_Click(object sender, EventArgs e)
     {
+        string utilisateur = HttpContext.Current.User.Identity.Name;
+        int noUtilisateur = SQL.FindNoUtilisateurByName(utilisateur);
         if (PasswordPresent.IsValid && !passValide.IsValid)
         {
             succes.Visible = false;
@@ -40,15 +42,17 @@ public partial class _Default :  System.Web.UI.Page
             lblError.Text = "Le mot de passe doit être entre 11111 à 99999";
             return;
         }
-        string utilisateur = HttpContext.Current.User.Identity.Name;
-        int noUtilisateur = SQL.FindNoUtilisateurByName(utilisateur);
-
-        if (!SQL.UpdatePassword(noUtilisateur, int.Parse(tbNewPassword.Text))){
-            succes.Visible = false;
-            error.Visible = true;
-            lblError.Text = "Une erreure est survenue";
-            return;
+        else if(!string.IsNullOrEmpty(tbNewPassword.Text))
+        {
+            if (!SQL.UpdatePassword(noUtilisateur, int.Parse(tbNewPassword.Text)))
+            {
+                succes.Visible = false;
+                error.Visible = true;
+                lblError.Text = "Une erreure est survenue";
+                return;
+            }
         }
+    
 
         int nbParPages = 10;
         int.TryParse(nbDVDPage.Text, out nbParPages);

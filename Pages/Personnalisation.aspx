@@ -68,8 +68,6 @@
 
                     <br />
 
-                    <br />
-
                     <asp:CheckBox runat="server" class="form-check-input" id="cbCourrielAjout" Checked="true"/>
                     <label class="form-check-label" for="cbPersonne"> Recevoir un courriel lors du retrait d'un DVD</label>             
                     
