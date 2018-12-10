@@ -18,9 +18,10 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
       }
    }
 
-   public static void remplirListeUtilisateurs()
+   public void pageAjouterUtil(object sender, EventArgs e)
    {
-      
+      String url = "~/Pages/AjouterUtilisateur.aspx";
+      Response.Redirect(url, true);
    }
 
 

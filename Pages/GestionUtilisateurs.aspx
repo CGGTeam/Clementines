@@ -10,6 +10,8 @@
 <div runat="server" id="divBody" class="row">
    <!-- Liste des utilisateurs dans un tableau dynamique-->
    <asp:PlaceHolder ID="phDynamique" runat="server"/>
-
+   <div class="col-sm-6">
+        <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter un utilisateur" OnClick="pageAjouterUtil"/>
+    </div>
 </div>
 </asp:Content>
