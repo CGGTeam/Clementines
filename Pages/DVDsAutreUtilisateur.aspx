@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/PageMaster/MasterPage.master" CodeFile="DVDsAutreUtilisateur.aspx.cs" AutoEventWireup="true" Inherits="Pages_DVDsAutreUtilisateur" %>
+<%@ Register tagprefix="pers" TagName="filmAbrege" Src="../controles-utilisateur/NomFilm.ascx" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" Runat="Server">
     <!-- Pour ajouter des imports dans le head -->
@@ -31,6 +32,8 @@
         
         
         <br />
+    <pers:filmAbrege runat="server" id="filmAbrege"  Visible="false"
+        placeholder="Nom du film" CssClass="form-control"></pers:filmAbrege>
 
     <asp:PlaceHolder id="phChangerPageHaut" runat="server" />
         <asp:PlaceHolder id="phVignettes" runat="server" />
