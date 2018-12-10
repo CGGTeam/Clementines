@@ -32,7 +32,7 @@
 
     protected void chargeListeRequete(Personne_Ddl_Ajout control)
     {
-        SQL.Connection();
+        //SQL.Connection();
         if(control == choixProducteur)
         {
             List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
@@ -80,7 +80,7 @@
 
     protected void chargeListeSupplements()
     {
-        SQL.Connection();
+        //SQL.Connection();
         List<EntiteSupplements> lstSupplements = SQL.FindAllSupplement();
         lbSupplements.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteSupplements supplement in lstSupplements)
@@ -93,7 +93,7 @@
 
     protected void chargeListeSousTitres()
     {
-        SQL.Connection();
+        // SQL.Connection();
         List<EntiteSousTitres> lstSousTitres = SQL.FindAllSousTitre();
         lbSousTitre.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteSousTitres sousTitres in lstSousTitres)
@@ -106,7 +106,7 @@
 
     protected void chargeListeLangues()
     {
-        SQL.Connection();
+        //SQL.Connection();
         List<EntiteLangue> lstLangues = SQL.FindAllLangue();
         lbLangue.Items.Add(new ListItem("-- Aucune --", "0"));
         foreach (EntiteLangue langue in lstLangues)
@@ -119,7 +119,7 @@
 
     protected void chargeListeFormats()
     {
-        SQL.Connection();
+        //SQL.Connection();
         List<EntiteFormat> lstFormat = SQL.FindAllFormat();
         ddlFormat.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteFormat format in lstFormat)
@@ -130,7 +130,7 @@
 
     protected void chargeListeCategories()
     {
-        SQL.Connection();
+        //SQL.Connection();
         List<EntiteCategorie> lstCategorie = SQL.FindAllCategorie();
         ddlCategorie.Items.Add(new ListItem("-- Aucune --", "0"));
         foreach (EntiteCategorie categorie in lstCategorie)
@@ -155,7 +155,7 @@
         if (rerFieldValidatorTitreOriginal.IsValid && rangeValDuree.IsValid &&
         choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
         choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
-        choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid)
+        choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid && validationActeur())
         {
             string realisateur = "";
             string producteur = "";
@@ -179,10 +179,6 @@
                 SQL.ajouteProducteur(ID, nomProducteurNOUVEAU);
                 producteur = ID.ToString();
             }
-
-
-
-
 
             int noUtilisateurCourrant;
             string utilisateur = HttpContext.Current.User.Identity.Name;
@@ -276,6 +272,7 @@
                 }
             }
 
+
             //ajout d'un nouvel acteur 1 
             if (choixActeur1.ControleTextBox.Visible)
             {
@@ -285,13 +282,15 @@
                 SQL.ajouteActeur(ID, nomActeur);
 
                 //Ajouter dans la table filmacteur
-                SQL.ajouterFilmActeur(noFilm ,ID);
-            }else
+                SQL.ajouterFilmActeur(noFilm, ID);
+
+            }
+            else
             {
                 //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
                 if (choixActeur1.ControleDDL.SelectedValue != "0")
                 {
-                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur1.ControleDDL.SelectedValue));
+                    SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur1.ControleDDL.SelectedValue));
                 }
             }
             //ajout d'un nouvel acteur 2 
@@ -301,13 +300,14 @@
                 int ID = SQL.trouverDernierIDActeur();
                 ID++;
                 SQL.ajouteActeur(ID, nomActeur);
-                SQL.ajouterFilmActeur(noFilm ,ID);
-            }else
+                SQL.ajouterFilmActeur(noFilm, ID);
+            }
+            else
             {
                 //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
                 if (choixActeur2.ControleDDL.SelectedValue != "0")
                 {
-                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur2.ControleDDL.SelectedValue));
+                    SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur2.ControleDDL.SelectedValue));
                 }
             }
             //ajout d'un nouvel acteur 3 
@@ -317,24 +317,68 @@
                 int ID = SQL.trouverDernierIDActeur();
                 ID++;
                 SQL.ajouteActeur(ID, nomActeur);
-                SQL.ajouterFilmActeur(noFilm ,ID);
-            }else
+                SQL.ajouterFilmActeur(noFilm, ID);
+            }
+            else
             {
                 //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
                 if (choixActeur3.ControleDDL.SelectedValue != "0")
                 {
-                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur3.ControleDDL.SelectedValue));
+                    SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur3.ControleDDL.SelectedValue));
                 }
             }
 
+
+            //vider les tb
             foreach (Control controle in this.Controls)
             {
                 if (controle is TextBox)
                 {
                     TextBox tb = (TextBox)controle;
                     tb.Text = "";
-                } 
+                }
+
+                if (controle is DropDownList)
+                {
+                    DropDownList ddl = (DropDownList)controle;
+                    ddl.Items.Clear();
+                }
+
+                if (controle is CheckBox)
+                {
+                    CheckBox cb = (CheckBox)controle;
+                    cb.Checked = false;
+                }
+
+                if (controle is ListBox)
+                {
+                    ListBox lb = (ListBox)controle;
+                    lb.Items.Clear();
+                }
+
+                if (controle is Personne_Ddl_Ajout)
+                {
+                    Personne_Ddl_Ajout personne = (Personne_Ddl_Ajout) controle;
+                    personne.ControleDDL.Items.Clear();
+                    personne.ControleTextBox.Text = "";
+                    personne.ControleDDL.Visible = true;
+                    personne.ControleTextBox.Visible = false;
+                    personne.CssClass = "glyphicon glyphicon-option-vertical";
+                    chargeListeRequete(personne);
+                }
             }
+
+            //charger les listes
+
+
+            chargeListeSupplements();
+            chargeListeSousTitres();
+            chargeListeLangues();
+            chargeListeNbCD();
+            chargeListeAnneeSortie();
+            chargeListeFormats();
+            chargeListeCategories();
+
         }
     }
 
@@ -403,7 +447,49 @@
             Arguments.IsValid = true;
         }
     }
+
+    protected bool validationActeur()
+    {
+        bool retour = true;
+        if (choixActeur1.ControleDDL.SelectedValue == choixActeur2.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur2.ControleDDL.Visible || 
+            choixActeur1.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur3.ControleDDL.Visible|| 
+            choixActeur2.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.Visible && choixActeur3.ControleDDL.Visible)
+        {
+            error.Visible = true;
+            succes.Visible = false;
+            lblError.Text = "Vous ne pouvez pas avoir plusieurs fois le même acteur";
+            retour = false;
+        }
+        else
+        {
+            error.Visible = false;
+        }
+        return retour;
+    }
+
+    protected void fermerSucces(object sender, EventArgs e)
+    {
+        succes.Visible = false;
+    }
+    protected void fermerError(object sender, EventArgs e)
+    {
+        error.Visible = false;
+    }
 </script>
+
+        <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
+            <asp:Label runat="server" ID="lblSucces"></asp:Label>
+            <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces" CausesValidation="false">
+                <span class="glyphicon glyphicon-remove pull-right"></span>
+            </asp:LinkButton>
+        </div>
+
+        <div runat="server" Visible="false" id="error" class="alert alert-danger" role="alert">
+            <asp:Label runat="server" ID="lblError"></asp:Label>
+            <asp:LinkButton runat="server" type="button" class="btn-link pull-right"  OnClick="fermerError" CausesValidation="false">
+                <span class="glyphicon glyphicon-remove"></span>
+            </asp:LinkButton>
+        </div>
 
 <div class="row">
     <div class="col-sm-6">
@@ -581,6 +667,7 @@
         <asp:Label runat="server">Acteur 1 :</asp:Label>
         <pers:Personne ID="choixActeur1" runat="server"/>
         <br />
+         
         <!-- Acteur 2  Requete (control donnant choix)-->
         <asp:Label runat="server">Acteur 2 :</asp:Label>
         <pers:Personne ID="choixActeur2" runat="server"/>

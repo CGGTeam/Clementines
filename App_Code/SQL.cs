@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 
 /// <summary>
 /// Summary description for SQL
@@ -1354,29 +1355,129 @@ static public class SQL
         SqlCommand command = new SqlCommand(strReq, conn);
         SqlDataReader dataReader = command.ExecuteReader();
         dataReader.Read();
-        intRetour = int.Parse(dataReader[1].ToString());
+        intRetour = int.Parse(dataReader[0].ToString());
         dataReader.Close();
         conn.Close();
-        return intRetour; 
+        return intRetour;
     }
 
-   public static bool ajouterUtilisateur(string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
+   public static bool checkIfNomUtilisateurExiste(string nomUtilisateur)
+   {
+      SqlConnection dbConn2 = Connection2();
+      bool estPresent = false;
+      string strRequete = "SELECT COUNT(*) FROM Utilisateurs" +
+          " WHERE NomUtilisateur = @username";
+      SqlParameter paramTitre = new SqlParameter("@username", nomUtilisateur);
+      SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+      cmdDDL.Parameters.Add(paramTitre);
+      SqlDataReader drDDL = cmdDDL.ExecuteReader();
+
+      while (drDDL.Read())
+      {
+         estPresent = (int)drDDL[0] >= 1;
+      }
+      dbConn2.Close();
+      drDDL.Close();
+      return estPresent;
+   }
+
+   public static void ajouterUtilisateur(string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
    {
       bool retour = true;
       SqlConnection conn = Connection2();
       int noUtilisateur = idProchainUtilisateur();
-      string strRequete = "INSERT INTO Utilisateurs(NoUtilisateur, NomUtilisateur, Courriel, MotPasse, TypeUtilisateur) VALUES(" + nomUtilisateur + "," + nomUtilisateur + "," + courriel + "," + motPasse + "," + typeUtilisateur+");";
-      try
-      {
-         SqlCommand command = new SqlCommand(strRequete, conn);
-         command.ExecuteNonQuery();
-      }
-      catch(Exception err)
-      {
-         retour = false;
-      }
+      string strRequete = "INSERT INTO Utilisateurs(NoUtilisateur, NomUtilisateur, Courriel, MotPasse, TypeUtilisateur) VALUES(" + noUtilisateur + ",'" + nomUtilisateur + "','" + courriel + "'," + motPasse + ",'" + typeUtilisateur+"');";     
+      SqlCommand command = new SqlCommand(strRequete, conn);
+      command.ExecuteNonQuery();
       conn.Close();
-      return retour;
-      
+   }
+
+   public static Table fluxDeDonne()
+   {
+      string NomDataTable = "Utilisateurs";
+      SqlConnection conn = Connection2();
+      DataTable dtTable;
+      SqlDataAdapter cmdTable = new SqlDataAdapter("Select * from Utilisateurs", conn);
+      DataSet dsTable = new DataSet();
+
+      cmdTable.Fill(dsTable, NomDataTable);
+      dtTable = dsTable.Tables[NomDataTable];
+      conn.Close();
+
+      return remplirTable(dtTable);
+   }
+
+   /// <summary>
+   /// Cette fonction permet de retourner un flux de donnée HTML à partir de la table passé en paramètre
+   /// </summary>
+   /// <param name="dt"></param>
+   /// <returns></returns>
+   public static string remplirUneTable(DataTable dt)
+   {
+      string html = "<table class=\"table\">";
+      //ajouter les entêtes de colonnes
+      html += "<thead class=\"thead-dark\">";
+      html += "<tr>";
+      for (int i = 0; i < dt.Columns.Count; i++)
+         html += "<th scope=\"col\">" + dt.Columns[i].ColumnName + "</td>";
+      html += "</tr>";
+      html += "</thead>";
+      //add ajouter les lignes
+      for (int i = 0; i < dt.Rows.Count; i++)
+      {
+         html += "<tr>";
+         for (int j = 0; j < dt.Columns.Count; j++)
+         {
+            html += "<td>" + dt.Rows[i][j].ToString() + "</td>";
+         }
+
+
+         html += "</tr>";
+      }
+      html += "</table>";
+      return html;
+   }
+
+   public static Table remplirTable(DataTable dt)
+   {
+      Table table = new Table();
+      table.CssClass = "table";
+      TableRow tr = new TableRow();
+      tr.CssClass = "thead-dark";
+      table.Controls.Add(tr);
+      TableCell td = new TableCell();
+      //Remplir les entêtes
+      for(int i = 0; i < dt.Columns.Count; i++)
+      {
+         TableHeaderCell th = new TableHeaderCell();
+         th.Text = dt.Columns[i].ColumnName;
+         tr.Controls.Add(th);
+      }
+      //Remplir les données
+      for (int i = 0; i < dt.Rows.Count; i++)
+      {
+         tr = new TableRow();
+         table.Controls.Add(tr);
+         for (int j = 0; j < dt.Columns.Count; j++)
+         {
+            td = new TableCell();
+            td.Text = dt.Rows[i][j].ToString();
+            tr.Controls.Add(td);
+         }
+         //Ajouter le bouton modifier et supprimer
+         Button btnModfier = new Button();
+         btnModfier.ID = "modifier_" + dt.Rows[i][0].ToString();
+         btnModfier.Text = "Modifier";
+         td = new TableCell();
+         td.Controls.Add(btnModfier);
+         tr.Controls.Add(td);
+         Button btnSupprimer = new Button();
+         td = new TableCell();
+         btnSupprimer.ID = "supprimer_" + dt.Rows[i][0].ToString();
+         btnSupprimer.Text = "Supprimer";
+         td.Controls.Add(btnSupprimer);
+         tr.Controls.Add(td);
+      }
+      return table;
    }
 }
