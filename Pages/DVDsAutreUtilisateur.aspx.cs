@@ -22,6 +22,11 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
         utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
         noUtilisateurCourrant = utilCourant.NoUtilisateur;
+
+        // initialiser les préférences de nb films par page
+        EntitePreference pref = SQL.GetPreferenceByNoUtilisateur(noUtilisateurCourrant);
+        nbVignettesParPage = pref.NbFilmParPage;
+
         if (!Page.IsPostBack)
       {
             populerDDLUtilisateurs();
