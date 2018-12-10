@@ -1090,6 +1090,8 @@ static public class SQL
 
             intNbAjout = cmd.ExecuteNonQuery();
         }
+
+        dbConn2.Close();
         return intNbAjout == 1;
     }
 }
