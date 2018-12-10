@@ -13,8 +13,20 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
    private int noUtilisateurCourrant = 3; // {valeur déterminé lors de la connexion}
    private int pageCourante;
-   protected void Page_Load(object sender, EventArgs e)
+
+    private void Refresh(object sender, EventArgs e)
+    {
+        phVignettes.Controls.Clear();
+        phChangerPageHaut.Controls.Clear();
+        phChangerPage.Controls.Clear();
+        Page_Load(sender, e);
+    }
+    protected void Page_Load(object sender, EventArgs e)
    {
+        //subscribe au event d'ajout film
+        Button btnEnregistrer = (Button)filmAbrege.FindControl("btnEnregistrer");
+        btnEnregistrer.Click += new EventHandler(Refresh);
+
         string utilisateur = HttpContext.Current.User.Identity.Name;
         noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
@@ -25,32 +37,37 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
         // initialiser label pour message erreur et autres
         Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
       
-      populerListeFilms();
+        populerListeFilms();
 
-      // Vérifier la page courante
-      initialiserNoPage();
-
-      afficherPageVignettes(lblMessage);
+        // Vérifier la page courante
+        initialiserNoPage();
+        afficherPageVignettes(lblMessage);
    }
 
    public void afficherPageVignettes(Label lblMessage)
    {
-      if (lstExemplaires.Count == 0)
-      {
-         lblMessage.Text = "Vous avez ajouté aucun film ! (◕‿◕✿)";
-      }
-      else
-      {
-         int indexVignette = 0;
-         int numRow = 1;
-         Panel row = row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
+        if (lstExemplaires.Count == 0)
+        {
+            lblMessage.Text = "Vous avez ajouté aucun film ! (◕‿◕✿)";
+        }
+        else
+        {
+            LoadFilms();
+        }
+   }
+    public void LoadFilms()
+    {
 
-         for (int i = ((pageCourante - 1) * nbVignettesParPage); i < (pageCourante * nbVignettesParPage) && i < lstExemplaires.Count; i++)
-         {
-            if (indexVignette%4 == 0)
+        int indexVignette = 0;
+        int numRow = 1;
+        Panel row = row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
+
+        for (int i = ((pageCourante - 1) * nbVignettesParPage); i < (pageCourante * nbVignettesParPage) && i < lstExemplaires.Count; i++)
+        {
+            if (indexVignette % 4 == 0)
             {
-               numRow++;
-               row = row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
+                numRow++;
+                row = row = librairie.divDYN(phVignettes, "row_" + numRow, "row");
             }
             Panel col = librairie.divDYN(row, "col_" + lstExemplaires[i].film.NoFilm, "col-sm-3");
             Panel panel = librairie.divDYN(col, "panel_" + lstExemplaires[i].film.NoFilm, "panel panel-default");
@@ -77,20 +94,15 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
 
             Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstExemplaires[i].film.NoFilm, "panel-footer");
             Label lblTitre = librairie.lblDYN(panelFooter, "titre-film_" + lstExemplaires[i].film.NoFilm, lstExemplaires[i].film.TitreFrancais, "titre-film");
-            
+
             indexVignette++;
-         }
+        }
 
-         Panel row2 = librairie.divDYN(phChangerPage, "rowChangerPage", "row");
+        Panel row2 = librairie.divDYN(phChangerPage, "rowChangerPage", "row");
 
-         afficherPager(phChangerPage);
-         afficherPager(phChangerPageHaut);
-
-      }
-
-      
-
-   }
+        afficherPager(phChangerPage);
+        afficherPager(phChangerPageHaut);
+    }
 
    private void initialiserNoPage()
    {
