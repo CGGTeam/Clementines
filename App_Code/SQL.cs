@@ -1207,4 +1207,30 @@ static public class SQL
         dbConn2.Close();
         return intNbAjout == 1;
     }
+
+    public static List<string> GetListeUtilisateurNotifie(int noTypePreference)
+    {
+        // 4 = appropriation
+        // 5 = suppression
+        List<string> lstUtilisateur = new List<string>();
+        SqlConnection dbConn2 = Connection2();
+        
+        String strRequete = "select U.NomUtilisateur from UtilisateursPreferences UP " + 
+            "inner join Utilisateurs U on U.NoUtilisateur = UP.NoUtilisateur " +
+            "where UP.NoPreference = @noPreference";
+        SqlParameter paramUsername = new SqlParameter("@noPreference", noTypePreference);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstUtilisateur.Add(drDDL[0].ToString());
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
+        return lstUtilisateur;
+    }
 }
