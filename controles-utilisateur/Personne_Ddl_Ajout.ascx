@@ -4,6 +4,7 @@
     public TextBox ControleTextBox { get { return tbPersonne; } }
     public DropDownList ControleDDL { get { return ddlPersonne; } }
     public CustomValidator ControleCustomValidator {get { return cv1; }  }
+
     private void ChangerVisibilie(object sender, EventArgs e)
     {
         ddlPersonne.Visible = ddlPersonne.Visible ? false : true;

@@ -49,16 +49,35 @@ public partial class _Default : System.Web.UI.Page
         error_message.Visible = false;
     }
     public void envoyerMessage(object sender, EventArgs e)
-   {
-      if ((string.IsNullOrEmpty(tbMessage.Text)) || (string.IsNullOrEmpty(destinaire.Text)))
-      {
-         success_message.Visible = false;
-         error_message.Visible = true;
-      }
-      else
-      {
-         success_message.Visible = true;
-         error_message.Visible = false;
-      }
-   }
+    {
+        if (string.IsNullOrEmpty(tbMessage.Text))
+        {
+            success_message.Visible = false;
+            error_message.Visible = true;
+            lblError.Text = "Le contenu du message ne peut être vide";
+            return;
+        }
+        if (string.IsNullOrEmpty(destinaire.Text))
+        {
+            success_message.Visible = false;
+            error_message.Visible = true;
+            lblError.Text = "Le destinataire ne peut être vide";
+            return;
+        }
+        if (SQL.FindUtilisateurByName(destinaire.Text.Trim())==null)
+        {
+            success_message.Visible = false;
+            error_message.Visible = true;
+            lblError.Text = "Le destinataire n'existe pas";
+            return;
+        }
+
+        success_message.Visible = true;
+        error_message.Visible = false;
+        lblSucces.Text = "Message envoyer à "+ destinaire.Text.Trim() + "!";
+
+        tbMessage.Text = "";
+        destinaire.Text = "";
+        
+    }
 }
