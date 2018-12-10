@@ -1,282 +1,290 @@
 ﻿<%@ Control Language="C#" %>
 <%@ Register tagprefix="pers" TagName="Personne" Src="Personne_Ddl_Ajout.ascx" %>
 <script runat="server">
-   static string prevPage = String.Empty;
+    static string prevPage = String.Empty;
 
-   protected void Page_Load(object sender, EventArgs e)
-   {
+    protected void Page_Load(object sender, EventArgs e)
+    {
 
-      if (!IsPostBack)
-      {
-         chargeListeSupplements();
-         chargeListeSousTitres();
-         chargeListeLangues();
-         chargeListeNbCD();
-         chargeListeAnneeSortie();
-         chargeListeFormats();
-         chargeListeCategories();
-         if (Request.UrlReferrer != null)
-         {
-            prevPage = Request.UrlReferrer.ToString();
-         }
-         foreach (Control c in this.Controls)
-         {
-            if (c is Personne_Ddl_Ajout)
-               chargeListeRequete((Personne_Ddl_Ajout) c);
-         }
-         if (Request.QueryString["Film"] != null)
-         {
-            string btnModifier = Request.QueryString["Film"];
-            int idFilm = int.Parse(btnModifier);
-            SQL.Connection();
-            EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
-            //Maintenant remplir les informations à partir de ce ID.
-            Titre.Text = "Modification du film: " + filmAModifier.TitreOriginal.ToString();
-            tbTitreFrancais.Text = filmAModifier.TitreFrancais.ToString();
-            tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
-            //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
-            ddlAnnee.Items.FindByValue(filmAModifier.AnneeSortie.ToString().Trim()).Selected = true;
-            ddlCategorie.Items.FindByText(filmAModifier.Categorie.ToString().Trim()).Selected = true;
-
-            //Suppléments
-            foreach (EntiteSupplements supplement in filmAModifier.lstSupplements)
+        if (!IsPostBack)
+        {
+            chargeListeSupplements();
+            chargeListeSousTitres();
+            chargeListeLangues();
+            chargeListeNbCD();
+            chargeListeAnneeSortie();
+            chargeListeFormats();
+            chargeListeCategories();
+            if (Request.UrlReferrer != null)
             {
-               lbSupplements.Items[supplement.NoSupplement].Selected = true;
+                prevPage = Request.UrlReferrer.ToString();
             }
-            //Langues
-            foreach (EntiteLangue langue in filmAModifier.lstLangues)
+            foreach (Control c in this.Controls)
             {
-               lbLangue.Items[langue.NoLangue].Selected = true;
+                if (c is Personne_Ddl_Ajout)
+                    chargeListeRequete((Personne_Ddl_Ajout) c);
             }
-            //Sous-titres
-            foreach (EntiteSousTitres sousTitres in filmAModifier.lstSousTitres)
+            if (Request.QueryString["Film"] != null)
             {
-               lbSousTitre.Items[sousTitres.NoSousTitre].Selected = true;
+                string btnModifier = Request.QueryString["Film"];
+                int idFilm = int.Parse(btnModifier);
+                SQL.Connection();
+                EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
+                //Maintenant remplir les informations à partir de ce ID.
+                Titre.Text = "Modification du film: " + filmAModifier.TitreOriginal.ToString();
+                tbTitreFrancais.Text = filmAModifier.TitreFrancais.ToString();
+                tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
+                //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
+                if(filmAModifier.AnneeSortie!=-1)
+                    ddlAnnee.Items.FindByValue(filmAModifier.AnneeSortie.ToString().Trim()).Selected = true;
+                if(!string.IsNullOrEmpty(filmAModifier.Categorie))
+                    ddlCategorie.Items.FindByText(filmAModifier.Categorie.ToString().Trim()).Selected = true;
+
+                //Suppléments
+                foreach (EntiteSupplements supplement in filmAModifier.lstSupplements)
+                {
+                    lbSupplements.Items[supplement.NoSupplement].Selected = true;
+                }
+                //Langues
+                foreach (EntiteLangue langue in filmAModifier.lstLangues)
+                {
+                    lbLangue.Items[langue.NoLangue].Selected = true;
+                }
+                //Sous-titres
+                foreach (EntiteSousTitres sousTitres in filmAModifier.lstSousTitres)
+                {
+                    lbSousTitre.Items[sousTitres.NoSousTitre].Selected = true;
+                }
+
+                //Remplir les producteurs et réalisateurs.
+                if(!string.IsNullOrEmpty(filmAModifier.NomProducteur))
+                    choixProducteur.ControleDDL.Items.FindByText(filmAModifier.NomProducteur.ToString()).Selected = true;
+                if(!string.IsNullOrEmpty(filmAModifier.NomRealisateur))
+                    choixRealisateur.ControleDDL.Items.FindByText(filmAModifier.NomRealisateur.ToString()).Selected = true;
+
+                // Remplir les acteurs
+                for(int i = 0; i < 3; i++)
+                {
+                    if((i < filmAModifier.lstActeurs.Count()) && (filmAModifier.lstActeurs.Count != 0))
+                    {
+                        if(i == 0)
+                        {
+                            choixActeur1.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                        }
+                        else if (i == 1)
+                        {
+                            choixActeur2.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                        }
+                        else if (i == 2)
+                        {
+                            choixActeur3.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                        }
+                    }
+                }
+                //Durée
+                if (filmAModifier.Duree!=-1)
+                    tbDuree.Text = filmAModifier.Duree.ToString();
+
+                //Format
+                if(!string.IsNullOrEmpty(filmAModifier.Format))
+                    ddlFormat.Items.FindByText(filmAModifier.Format.ToString()).Selected = true;
+                //NbDisques
+                if(filmAModifier.NbDisques!= -1)
+                    ddlNbDisques.Items.FindByText(filmAModifier.NbDisques.ToString()).Selected = true;
+
+                //Les options
+                cbEtendue.Checked = filmAModifier.VersionEtendue;
+                cbOriginal.Checked = filmAModifier.FilmOriginal;
+                //Le résumé
+                if(!string.IsNullOrEmpty(filmAModifier.Resume))
+                    tbResume.Text = filmAModifier.Resume.ToString();
+
             }
+        }
+    }
 
-            //Remplir les producteurs et réalisateurs.
-            choixProducteur.ControleDDL.Items.FindByText(filmAModifier.NomProducteur.ToString()).Selected = true;
-            choixRealisateur.ControleDDL.Items.FindByText(filmAModifier.NomRealisateur.ToString()).Selected = true;
 
-            // Remplir les acteurs
-            for(int i = 0; i < 3; i++)
+    protected void chargeListeRequete(Personne_Ddl_Ajout control)
+    {
+        SQL.Connection();
+        if(control == choixProducteur)
+        {
+            List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
+            foreach (EntiteProducteur producteur in lstProducteurs)
             {
-               if((i < filmAModifier.lstActeurs.Count()) && (filmAModifier.lstActeurs.Count != 0))
-               {
-                  if(i == 0)
-                  {
-                     choixActeur1.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
-                  }
-                  else if (i == 1)
-                  {
-                     choixActeur2.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
-                  }
-                  else if (i == 2)
-                  {
-                     choixActeur3.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
-                  }
-               }
+                control.ControleDDL.Items.Add(new ListItem(producteur.Nom, producteur.NoProducteur.ToString()));
             }
-            //Durée
-            tbDuree.Text = filmAModifier.Duree.ToString();
-
-            //Format
-            ddlFormat.Items.FindByText(filmAModifier.Format.ToString()).Selected = true;
-            //NbDisques
-            ddlNbDisques.Items.FindByText(filmAModifier.NbDisques.ToString()).Selected = true;
-
-            //Les options
-            cbEtendue.Checked = filmAModifier.VersionEtendue;
-            cbOriginal.Checked = filmAModifier.FilmOriginal;
-            //Le résumé
-            tbResume.Text = filmAModifier.Resume.ToString();
-
-         }
-      }
-   }
-
-
-   protected void chargeListeRequete(Personne_Ddl_Ajout control)
-   {
-      SQL.Connection();
-      if(control == choixProducteur)
-      {
-         List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
-         control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
-         foreach (EntiteProducteur producteur in lstProducteurs)
-         {
-            control.ControleDDL.Items.Add(new ListItem(producteur.Nom, producteur.NoProducteur.ToString()));
-         }
-      }else if (control == choixRealisateur)
-      {
-         List<EntiteRealisateur> lstRealisateurs  = SQL.FindAllRealisateur();
-         control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
-         foreach (EntiteRealisateur realisa in lstRealisateurs)
-         {
-            control.ControleDDL.Items.Add(new ListItem(realisa.Nom, realisa.NoRealisateur.ToString()));
-         }
-      }else if (control == choixActeur1)
-      {
-         List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
-         control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
-         foreach (EntiteActeur acteur in lstActeurs)
-         {
-            control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
-         }
-      }else if (control == choixActeur2)
-      {
-         List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
-         control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
-         foreach (EntiteActeur acteur in lstActeurs)
-         {
-            control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
-         }
-      }else if (control == choixActeur3)
-      {
-         List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
-         control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
-         foreach (EntiteActeur acteur in lstActeurs)
-         {
-            control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
-         }
-      }
+        }else if (control == choixRealisateur)
+        {
+            List<EntiteRealisateur> lstRealisateurs  = SQL.FindAllRealisateur();
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
+            foreach (EntiteRealisateur realisa in lstRealisateurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(realisa.Nom, realisa.NoRealisateur.ToString()));
+            }
+        }else if (control == choixActeur1)
+        {
+            List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
+            foreach (EntiteActeur acteur in lstActeurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
+            }
+        }else if (control == choixActeur2)
+        {
+            List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
+            foreach (EntiteActeur acteur in lstActeurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
+            }
+        }else if (control == choixActeur3)
+        {
+            List<EntiteActeur> lstActeurs  = SQL.FindAllActeurs();
+            control.ControleDDL.Items.Add(new ListItem("-- Aucun --", "0"));
+            foreach (EntiteActeur acteur in lstActeurs)
+            {
+                control.ControleDDL.Items.Add(new ListItem(acteur.Nom, acteur.NoActeur.ToString()));
+            }
+        }
 
 
-   }
+    }
 
-   protected void chargeListeSupplements()
-   {
-      SQL.Connection();
-      List<EntiteSupplements> lstSupplements = SQL.FindAllSupplement();
-      lbSupplements.Items.Add(new ListItem("-- Aucun --", "0"));
-      foreach (EntiteSupplements supplement in lstSupplements)
-      {
-         lbSupplements.Items.Add(new ListItem(supplement.Description, supplement.NoSupplement.ToString()));
-      }
-      lbSupplements.Rows = lbSupplements.Items.Count;
-      //lbSupplements.Items.FindByValue("0").Selected = true;
-   }
+    protected void chargeListeSupplements()
+    {
+        SQL.Connection();
+        List<EntiteSupplements> lstSupplements = SQL.FindAllSupplement();
+        lbSupplements.Items.Add(new ListItem("-- Aucun --", "0"));
+        foreach (EntiteSupplements supplement in lstSupplements)
+        {
+            lbSupplements.Items.Add(new ListItem(supplement.Description, supplement.NoSupplement.ToString()));
+        }
+        lbSupplements.Rows = lbSupplements.Items.Count;
+        //lbSupplements.Items.FindByValue("0").Selected = true;
+    }
 
-   protected void chargeListeSousTitres()
-   {
-      SQL.Connection();
-      List<EntiteSousTitres> lstSousTitres = SQL.FindAllSousTitre();
-      lbSousTitre.Items.Add(new ListItem("-- Aucun --", "0"));
-      foreach (EntiteSousTitres sousTitres in lstSousTitres)
-      {
-         lbSousTitre.Items.Add(new ListItem(sousTitres.LangueSousTitre, sousTitres.NoSousTitre.ToString()));
-      }
-      lbSousTitre.Rows = lbSousTitre.Items.Count;
-      //lbSousTitre.Items.FindByValue("0").Selected = true;
-   }
+    protected void chargeListeSousTitres()
+    {
+        SQL.Connection();
+        List<EntiteSousTitres> lstSousTitres = SQL.FindAllSousTitre();
+        lbSousTitre.Items.Add(new ListItem("-- Aucun --", "0"));
+        foreach (EntiteSousTitres sousTitres in lstSousTitres)
+        {
+            lbSousTitre.Items.Add(new ListItem(sousTitres.LangueSousTitre, sousTitres.NoSousTitre.ToString()));
+        }
+        lbSousTitre.Rows = lbSousTitre.Items.Count;
+        //lbSousTitre.Items.FindByValue("0").Selected = true;
+    }
 
-   protected void chargeListeLangues()
-   {
-      SQL.Connection();
-      List<EntiteLangue> lstLangues = SQL.FindAllLangue();
-      lbLangue.Items.Add(new ListItem("-- Aucune --", "0"));
-      foreach (EntiteLangue langue in lstLangues)
-      {
-         lbLangue.Items.Add(new ListItem(langue.Langue, langue.NoLangue.ToString()));
-      }
-      lbLangue.Rows = lbLangue.Items.Count;
-      //lbLangue.Items.FindByValue("0").Selected = true;
-   }
+    protected void chargeListeLangues()
+    {
+        SQL.Connection();
+        List<EntiteLangue> lstLangues = SQL.FindAllLangue();
+        lbLangue.Items.Add(new ListItem("-- Aucune --", "0"));
+        foreach (EntiteLangue langue in lstLangues)
+        {
+            lbLangue.Items.Add(new ListItem(langue.Langue, langue.NoLangue.ToString()));
+        }
+        lbLangue.Rows = lbLangue.Items.Count;
+        //lbLangue.Items.FindByValue("0").Selected = true;
+    }
 
-   protected void chargeListeFormats()
-   {
-      SQL.Connection();
-      List<EntiteFormat> lstFormat = SQL.FindAllFormat();
-      ddlFormat.Items.Add(new ListItem("-- Aucun --", "0"));
-      foreach (EntiteFormat format in lstFormat)
-      {
-         ddlFormat.Items.Add(new ListItem(format.Description, format.NoFormat.ToString()));
-      }
-   }
+    protected void chargeListeFormats()
+    {
+        SQL.Connection();
+        List<EntiteFormat> lstFormat = SQL.FindAllFormat();
+        ddlFormat.Items.Add(new ListItem("-- Aucun --", "0"));
+        foreach (EntiteFormat format in lstFormat)
+        {
+            ddlFormat.Items.Add(new ListItem(format.Description, format.NoFormat.ToString()));
+        }
+    }
 
-   protected void chargeListeCategories()
-   {
-      SQL.Connection();
-      List<EntiteCategorie> lstCategorie = SQL.FindAllCategorie();
-      ddlCategorie.Items.Add(new ListItem("-- Aucune --", "0"));
-      foreach (EntiteCategorie categorie in lstCategorie)
-      {
-         ddlCategorie.Items.Add(new ListItem(categorie.Description, categorie.NoCategorie.ToString()));
-      }
-   }
+    protected void chargeListeCategories()
+    {
+        SQL.Connection();
+        List<EntiteCategorie> lstCategorie = SQL.FindAllCategorie();
+        ddlCategorie.Items.Add(new ListItem("-- Aucune --", "0"));
+        foreach (EntiteCategorie categorie in lstCategorie)
+        {
+            ddlCategorie.Items.Add(new ListItem(categorie.Description, categorie.NoCategorie.ToString()));
+        }
+    }
 
-   protected void Retour(object sender, EventArgs e)
-   {
-      Response.Redirect(prevPage);
-   }
-   protected void Modifier(object sender, EventArgs e)
-   {
-      /*=============================================================================================================
-       ==============================================================================================================
-       ==============================================================================================================
-       ==============================================================================================================
-       ==============================================================================================================
-       ==============================================================================================================*/
+    protected void Retour(object sender, EventArgs e)
+    {
+        Response.Redirect(prevPage);
+    }
+    protected void Modifier(object sender, EventArgs e)
+    {
+        /*=============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================
+         ==============================================================================================================*/
 
-      if (rerFieldValidatorTitreOriginal.IsValid && RegularExpressionDuree.IsValid &&
-      choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
-      choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
-      choixActeur3.ControleCustomValidator.IsValid)
-      {
-         //on ajoute
-         //tbTitreFrancais.Text = "Aucun validator actif";
-      }
-      else
-      {
-         //on fait what ever qu'on veut, cas de validation active.
-      }
-   }
+        if (rerFieldValidatorTitreOriginal.IsValid && RegularExpressionDuree.IsValid &&
+        choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
+        choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
+        choixActeur3.ControleCustomValidator.IsValid)
+        {
+            //on ajoute
+            //tbTitreFrancais.Text = "Aucun validator actif";
+        }
+        else
+        {
+            //on fait what ever qu'on veut, cas de validation active.
+        }
+    }
 
-   protected void chargeListeAnneeSortie()
-   {
-      int annee = DateTime.Now.Year;
+    protected void chargeListeAnneeSortie()
+    {
+        int annee = DateTime.Now.Year;
 
-      ddlAnnee.Items.Add(new ListItem("-- Aucune --", "0"));
-      for (int i = 1900; i <= annee; i++)
-      {
-         ddlAnnee.Items.Add(i.ToString());
-      }
-   }
-   protected void chargeListeNbCD()
-   {
-      ddlNbDisques.Items.Add(new ListItem("-- Aucun --", "0"));
-      for (int i = 1; i <= 10; i++)
-      {
-         ddlNbDisques.Items.Add(i.ToString());
-      }
+        ddlAnnee.Items.Add(new ListItem("-- Aucune --", "0"));
+        for (int i = 1900; i <= annee; i++)
+        {
+            ddlAnnee.Items.Add(i.ToString());
+        }
+    }
+    protected void chargeListeNbCD()
+    {
+        ddlNbDisques.Items.Add(new ListItem("-- Aucun --", "0"));
+        for (int i = 1; i <= 10; i++)
+        {
+            ddlNbDisques.Items.Add(i.ToString());
+        }
 
-   }
+    }
 
-   protected void maValidation(Object sender, ServerValidateEventArgs Arguments)
-   {
-      SQL.Connection();
-      if (SQL.checkIfNomFilmExiste(tbTitreFrancais.Text))
-      {
-         Arguments.IsValid = false;
-      }
-      else
-      {
-         Arguments.IsValid = true;
-      }
-   }
+    protected void maValidation(Object sender, ServerValidateEventArgs Arguments)
+    {
+        SQL.Connection();
+        if (SQL.checkIfNomFilmExiste(tbTitreFrancais.Text))
+        {
+            Arguments.IsValid = false;
+        }
+        else
+        {
+            Arguments.IsValid = true;
+        }
+    }
 
-   protected void maValidationTitreOriginal(Object sender, ServerValidateEventArgs Arguments)
-   {
-      SQL.Connection();
-      if (SQL.checkIfNomOriginalFilmExiste(tbTitreOriginal.Text))
-      {
-         Arguments.IsValid = false;
-      }
-      else
-      {
-         Arguments.IsValid = true;
-      }
-   }
+    protected void maValidationTitreOriginal(Object sender, ServerValidateEventArgs Arguments)
+    {
+        SQL.Connection();
+        if (SQL.checkIfNomOriginalFilmExiste(tbTitreOriginal.Text))
+        {
+            Arguments.IsValid = false;
+        }
+        else
+        {
+            Arguments.IsValid = true;
+        }
+    }
 </script>
    <asp:Label ID="Titre" runat="server" style="color: #7c795d; font-family: 'Source Sans Pro', sans-serif; font-size: 28px; font-weight: 400; line-height: 32px; margin: 0 0 24px;"/>
 <hr />
