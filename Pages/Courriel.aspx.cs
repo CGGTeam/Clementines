@@ -8,8 +8,17 @@ using System.Web.UI.WebControls;
 public partial class _Default : System.Web.UI.Page
 {
     private string strDestinataire;
+    static string prevPage = String.Empty;
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            if (Request.UrlReferrer != null)
+            {
+                prevPage = Request.UrlReferrer.ToString();
+            }
+
+        }
         InitialiserDestinaire();
     }
     private void InitialiserDestinaire()
@@ -26,6 +35,10 @@ public partial class _Default : System.Web.UI.Page
                 destinaire.Enabled = false;
             }
         }
+    }
+    protected void Retour(object sender, EventArgs e)
+    {
+        Response.Redirect(prevPage);
     }
     protected void fermerSucces(object sender, EventArgs e)
     {
