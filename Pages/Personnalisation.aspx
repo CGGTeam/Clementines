@@ -6,7 +6,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="contentBody" Runat="Server">
     <!-- Contenu de la page -->
     
-<div class="row">
+<div runat="server" id="divBody" class="row">
     <div class="col-md-8 col-md-offset-2">
         <h1>Personnalisation</h1>
 

@@ -5,15 +5,16 @@
 
    protected void Page_Load(object sender, EventArgs e)
    {
-      chargeListeSupplements();
-      chargeListeSousTitres();
-      chargeListeLangues();
-      chargeListeNbCD();
-      chargeListeAnneeSortie();
-      chargeListeFormats();
-      chargeListeCategories();
+
       if (!IsPostBack)
       {
+         chargeListeSupplements();
+         chargeListeSousTitres();
+         chargeListeLangues();
+         chargeListeNbCD();
+         chargeListeAnneeSortie();
+         chargeListeFormats();
+         chargeListeCategories();
          if (Request.UrlReferrer != null)
          {
             prevPage = Request.UrlReferrer.ToString();
@@ -26,8 +27,7 @@
          if (Request.QueryString["Film"] != null)
          {
             string btnModifier = Request.QueryString["Film"];
-            string[] tabGuimauve = btnModifier.Split('_');
-            int idFilm = int.Parse(tabGuimauve[1]);
+            int idFilm = int.Parse(btnModifier);
             SQL.Connection();
             EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
             //Maintenant remplir les informations à partir de ce ID.
@@ -36,8 +36,61 @@
             tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
             //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
             ddlAnnee.Items.FindByValue(filmAModifier.AnneeSortie.ToString().Trim()).Selected = true;
-            
-            //ddlCategorie.Items.FindByValue(filmAModifier.Categorie.ToString().Trim()).Selected = true;
+            ddlCategorie.Items.FindByText(filmAModifier.Categorie.ToString().Trim()).Selected = true;
+
+            //Suppléments
+            foreach (EntiteSupplements supplement in filmAModifier.lstSupplements)
+            {
+               lbSupplements.Items[supplement.NoSupplement].Selected = true;
+            }
+            //Langues
+            foreach (EntiteLangue langue in filmAModifier.lstLangues)
+            {
+               lbLangue.Items[langue.NoLangue].Selected = true;
+            }
+            //Sous-titres
+            foreach (EntiteSousTitres sousTitres in filmAModifier.lstSousTitres)
+            {
+               lbSousTitre.Items[sousTitres.NoSousTitre].Selected = true;
+            }
+
+            //Remplir les producteurs et réalisateurs.
+            choixProducteur.ControleDDL.Items.FindByText(filmAModifier.NomProducteur.ToString()).Selected = true;
+            choixRealisateur.ControleDDL.Items.FindByText(filmAModifier.NomRealisateur.ToString()).Selected = true;
+
+            // Remplir les acteurs
+            for(int i = 0; i < 3; i++)
+            {
+               if((i < filmAModifier.lstActeurs.Count()) && (filmAModifier.lstActeurs.Count != 0))
+               {
+                  if(i == 0)
+                  {
+                     choixActeur1.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                  }
+                  else if (i == 1)
+                  {
+                     choixActeur2.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                  }
+                  else if (i == 2)
+                  {
+                     choixActeur3.ControleDDL.Items.FindByValue(filmAModifier.lstActeurs.ElementAt(i).NoActeur.ToString()).Selected = true;
+                  }
+               }
+            }
+            //Durée
+            tbDuree.Text = filmAModifier.Duree.ToString();
+
+            //Format
+            ddlFormat.Items.FindByText(filmAModifier.Format.ToString()).Selected = true;
+            //NbDisques
+            ddlNbDisques.Items.FindByText(filmAModifier.NbDisques.ToString()).Selected = true;
+
+            //Les options
+            cbEtendue.Checked = filmAModifier.VersionEtendue;
+            cbOriginal.Checked = filmAModifier.FilmOriginal;
+            //Le résumé
+            tbResume.Text = filmAModifier.Resume.ToString();
+
          }
       }
    }
@@ -101,7 +154,7 @@
          lbSupplements.Items.Add(new ListItem(supplement.Description, supplement.NoSupplement.ToString()));
       }
       lbSupplements.Rows = lbSupplements.Items.Count;
-      lbSupplements.Items.FindByValue("0").Selected = true;
+      //lbSupplements.Items.FindByValue("0").Selected = true;
    }
 
    protected void chargeListeSousTitres()
@@ -114,7 +167,7 @@
          lbSousTitre.Items.Add(new ListItem(sousTitres.LangueSousTitre, sousTitres.NoSousTitre.ToString()));
       }
       lbSousTitre.Rows = lbSousTitre.Items.Count;
-      lbSousTitre.Items.FindByValue("0").Selected = true;
+      //lbSousTitre.Items.FindByValue("0").Selected = true;
    }
 
    protected void chargeListeLangues()
@@ -127,7 +180,7 @@
          lbLangue.Items.Add(new ListItem(langue.Langue, langue.NoLangue.ToString()));
       }
       lbLangue.Rows = lbLangue.Items.Count;
-      lbLangue.Items.FindByValue("0").Selected = true;
+      //lbLangue.Items.FindByValue("0").Selected = true;
    }
 
    protected void chargeListeFormats()
@@ -172,9 +225,6 @@
       {
          //on ajoute
          //tbTitreFrancais.Text = "Aucun validator actif";
-
-
-
       }
       else
       {
@@ -191,7 +241,6 @@
       {
          ddlAnnee.Items.Add(i.ToString());
       }
-
    }
    protected void chargeListeNbCD()
    {
@@ -431,7 +480,6 @@
                </div>
             </div>
           </div>
-
     </div>
 </div>
 <!-- TODO : ajouter d'autres champs, modifier textbox pour des dropdown list  -->

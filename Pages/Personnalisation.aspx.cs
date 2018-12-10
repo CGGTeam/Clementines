@@ -51,14 +51,19 @@ public partial class _Default :  System.Web.UI.Page
       
         if (SQL.UpdatePreference(entitePreference, noUtilisateur))
         {
+            var master = Master as PageMaster_MasterPage;
+            master.UpdateColor();
+
             succes.Visible = true;
             lblSucces.Text = "Les modifications ont été apporté";
+
         }
         else
         {
             error.Visible = true;
             lblError.Text = "Une erreure est survenue";
         }
+
 
     }
     protected void fermerSucces(object sender, EventArgs e)

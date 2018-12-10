@@ -205,6 +205,7 @@ static public class SQL
    }
     public static List<EntiteExemplaire> FindAllUserExemplairesEmpruntes(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
         String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
                           "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
@@ -260,7 +261,7 @@ static public class SQL
             lstExemplaires.Add(exemplaire);
         }
         drDDL.Close();
-
+        dbConn2.Close();
         return lstExemplaires;
     }
 
@@ -454,6 +455,7 @@ static public class SQL
 
     public static List<EntiteUtilisateur> FindAllAutresUtilisateur(int noUtilCourant)
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
         String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + " and TypeUtilisateur != 'A';";
         SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
@@ -464,7 +466,24 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
+        return lstUtilisateur;
+    }
 
+    public static List<EntiteUtilisateur> FindAllUtilisateurSaufCourantEtEmprunteur(int noUtilCourant, int noUtilEmprunteur)
+    {
+        SqlConnection dbConn2 = Connection2();
+        List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
+        String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + "and NoUtilisateur != " + noUtilEmprunteur + " and TypeUtilisateur != 'A';";
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstUtilisateur.Add(new EntiteUtilisateur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2], (int)drDDL[3], Convert.ToChar((string)drDDL[4])));
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
         return lstUtilisateur;
     }
 
@@ -622,6 +641,7 @@ static public class SQL
     /// EntiteUtilisateur
     public static EntiteUtilisateur FindUtilisateurById(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         EntiteUtilisateur utilisateur = null;
         String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
         SqlParameter paramUsername = new SqlParameter("@id", id);
@@ -636,6 +656,7 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return utilisateur;
     }
 
@@ -679,6 +700,7 @@ static public class SQL
         {
             noUtilisateur = (int)drDDL[0];
         }
+        drDDL.Close();
         dbConn2.Close();
         return noUtilisateur;
     }
@@ -734,6 +756,11 @@ static public class SQL
         drDDL.Close();
         return film;
     }
+   /*
+   private static EntiteCategorie FindCategorieById(int id)
+   {
+
+   }*/
     private static int FindNextNoFilm()
     {
         int noFilm = 0;
@@ -882,6 +909,40 @@ static public class SQL
         return intNbAjout >= 1;
     }
 
+    public static bool ajoutFilmComplet(EntiteFilm entite)
+    {
+        int intNbAjout = 0;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+
+            int noFilm = FindNextNoFilm();
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "INSERT INTO Films(@no)";
+            cmd.Parameters.AddWithValue("@no", noFilm);
+            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie);
+            cmd.Parameters.AddWithValue("@categorie", entite.Categorie);
+            cmd.Parameters.AddWithValue("@format", entite.Format);
+            cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
+            cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);//doit etre le numero
+            cmd.Parameters.AddWithValue("@resume", entite.Resume);
+            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree);
+            cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
+            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette);
+            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques);
+            cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
+            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal);
+            cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
+            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur); // doit être un nombre
+            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur); // doit être un nombre
+            cmd.Parameters.AddWithValue("@extra", entite.LienInternet);
+            intNbAjout += cmd.ExecuteNonQuery();
+            cmd.Connection.Close();
+        }
+
+
+        return intNbAjout >= 1;
+    }
     public static EntitePreference GetPreferenceByNoUtilisateur(int noUtilisateur)
     {
         SqlConnection dbConn2 = Connection2();
@@ -992,5 +1053,26 @@ static public class SQL
         }
 
         return intNbAjout>=1;
+    }
+    public static int GetNoUtilisateurDVDEmprunteur(int noFilm)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        int noUtilisateur = 0;
+        String strRequete = "select NoUtilisateur from EmpruntsFilms where NoExemplaire = @noExemplaire";
+        SqlParameter paramUsername = new SqlParameter("@noExemplaire", int.Parse(noFilm.ToString() + "01"));
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            noUtilisateur = (int)drDDL[0];
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
+        return noUtilisateur;
     }
 }

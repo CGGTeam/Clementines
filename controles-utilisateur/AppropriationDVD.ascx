@@ -8,9 +8,16 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
+
+        InitialiserDestinaire();
+        
         if( !IsPostBack )
         {
-
+            if (utilCourant.TypeUtilisateur == 'S')
+            {
+                div_identite.Visible = true;
+                populerDDLIdentite();
+            }
             //System.Diagnostics.Debug.WriteLine("Num: " + utilCourant.NoUtilisateur);
             if(Request.UrlReferrer != null)
             {
@@ -18,9 +25,9 @@
             }
 
         }
-        InitialiserDestinaire();
         InitialiserVieuxRetour();
     }
+
 
     protected void Retour(object sender, EventArgs e)
     {
@@ -32,6 +39,7 @@
         if (Request.QueryString["Film"] == null)
         {
             btnApproprier.Visible = false;
+            div_identite.Visible = false;
         }
         else
         {
@@ -43,10 +51,11 @@
     {
         if (Request.QueryString["Retour"] == null)
         {
-            
+
         }
         else
         {
+            div_identite.Visible = false;
             btnApproprier.Visible = false;
             prevPage = Request.QueryString["Retour"];
         }
@@ -102,15 +111,50 @@
     {
         //System.Diagnostics.Debug.WriteLine(utilCourant.NoUtilisateur);
         // requête approprier DVD
-        int nbRetour = SQL.ApproprierDVD(utilCourant.NoUtilisateur, film.film.NoFilm);
+        int nbRetour = 0;
+        if (utilCourant.TypeUtilisateur != 'S')
+        {
+            nbRetour = SQL.ApproprierDVD(utilCourant.NoUtilisateur, film.film.NoFilm);
+        }
+        else
+        {
+            nbRetour = SQL.ApproprierDVD(int.Parse(ddlIdentite.SelectedValue), film.film.NoFilm);
+        }
+
         if (nbRetour > 0)
         {
             String url = "~/Pages/AppropriationDVD.aspx?Film=" + film.film.NoFilm + "&Retour=" + prevPage;
             Response.Redirect(url);
         }
     }
+
+    private void populerDDLIdentite()
+    {
+        int noUtilisateurEmprunteur = SQL.GetNoUtilisateurDVDEmprunteur(film.film.NoFilm);
+
+        ddlIdentite.Items.Clear();
+        List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllUtilisateurSaufCourantEtEmprunteur(utilCourant.NoUtilisateur, noUtilisateurEmprunteur);
+        ddlIdentite.Items.Add(new ListItem("Moi", utilCourant.NoUtilisateur.ToString()));
+        foreach (EntiteUtilisateur utilisateur in lstUtilisateurs)
+        {
+            ddlIdentite.Items.Add(new ListItem(utilisateur.NomUtilisateur, utilisateur.NoUtilisateur.ToString()));
+        }
+    }
 </script>
-    <h1>Affichage détaillé du film <span style="color:darkred;"></span></h1> 
+
+    <h1>Affichage détaillé du film <span style="color:darkred;"></span></h1>
+
+<div class="row" runat="server" id="div_identite" Visible="false">
+        <div class="col-sm-4">
+            <div class="input-group">
+              <span class="input-group-addon">Changer d'identité </span>
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <asp:DropDownList ID="ddlIdentite" runat="server"
+                  CssClass="form-control"/>
+        </div>
+        </div>
+    </div>
+<br />
         <asp:LinkButton runat="server" class="btn btn-danger" Text="Retour" onclick="Retour" >
             <span class="glyphicon glyphicon-chevron-left"></span>Retour
         </asp:LinkButton>

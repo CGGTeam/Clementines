@@ -20,11 +20,10 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
       // initialiser label pour message erreur et autres
       Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
 
-      if (!Page.IsPostBack)
+        utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
+        noUtilisateurCourrant = utilCourant.NoUtilisateur;
+        if (!Page.IsPostBack)
       {
-            utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
-            //System.Diagnostics.Debug.WriteLine("Num: " + utilCourant.NoUtilisateur);
-            noUtilisateurCourrant = utilCourant.NoUtilisateur;
             populerDDLUtilisateurs();
             
       }
@@ -47,7 +46,6 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    {
       if (noUtilisateurVisionne != 0)
       {
-         SQL.Connection();
          EntiteUtilisateur util = SQL.FindUtilisateurById(noUtilisateurVisionne);
 
          lblNomUtilisateur.Text = "Vous visualisez les DVDs de " + util.NomUtilisateur;
@@ -82,13 +80,16 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
                TableRow tr2 = librairie.trDYN(table);
                TableCell td2 = librairie.tdDYN(tr2, "td_courriel_" + lstExemplaires[i].film.NoFilm, "");
                Button btn2 = librairie.btnDYN(td2, "courriel_" + lstExemplaires[i].film.NoFilm, "btn btn-default boutons-options-film", "Envoyer courriel");
-
-               TableRow tr3 = librairie.trDYN(table);
-               TableCell td3 = librairie.tdDYN(tr3, "td_appropriation_" + lstExemplaires[i].film.NoFilm, "");
-               Button btn3 = librairie.btnDYN(td3, "appropriation_" + lstExemplaires[i].film.NoFilm, "btn btn-default boutons-options-film", "Appropriation du DVD");
-               btn3.Click += new EventHandler(appropriationOnClick);
-
-
+                    btn2.Click += new EventHandler(EnvoyerUnCourriel);
+                
+                    if (utilCourant.TypeUtilisateur != 'A')
+                    {
+                        TableRow tr3 = librairie.trDYN(table);
+                        TableCell td3 = librairie.tdDYN(tr3, "td_appropriation_" + lstExemplaires[i].film.NoFilm, "");
+                        Button btn3 = librairie.btnDYN(td3, "appropriation_" + lstExemplaires[i].film.NoFilm, "btn btn-default boutons-options-film", "Appropriation du DVD");
+                        btn3.Click += new EventHandler(appropriationOnClick);
+                    }
+               
                Image img = librairie.imgDYN(panelBody, "img_" + lstExemplaires[i].film.NoFilm, lstExemplaires[i].film.ImagePochette, "image-vignette");
 
                Panel panelFooter = librairie.divDYN(panel, "panel-footer_" + lstExemplaires[i].film.NoFilm, "panel-footer");
@@ -168,6 +169,14 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
         Response.Redirect(url, true);
     }
 
+    private void EnvoyerUnCourriel(object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        EntiteUtilisateur utilCourriel = SQL.FindUtilisateurById(noUtilisateurVisionne);
+        String url = "~/Pages/Courriel.aspx?Destinataire=" + utilCourriel.NomUtilisateur;
+        Response.Redirect(url, true);
+    }
+
 
     public void populerListeFilms()
    {
@@ -201,7 +210,6 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
    private void populerDDLUtilisateurs()
    {
       ddlUtilisateur.Items.Clear();
-      SQL.Connection();
       List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllAutresUtilisateur(noUtilisateurCourrant);
       ddlUtilisateur.Items.Add(new ListItem("-- Aucun --", "0"));
       foreach (EntiteUtilisateur utilisateur in lstUtilisateurs)

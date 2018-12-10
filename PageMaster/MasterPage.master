@@ -30,12 +30,12 @@
             <a class="navbar-brand a"> Clémentine</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a href="../Pages/Accueil.aspx" class="a">Accueil</a></li>
-            <li><a href="../Pages/DVDEnMain.aspx" class="a">Mes DVDs</a></li>
-            <li><a href="../Pages/DVDsAutreUtilisateur.aspx" class="a">DVDs autre utilisateur</a></li>
-            <li><a href="../Pages/AjoutFilm.aspx" class="a">Ajouter un DVD</a></li>
-            <li><a href="../Pages/Personnalisation.aspx" class="a">Personnalisation</a></li>
-            <li><a href="../Pages/Courriel.aspx" class="a">Courriel</a></li>
+            <li id="nav_accueil" runat="server"><a href="../Pages/Accueil.aspx" class="a">Accueil</a></li>
+            <li id="nav_dvdenmain" runat="server"><a href="../Pages/DVDEnMain.aspx" class="a">Mes DVDs</a></li>
+            <li id="nav_dvdautreutil" runat="server"><a href="../Pages/DVDsAutreUtilisateur.aspx" class="a">DVDs autre utilisateur</a></li>
+            <li id="nav_ajoutfilm" runat="server"><a href="../Pages/AjoutFilm.aspx" class="a">Ajouter un DVD</a></li>
+            <li id="nav_personnalisation" runat="server"><a href="../Pages/Personnalisation.aspx" class="a">Personnalisation</a></li>
+            <li id="nav_courriel" runat="server"><a href="../Pages/Courriel.aspx" class="a">Courriel</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -48,7 +48,7 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </asp:LinkButton>
                 </div>
-                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="se déconnecter" OnClick="PageLogin" />
+                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="se déconnecter" OnClick="PageLogin" CausesValidation="false"/>
             </li>
         </ul>
     </div>
