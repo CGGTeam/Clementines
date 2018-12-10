@@ -104,6 +104,8 @@
    /// </summary>
    protected void Retour(object sender, EventArgs e)
    {
+      String url = "~/Pages/GestionUtilisateurs.aspx";
+      Response.Redirect(url, true);
    }
    protected void fermerSucces(object sender, EventArgs e)
    {
