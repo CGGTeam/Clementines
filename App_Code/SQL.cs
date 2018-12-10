@@ -230,7 +230,7 @@ static public class SQL
 
         SqlParameter paramUsername = new SqlParameter("@id", id);
 
-        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn2);
         cmdDDL.Parameters.Add(paramUsername);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
