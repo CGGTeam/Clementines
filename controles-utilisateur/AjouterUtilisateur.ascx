@@ -72,9 +72,9 @@
       if (valide)
       {
          //Aller
-         char[] typeAbonnement = ddlListeAbonnement­.SelectedValue.ToCharArray();
+         //char[] typeAbonnement = ddlListeAbonnement­.SelectedValue.ToString().ToCharArray();
 
-         if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
+         /*if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
          {
             error.Visible = false;
             succes.Visible = true;
@@ -85,7 +85,7 @@
             succes.Visible = false;
             error.Visible = true;
             lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
-         }
+         }*/
       }
       else
       {
