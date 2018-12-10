@@ -20,7 +20,7 @@
     <asp:ContentPlaceHolder id="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
-<body>
+<body id="body" runat="server">
 <!-- barre menu -->
     
     <form id="form1" runat="server">
@@ -47,8 +47,17 @@
                     <asp:LinkButton runat="server" class="btn btn-default" OnClick="Search">
                         <span class="glyphicon glyphicon-search"></span>
                     </asp:LinkButton>
+
+                    &nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-user"></span>
+                    &nbsp;
+                    <asp:Label id="lbl_user_connected" runat="server" Text="User" CssClass="user-connected"></asp:Label>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" runat="server" id="Button1" onserverclick="PageLogin" causesvalidation="false">
+                        <span class="glyphicon glyphicon-log-out"></span>
+                    </button>
                 </div>
-                <asp:Button ID="login" runat="server" CssClass="btn btn-primary btn-lg " Text="se déconnecter" OnClick="PageLogin" CausesValidation="false"/>
+                    
             </li>
         </ul>
     </div>

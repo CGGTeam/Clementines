@@ -1049,7 +1049,7 @@ static public class SQL
                         preference.CouleurTexte = (string)drDDL[1];
                         break;
                     case 3:
-                        preference.CourrielSiAjout = (string)drDDL[1]=="1";
+                        preference.CourrielSiAjout = (string)drDDL[1]== "1";
                         break;
                     case 4:
                         preference.CourrielSiAppropriation = (string)drDDL[1] == "1";
@@ -1070,7 +1070,71 @@ static public class SQL
 
         return preference;
     }
+    public static bool UpdatePreference(EntitePreference preferences, int noUtilisateur)
+    {
+        bool e = noUtilisateur == 1;
+        int intNbAjout = 0;
+        SqlConnection dbConn2 = Connection2();
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn2;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "DELETE FROM ValeursPreferences WHERE NoUtilisateur = @no;";
+            cmd.Parameters.AddWithValue("@no", noUtilisateur);
 
+            intNbAjout += cmd.ExecuteNonQuery();
+        }
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn2;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "DELETE FROM UtilisateursPreferences WHERE NoUtilisateur = @no;";
+            cmd.Parameters.AddWithValue("@no", noUtilisateur);
+
+            intNbAjout += cmd.ExecuteNonQuery();
+        }
+        for(int i = 1; i <= 7; i ++)
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = dbConn2;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "INSERT INTO UtilisateursPreferences(NoUtilisateur, NoPreference) Values (@no, @noPreference)";
+                cmd.Parameters.AddWithValue("@no", noUtilisateur);
+                cmd.Parameters.AddWithValue("@noPreference", i);
+
+                intNbAjout += cmd.ExecuteNonQuery();
+            }
+        }
+        for(int i = 1; i <= 7; i++)
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                string valeur = "";
+                switch (i)
+                {
+                    case 1: valeur = preferences.CouleurFond; break;
+                    case 2: valeur = preferences.CouleurTexte; break;
+                    case 3: valeur = preferences.CourrielSiAjout ? "1" : "0"; break;
+                    case 4: valeur = preferences.CourrielSiAppropriation ? "1" : "0"; break;
+                    case 5: valeur = preferences.CourrielSiSuppression ? "1" : "0"; break;
+                    case 6: valeur = preferences.ImageFond; break;
+                    case 7: valeur = preferences.NbFilmParPage.ToString(); break;
+                }
+
+                cmd.Connection = dbConn2;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "INSERT INTO ValeursPreferences(NoUtilisateur, NoPreference, Valeur) Values (@no, @noPreference, @valeur)";
+                cmd.Parameters.AddWithValue("@no", noUtilisateur);
+                cmd.Parameters.AddWithValue("@noPreference", i);
+                cmd.Parameters.AddWithValue("@valeur", valeur);
+
+                intNbAjout += cmd.ExecuteNonQuery();
+            }
+        }
+        dbConn2.Close();
+        return intNbAjout>=1;
+    }
     public static int GetNoUtilisateurDVDEmprunteur(int noFilm)
     {
         SqlConnection dbConn2 = Connection2();
@@ -1091,5 +1155,24 @@ static public class SQL
         drDDL.Close();
         dbConn2.Close();
         return noUtilisateur;
+    }
+    public static bool UpdatePassword(int noUtilisateur, int newPass)
+    {
+        int intNbAjout = 0;
+        SqlConnection dbConn2 = Connection2();
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn2;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "UPDATE Utilisateurs SET MotPasse = @pass " +
+                "WHERE NoUtilisateur = @no ";
+            cmd.Parameters.AddWithValue("@no", noUtilisateur);
+            cmd.Parameters.AddWithValue("@pass", newPass);
+
+            intNbAjout = cmd.ExecuteNonQuery();
+        }
+
+        dbConn2.Close();
+        return intNbAjout == 1;
     }
 }
