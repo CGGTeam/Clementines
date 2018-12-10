@@ -157,24 +157,44 @@
         choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
         choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid)
         {
-
+            string realisateur = "";
+            string producteur = "";
             //faire l'ajout de nouveaux producteur et réalisateur s'il en est le cas.
-                
+            if (choixRealisateur.ControleTextBox.Visible)
+            {
+                string nomRealisateurNOUVEAU = choixRealisateur.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDRealisateur();
+                ID++;
+                SQL.ajouteRealisateur(ID, nomRealisateurNOUVEAU);
+                realisateur = ID.ToString();
+            }
+
+            if (choixProducteur.ControleTextBox.Visible)
+            {
+                string nomProducteurNOUVEAU = choixProducteur.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDProducteur();
+                ID++;
+                SQL.ajouteProducteur(ID, nomProducteurNOUVEAU);
+                producteur = ID.ToString();
+            }
+
+
+
             int noUtilisateurCourrant;
             string utilisateur = HttpContext.Current.User.Identity.Name;
-            SQL.Connection();// a enlever car requete a changer et ouvre la connextion dans cet état
             noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
             //Récupérer toutes mes informations dans mes variables. (pour le table Film)
-            Nullable<int> anneSortie = ToNullableInt(ddlAnnee.SelectedItem.ToString());
+            int anneSortie = int.Parse(ddlAnnee.SelectedItem.ToString());
             string categorie = ddlCategorie.SelectedValue.ToString();//changer 0 pour null (string)
             string format = ddlFormat.SelectedValue.ToString();//changer 0 pour null (string)
             DateTime date = DateTime.Now;
             string noUtilisateur = noUtilisateurCourrant.ToString();
             string resume = tbResume.Text.Trim(); // mettre null si ""
-            Nullable<int> duree = ToNullableInt(tbDuree.Text.ToString().Trim());
+            int duree = int.Parse(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
-            string imagePochette = "";
+            string imagePochette = "";// mettre null si ""
+
             //récupération et téléchargement de l'image dans nos ressources
             if(btnUploadImagePochette.HasFile)
             {
@@ -190,26 +210,26 @@
                 }
             }
 
-            Nullable<int> nbDisques = ToNullableInt(ddlNbDisques.SelectedItem.ToString());
+            int nbDisques = int.Parse(ddlNbDisques.SelectedItem.ToString());
             string titreFrancais = tbTitreFrancais.Text;
             string titreOriginal = tbTitreOriginal.Text.Trim();
             bool versionEtendue = cbEtendue.Checked;
-            //s'organiser pour faire l'ajout des nouveaux réalisateur et producteur en premier s'il en est le cas.
-            string realisateur = ""; //mettre null a 0 (string)
+
+            //gestions des réalisateurs et producteurs dans le cas du ddl visible
             if (!choixRealisateur.ControleTextBox.Visible)
             {
-                realisateur = choixRealisateur.ControleDDL.SelectedValue.ToString();
+                realisateur = choixRealisateur.ControleDDL.SelectedValue.ToString();//gérer a value 0
             }
 
-            string producteur = "";  //mettre null a 0 (string)
+
             if (!choixProducteur.ControleTextBox.Visible)
             {
-                producteur = choixProducteur.ControleDDL.SelectedValue.ToString();
+                producteur = choixProducteur.ControleDDL.SelectedValue.ToString();//gérer a value 0
             }
-
+            
             string extras = tbExtras.Text.Trim();//mettre null si ""
-
-            tbTitreFrancais.Text = imagePochette; // mettre null si ""
+            EntiteFilm entite = new EntiteFilm(SQL.FindNextNoFilm(), anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
+            SQL.ajoutFilmComplet(entite);
         }
     }
 
@@ -234,7 +254,7 @@
     protected void chargeListeNbCD()
     {
         ddlNbDisques.Items.Add(new ListItem("-- Aucun --", "0"));
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 99; i++)
         {
             ddlNbDisques.Items.Add(i.ToString());
         }

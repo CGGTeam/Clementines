@@ -519,6 +519,68 @@ static public class SQL
         return lstRealisateurs;
     }
 
+    //Retourne le dernierID des réalisateurs
+    public static int trouverDernierIDRealisateur()
+    {
+        int leDernier = 0;
+        SqlConnection dbConn2 = Connection2();
+        String requete = "SELECT NoRealisateur FROM Realisateurs";
+        SqlCommand cmd = new SqlCommand(requete, dbConn2);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            leDernier = (int)reader[0];
+        }
+        reader.Close();
+        dbConn2.Close();
+        return leDernier;
+    }
+
+    //fonction pour ajouter un nouveau réalisateur
+    public static void ajouteRealisateur(int ID, string nom)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO Realisateurs VALUES (@id, @nom)";
+        cmd.Parameters.AddWithValue("@id", ID);
+        cmd.Parameters.AddWithValue("@nom", nom);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    //Retourne le dernierID des producteurs
+    public static int trouverDernierIDProducteur()
+    {
+        int leDernier = 0;
+        SqlConnection dbConn2 = Connection2();
+        String requete = "SELECT NoProducteur FROM Producteurs";
+        SqlCommand cmd = new SqlCommand(requete, dbConn2);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            leDernier = (int)reader[0];
+        }
+        reader.Close();
+        dbConn2.Close();
+        return leDernier;
+    }
+
+    //fonction pour ajouter un nouveau Producteur
+    public static void ajouteProducteur(int ID, string nom)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO Producteurs VALUES (@id, @nom)";
+        cmd.Parameters.AddWithValue("@id", ID);
+        cmd.Parameters.AddWithValue("@nom", nom);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
     /// <summary>
     /// Cette fonction retourne une lise de format
     /// </summary>
@@ -761,20 +823,41 @@ static public class SQL
    {
 
    }*/
-    private static int FindNextNoFilm()
+    public static int FindNextNoFilm()
     {
         int noFilm = 0;
-        String strRequete = "select max(NoFilm) from Films";
+        //String strRequete = "select max(NoFilm) from Films";
 
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
-
-        SqlDataReader drDDL = cmdDDL.ExecuteReader();
-        while (drDDL.Read())
+        List<int> listeNoFilms = new List<int>();
+        SqlCommand cmd = new SqlCommand();
+        cmd.Connection = Connection2();
+        cmd.CommandType = CommandType.Text;
+        cmd.CommandText = "SELECT NoFilm from Films;";
+       // cmd.Parameters.AddWithValue("@Annee", DateTime.Now.Year);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
         {
-            noFilm = (int)drDDL[0];
+            listeNoFilms.Add(int.Parse(reader[0].ToString()));
         }
-        drDDL.Close();
-        return noFilm +1;
+        reader.Close();
+        cmd.Connection.Close();
+        List<int> listeDuMois = new List<int>();
+        string defaut = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + "00";
+        listeDuMois.Add(int.Parse(defaut));
+        for (int i = 0; i < listeNoFilms.Count(); i++)
+        {
+            if (listeNoFilms[i] - int.Parse(defaut) > 0)
+            {
+                listeDuMois.Add(listeNoFilms[i]);
+            }
+        }
+
+        listeDuMois.Sort();
+        noFilm = listeDuMois.Last()+1;
+
+
+
+        return noFilm;
     }
 
     /// Permet d'ajouter un film abrégé dans la BD
@@ -914,17 +997,15 @@ static public class SQL
         int intNbAjout = 0;
         using (SqlCommand cmd = new SqlCommand())
         {
-
-            int noFilm = FindNextNoFilm();
             cmd.Connection = Connection2();//connection ouverte
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "INSERT INTO Films(@no)";
-            cmd.Parameters.AddWithValue("@no", noFilm);
+            cmd.CommandText = "INSERT INTO Films VALUES(@no, @anneeSortie, @categorie, @format, @date, @noUtilisateur, @resume, @dureeMinutes, @filmOriginal, @pochette, @nbDisques, @titreFrancais, @titreOriginal, @versionEtendue, @noRealisateur, @noProducteur, @extra)";
+            cmd.Parameters.AddWithValue("@no", entite.NoFilm);
             cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie);
             cmd.Parameters.AddWithValue("@categorie", entite.Categorie);
             cmd.Parameters.AddWithValue("@format", entite.Format);
             cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
-            cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);//doit etre le numero
+            cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);
             cmd.Parameters.AddWithValue("@resume", entite.Resume);
             cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree);
             cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
@@ -933,8 +1014,8 @@ static public class SQL
             cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
             cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal);
             cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
-            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur); // doit être un nombre
-            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur); // doit être un nombre
+            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur);
+            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur);
             cmd.Parameters.AddWithValue("@extra", entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
             cmd.Connection.Close();
