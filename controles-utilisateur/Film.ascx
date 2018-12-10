@@ -363,6 +363,7 @@
                     personne.ControleTextBox.Text = "";
                     personne.ControleDDL.Visible = true;
                     personne.ControleTextBox.Visible = false;
+                    personne.CssClass = "glyphicon glyphicon-option-vertical";
                     chargeListeRequete(personne);
                 }
             }
