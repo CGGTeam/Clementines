@@ -120,8 +120,8 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
             afficherPager(phChangerPage);
 
          }
-         //si super utilisateur, possibilité d'ajouter des dvds
-         if (utilCourant.TypeUtilisateur == 'S')
+         //si super utilisateur ou admin, possibilité d'ajouter des dvds
+         if (utilCourant.TypeUtilisateur == 'S' || utilCourant.TypeUtilisateur == 'A')
          {
             AfficherAjoutDVD(util);
          }
