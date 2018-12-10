@@ -177,7 +177,7 @@
                 int ID = SQL.trouverDernierIDProducteur();
                 ID++;
                 SQL.ajouteProducteur(ID, nomProducteurNOUVEAU);
-                producteur = ID.ToString();            
+                producteur = ID.ToString();
             }
 
 
@@ -233,7 +233,7 @@
             {
                 producteur = choixProducteur.ControleDDL.SelectedValue.ToString();
             }
-            
+
             string extras = tbExtras.Text.Trim();
             EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.ajoutFilmComplet(entite);
@@ -325,6 +325,15 @@
                 {
                     SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur3.ControleDDL.SelectedValue));
                 }
+            }
+
+            foreach (Control controle in this.Controls)
+            {
+                if (controle is TextBox)
+                {
+                    TextBox tb = (TextBox)controle;
+                    tb.Text = "";
+                } 
             }
         }
     }
