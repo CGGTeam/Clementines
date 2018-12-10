@@ -1249,6 +1249,19 @@ static public class SQL
         cmd.ExecuteNonQuery();
         conn.Close();
     }
+
+    public static void ajouterFilmActeur(int noFilm, int noActeur)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsActeurs VALUES (@film, @noActeur)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@noActeur", noActeur);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
     public static List<string> GetListeUtilisateurNotifie(int noTypePreference)
     {
         // 4 = appropriation
@@ -1273,5 +1286,39 @@ static public class SQL
         drDDL.Close();
         dbConn2.Close();
         return lstUtilisateur;
+    }
+
+    //trouver le dernier acteur de la table Acteurs
+    public static int trouverDernierIDActeur()
+    {
+
+        SqlConnection dbConn2 = Connection2();
+        int leDernier = 0;
+        String requete = "SELECT NoActeur FROM Acteurs";
+        SqlCommand cmd = new SqlCommand(requete, dbConn2);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            leDernier = (int)reader[0];
+        }
+        reader.Close();
+        dbConn2.Close();
+
+
+        return leDernier;
+    }
+
+    //fonction pour ajouter un nouveau acteur (tous non-genré ;) )
+    public static void ajouteActeur(int ID, string nom)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO Acteurs VALUES (@id, @nom, 'N')";
+        cmd.Parameters.AddWithValue("@id", ID);
+        cmd.Parameters.AddWithValue("@nom", nom);
+        cmd.ExecuteNonQuery();
+        conn.Close();
     }
 }

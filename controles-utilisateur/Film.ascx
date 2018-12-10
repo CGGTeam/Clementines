@@ -159,6 +159,8 @@
         {
             string realisateur = "";
             string producteur = "";
+            int noFilm = SQL.FindNextNoFilm();
+
             //faire l'ajout de nouveaux producteur et réalisateur s'il en est le cas.
             if (choixRealisateur.ControleTextBox.Visible)
             {
@@ -175,8 +177,10 @@
                 int ID = SQL.trouverDernierIDProducteur();
                 ID++;
                 SQL.ajouteProducteur(ID, nomProducteurNOUVEAU);
-                producteur = ID.ToString();
+                producteur = ID.ToString();            
             }
+
+
 
 
 
@@ -190,7 +194,7 @@
             string format = ddlFormat.SelectedValue.ToString();
             DateTime date = DateTime.Now;
             string noUtilisateur = noUtilisateurCourrant.ToString();
-            string resume = tbResume.Text.Trim(); 
+            string resume = tbResume.Text.Trim();
             int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
             string imagePochette = "";
@@ -229,7 +233,7 @@
             {
                 producteur = choixProducteur.ControleDDL.SelectedValue.ToString();
             }
-            int noFilm = SQL.FindNextNoFilm();
+            
             string extras = tbExtras.Text.Trim();
             EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.ajoutFilmComplet(entite);
@@ -269,6 +273,57 @@
                     {
                         SQL.ajouterFilmSousTitre(noFilm, int.Parse(item.Value.ToString()));
                     }
+                }
+            }
+
+            //ajout d'un nouvel acteur 1 
+            if (choixActeur1.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur1.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm ,ID);
+            }else
+            {
+                //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
+                if (choixActeur1.ControleDDL.SelectedValue != "0")
+                {
+                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur1.ControleDDL.SelectedValue));
+                }
+            }
+            //ajout d'un nouvel acteur 2 
+            if (choixActeur2.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur2.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                SQL.ajouterFilmActeur(noFilm ,ID);
+            }else
+            {
+                //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
+                if (choixActeur2.ControleDDL.SelectedValue != "0")
+                {
+                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur2.ControleDDL.SelectedValue));
+                }
+            }
+            //ajout d'un nouvel acteur 3 
+            if (choixActeur3.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur3.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                SQL.ajouterFilmActeur(noFilm ,ID);
+            }else
+            {
+                //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
+                if (choixActeur3.ControleDDL.SelectedValue != "0")
+                {
+                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur3.ControleDDL.SelectedValue));
                 }
             }
         }
