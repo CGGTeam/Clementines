@@ -13,14 +13,17 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
    private int noUtilisateurCourrant = 3; // {valeur déterminé lors de la connexion}
    private int pageCourante;
-
    protected void Page_Load(object sender, EventArgs e)
    {
         string utilisateur = HttpContext.Current.User.Identity.Name;
         noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
-      // initialiser label pour message erreur et autres
-      Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
+        // initialiser les préférences de nb films par page
+        EntitePreference pref = SQL.GetPreferenceByNoUtilisateur(noUtilisateurCourrant);
+        nbVignettesParPage = pref.NbFilmParPage;
+
+        // initialiser label pour message erreur et autres
+        Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
       
       populerListeFilms();
 
@@ -81,6 +84,8 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
          Panel row2 = librairie.divDYN(phChangerPage, "rowChangerPage", "row");
 
          afficherPager(phChangerPage);
+         afficherPager(phChangerPageHaut);
+
       }
 
       
@@ -104,33 +109,35 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    {
       LiteralControl pager = new LiteralControl();
       decimal nbPages = Math.Ceiling((decimal)lstExemplaires.Count / (decimal)nbVignettesParPage);
+        if (nbPages > 1)
+        {
+            int previous = pageCourante - 1;
+            string strClass = previous <= 0 ? "page-item disabled" : "page-item";
+            previous = previous <= 0 ? pageCourante : previous;
 
-      int previous = pageCourante - 1;
-      string strClass = previous <= 0 ? "page-item disabled" : "page-item";
-      previous = previous <= 0 ? pageCourante : previous;
+            string strDebut = "<nav class='text-center'>" +
+                                    "<ul class='pagination justify-content-center'>" +
+                                        "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "'> <span class='glyphicon glyphicon-chevron-left'></a></li>";
 
-      string strDebut = "<nav aria - label = 'Page navigation example' >" +
-                              "<ul class='pagination justify-content-center'>" +
-                                  "<li class='" + strClass + "'><a class='page-link' href='?Page=" + previous + "'> Previous</a></li>";
+            pager.Text += strDebut;
+            for (int i = 1; i <= nbPages; i++)
+            {
+                strClass = pageCourante == i ? "page-item active" : "page-item";
+                string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + "'>" + i + "</a></li>";
+                pager.Text += strMillieu;
+            }
 
-      pager.Text += strDebut;
-      for (int i = 1; i <= nbPages; i++)
-      {
-         strClass = pageCourante == i ? "page-item active" : "page-item";
-         string strMillieu = "<li class='" + strClass + "'><a class='page - link' href='?Page=" + i + "'>" + i + "</a></li>";
-         pager.Text += strMillieu;
-      }
+            int next = pageCourante + 1;
+            strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
+            next = next >= nbPages + 1 ? pageCourante : next;
 
-      int next = pageCourante + 1;
-      strClass = next >= nbPages + 1 ? "page-item disabled" : "page-item";
-      next = next >= nbPages + 1 ? pageCourante : next;
+            string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "'><span class='glyphicon glyphicon-chevron-right'></a></li>" +
+                                    "</ul>" +
+                                "</nav>";
+            pager.Text += strFin;
 
-      string strFin = "<li class='" + strClass + "'><a class='page-link' href='?Page=" + next + "'>Next</a></li>" +
-                              "</ul>" +
-                          "</nav>";
-      pager.Text += strFin;
-
-      control.Controls.Add(pager);
+            control.Controls.Add(pager);
+        }
    }
 
    public void affichageDetailleonClick(Object sender, EventArgs e)

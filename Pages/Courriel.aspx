@@ -9,6 +9,10 @@
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
         <h2>Envoyer un message</h2>
+        <asp:LinkButton runat="server" class="btn btn-danger" Text="Retour" onclick="Retour">
+            <span class="glyphicon glyphicon-chevron-left"></span>Retour
+        </asp:LinkButton>
+        <hr />
         <br />
         <p>
             Veuillez écrire votre message:

@@ -35,9 +35,28 @@ public partial class _Default :  System.Web.UI.Page
     {
         string utilisateur = HttpContext.Current.User.Identity.Name;
         int noUtilisateur = SQL.FindNoUtilisateurByName(utilisateur);
+        if (PasswordPresent.IsValid && !passValide.IsValid)
+        {
+            succes.Visible = false;
+            error.Visible = true;
+            lblError.Text = "Le mot de passe doit être entre 11111 à 99999";
+            return;
+        }
+        else if(!string.IsNullOrEmpty(tbNewPassword.Text))
+        {
+            if (!SQL.UpdatePassword(noUtilisateur, int.Parse(tbNewPassword.Text)))
+            {
+                succes.Visible = false;
+                error.Visible = true;
+                lblError.Text = "Une erreure est survenue";
+                return;
+            }
+        }
+    
 
         int nbParPages = 10;
         int.TryParse(nbDVDPage.Text, out nbParPages);
+
         EntitePreference entitePreference = new EntitePreference()
         {
             CouleurFond = couleurFond.Text,
@@ -54,12 +73,14 @@ public partial class _Default :  System.Web.UI.Page
             var master = Master as PageMaster_MasterPage;
             master.UpdateColor();
 
+            error.Visible = false;
             succes.Visible = true;
             lblSucces.Text = "Les modifications ont été apporté";
 
         }
         else
         {
+            succes.Visible = false;
             error.Visible = true;
             lblError.Text = "Une erreure est survenue";
         }
