@@ -1075,4 +1075,21 @@ static public class SQL
         dbConn2.Close();
         return noUtilisateur;
     }
+    public static bool UpdatePassword(int noUtilisateur, int newPass)
+    {
+        int intNbAjout = 0;
+        SqlConnection dbConn2 = Connection2();
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = dbConn2;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "UPDATE Utilisateurs SET MotPasse = @pass " +
+                "WHERE NoUtilisateur = @no ";
+            cmd.Parameters.AddWithValue("@no", noUtilisateur);
+            cmd.Parameters.AddWithValue("@pass", newPass);
+
+            intNbAjout = cmd.ExecuteNonQuery();
+        }
+        return intNbAjout == 1;
+    }
 }

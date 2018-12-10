@@ -24,7 +24,6 @@
             </asp:LinkButton>
         </div>
 
-        <br />
         <hr />
             <div class="row">
                 
@@ -33,7 +32,18 @@
                         Password
                     </label>
                     <asp:TextBox runat="server" ID="tbNewPassword" 
-                        CssClass="form-control" placeholder="Nouveau mot de passe" />
+                        CssClass="form-control" placeholder="Nouveau mot de passe" 
+                         MaxLength="5" pattern="[0-9]{5}" title="5 chiffres"/>
+
+                    <asp:RequiredFieldValidator ID="PasswordPresent" runat="server"
+                       ControlToValidate="tbNewPassword"
+                       EnableClientScript="false"
+                       Display="None" />
+
+                    <asp:RangeValidator runat="server" Type="Integer" ID="passValide"
+                        MinimumValue="11111" MaximumValue="99999" ControlToValidate="tbNewPassword" 
+                        EnableClientScript="false"
+                       Display="None" />
                 </div>
                 <hr />
                 <!--
