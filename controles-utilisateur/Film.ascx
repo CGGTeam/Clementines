@@ -379,6 +379,10 @@
             chargeListeFormats();
             chargeListeCategories();
 
+            lblSucces.Text = "Ajout fait avec succès!";
+            succes.Visible = true;
+            error.Visible = false;
+
         }
     }
 

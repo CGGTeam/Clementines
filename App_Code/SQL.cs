@@ -1076,7 +1076,9 @@ static public class SQL
             cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
             cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
+
             cmd.Connection.Close();
+            CreerExemplaire(entite.NoFilm, int.Parse(entite.NomUtilisateur));
         }
 
 
