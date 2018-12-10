@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AjouterUtilisateur.ascx.cs" Inherits="controles_utilisateur_AjouterUtilisateur" %>
 
 <script runat="server">
-
    protected void Page_Load(object sender, EventArgs e)
    {
       if (!IsPostBack)
@@ -10,7 +9,6 @@
       }
       chargerTypeAbonnement();
    }
-
    protected void chargerTypeAbonnement()
    {
       SQL.Connection();
@@ -26,7 +24,6 @@
       if (tbCourriel.Text != "")
       {
          string strPattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
-
          Regex regex = new Regex(strPattern);
          Match match = regex.Match(tbCourriel.Text);
          if (match.Success)
@@ -39,7 +36,6 @@
          }
       }
    }
-
    /// <summary>
    /// Fonction qui permet d'ajouter l'utilisateur
    /// </summary>
@@ -47,14 +43,12 @@
    {
       bool valide = true;
       string messageErreur = "";
-
       //Nom d'utilisateur
       if (!formatNomUtil.IsValid)
       {
          valide = false;
          messageErreur += "Le format du nom d'utilisateur est invalide.";
       }
-
       //courriel invalide
       if (!formatCourriel.IsValid)
       {
@@ -68,10 +62,10 @@
          messageErreur += "Le format du mot de passe est invalide (#####). ";
          tbMotDePasse.Focus();
       }
-
       if (valide)
       {
          //Aller
+
          /*if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
          {
             error.Visible = false;
@@ -110,9 +104,7 @@
    /// </summary>
    protected void Retour(object sender, EventArgs e)
    {
-
    }
-
    protected void fermerSucces(object sender, EventArgs e)
    {
       succes.Visible = false;
@@ -121,8 +113,6 @@
    {
       error.Visible = false;
    }
-
-
 </script>
 <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
    <asp:Label runat="server" ID="lblSucces"></asp:Label>

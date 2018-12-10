@@ -34,45 +34,43 @@
     }
     protected void btnEnregistrer_Click(object sender, EventArgs e)
     {
-        if (IsPostBack)
+        string utilisateur = string.IsNullOrEmpty(this.proprietaire) ?
+            HttpContext.Current.User.Identity.Name : proprietaire;
+        List<string> lstNomFilm = new List<string>();
+        List<string> lstMauvais = new List<string>();
+
+        for (int i = 1; i <= 10; i++)
         {
-            string utilisateur = string.IsNullOrEmpty(this.proprietaire) ?
-                HttpContext.Current.User.Identity.Name : proprietaire;
-            List<string> lstNomFilm = new List<string>();
-            List<string> lstMauvais = new List<string>();
+            string nomTextBox = "film" + i;
+            TextBox tbFilm = this.FindControl(nomTextBox) as TextBox;
 
-            for (int i = 1; i <= 10; i++)
+            if (tbFilm != null && !string.IsNullOrEmpty(tbFilm.Text))
             {
-                string nomTextBox = "film" + i;
-                TextBox tbFilm = this.FindControl(nomTextBox) as TextBox;
-
-                if (tbFilm != null && !string.IsNullOrEmpty(tbFilm.Text))
-                {
-                    string nom = tbFilm.Text;
-                    SQL.Connection();
-                    if (!SQL.checkIfNomFilmExiste(nom))
-                        lstNomFilm.Add(nom);
-                    else
-                        lstMauvais.Add(nom);
-                }
-            }
-
-
-            SQL.AddMovieShort(lstNomFilm, utilisateur);
-
-            string sep = ", ";
-
-            if (lstNomFilm.Any())
-            {
-                succes.Visible = true;
-                lblSucces.Text = "Les DVDs suivant ont été enregistré : " + String.Join(sep, lstNomFilm);
-            }
-            if (lstMauvais.Any())
-            {
-                error.Visible = true;
-                lblError.Text = "Les DVDs suivant n'ont pu être enregistré car ils existent déjà : " + String.Join(sep, lstMauvais);
+                string nom = tbFilm.Text;
+                SQL.Connection();
+                if (!SQL.checkIfNomFilmExiste(nom))
+                    lstNomFilm.Add(nom);
+                else
+                    lstMauvais.Add(nom);
             }
         }
+
+
+        SQL.AddMovieShort(lstNomFilm, utilisateur);
+
+        string sep = ", ";
+
+        if (lstNomFilm.Any())
+        {
+            succes.Visible = true;
+            lblSucces.Text = "Les DVDs suivant ont été enregistré : " + String.Join(sep, lstNomFilm);
+        }
+        if (lstMauvais.Any())
+        {
+            error.Visible = true;
+            lblError.Text = "Les DVDs suivant n'ont pu être enregistré car ils existent déjà : " + String.Join(sep, lstMauvais);
+        }
+        Response.Redirect(Request.RawUrl);  
     }
     protected void Page_Load(object sender, EventArgs e)
     {
