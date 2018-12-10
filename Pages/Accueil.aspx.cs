@@ -238,7 +238,8 @@ public partial class _Default : System.Web.UI.Page
         EntiteUtilisateur user = SQL.FindUtilisateurByName(utilisateur);
         string proprietaire = lstFilmsAfficher[i].proprietaire.NomUtilisateur;
 
-        if(user.TypeUtilisateur == 'S') afficherOptionSuperUtilisateur(i, panelCache, utilisateur, proprietaire);
+        if(user.TypeUtilisateur == 'A') afficherOptionsAdmin(i, panelCache);
+        else if(user.TypeUtilisateur == 'S') afficherOptionSuperUtilisateur(i, panelCache, utilisateur, proprietaire);
         else if (utilisateur.Trim().Equals(proprietaire.Trim())) afficherOptionPropreFilm(i, panelCache);
         else afficherOptionsAutreFilm(i, panelCache);
 
@@ -320,6 +321,32 @@ public partial class _Default : System.Web.UI.Page
         btn3.Click += new EventHandler(EnvoyerUnCourriel);
          
         
+    }
+    private void afficherOptionsAdmin(int i, Panel panelCache)
+    {
+        panelCache.Attributes.Add("style", "background:rgba(240, 121, 232, 0.83);");
+        Table table = librairie.tableDYN(panelCache, "table_" + lstFilmsAfficher[i].film.NoFilm, "tableau-boutons");
+
+        TableRow tr1 = librairie.trDYN(table);
+        TableCell td1 = librairie.tdDYN(tr1, "td_affichage_detaillee_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn1 = librairie.btnDYN(td1, "affichage_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Affichage détaillée");
+        btn1.Click += new EventHandler(AfficherDetails);
+
+        TableRow tr3 = librairie.trDYN(table);
+        TableCell td3 = librairie.tdDYN(tr3, "td_message_" + lstFilms[i].film.NoFilm, "");
+        Button btn3 = librairie.btnDYN(td3, "message" + lstFilmsAfficher[i].film.NoFilm + "_" + lstFilmsAfficher[i].proprietaire.NomUtilisateur, "btn btn-default boutons-options-film", "Envoyer un message");
+        btn3.Click += new EventHandler(EnvoyerUnCourriel);
+
+        TableRow tr2 = librairie.trDYN(table);
+        TableCell td2 = librairie.tdDYN(tr2, "td_modifier_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn2 = librairie.btnDYN(td2, "modifier_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Modifier");
+        btn2.Click += new EventHandler(modifieronClick);
+
+        TableRow tr4 = librairie.trDYN(table);
+        TableCell td4 = librairie.tdDYN(tr4, "td_supprimer_" + lstFilmsAfficher[i].film.NoFilm, "");
+        Button btn4 = librairie.btnDYN(td4, "supprimer_" + lstFilmsAfficher[i].film.NoFilm, "btn btn-default boutons-options-film", "Supprimer");
+        btn4.Click += new EventHandler(supprimerOnClick);
+
     }
     public void supprimerOnClick(Object sender, EventArgs e)
     {
