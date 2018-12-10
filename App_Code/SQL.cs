@@ -1210,4 +1210,43 @@ static public class SQL
         dbConn2.Close();
         return intNbAjout == 1;
     }
+
+    public static void ajouterFilmLangue(int noFilm, int noLangue)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsLangues VALUES (@film, @langue)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@langue", noLangue);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    public static void ajouterFilmSupplement(int noFilm, int noSupplmement)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsSupplements VALUES (@film, @supplement)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@supplement", noSupplmement);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    public static void ajouterFilmSousTitre(int noFilm, int noSousTitre)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsSousTitres VALUES (@film, @sousTitre)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@sousTitre", noSousTitre);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
 }
