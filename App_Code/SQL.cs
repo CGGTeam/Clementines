@@ -163,7 +163,9 @@ static public class SQL
     }
    public static List<EntiteFilm> FindAllUserFilm(int id)
    {
-      List<EntiteFilm> lstFilms = new List<EntiteFilm>();
+        SqlConnection dbConn2 = Connection2();
+
+        List<EntiteFilm> lstFilms = new List<EntiteFilm>();
       String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
          "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
          "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra " +
@@ -176,7 +178,7 @@ static public class SQL
          "WHERE Films.NoUtilisateurMAJ = @id;";
       SqlParameter paramUsername = new SqlParameter("@id", id);
 
-      SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+      SqlCommand cmdDDL = new SqlCommand(strReq, dbConn2);
       cmdDDL.Parameters.Add(paramUsername);
 
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -201,7 +203,8 @@ static public class SQL
             (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]));
       }
       drDDL.Close();
-      return lstFilms;
+        dbConn2.Close();
+        return lstFilms;
    }
     public static List<EntiteExemplaire> FindAllUserExemplairesEmpruntes(int id)
     {
@@ -267,7 +270,8 @@ static public class SQL
 
     public static List<EntiteExemplaire> FindAllUserExemplaires(int id)
    {
-      List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
+        SqlConnection dbConn2 = Connection2();
+        List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
       String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
                         "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
                         "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra, " +
@@ -285,7 +289,7 @@ static public class SQL
 
       SqlParameter paramUsername = new SqlParameter("@id", id);
 
-      SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+      SqlCommand cmdDDL = new SqlCommand(strReq, dbConn2);
       cmdDDL.Parameters.Add(paramUsername);
 
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -319,7 +323,8 @@ static public class SQL
          };
          lstExemplaires.Add(exemplaire);
       }
-      drDDL.Close();
+        dbConn2.Close();
+        drDDL.Close();
 
       return lstExemplaires;
    }
@@ -373,11 +378,12 @@ static public class SQL
             lstExemplaires.Add(exemplaire);
         }
         dbConn2.Close();
-
+        drDDL.Close();
         return lstExemplaires;
     }
     public static EntiteExemplaire FindExemplaireById(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         EntiteExemplaire exemplaire = null;
         String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
                               "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
@@ -395,7 +401,7 @@ static public class SQL
 
         SqlParameter paramId = new SqlParameter("@id", id);
 
-        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn2);
         cmdDDL.Parameters.Add(paramId);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -435,14 +441,15 @@ static public class SQL
             };
         }
         drDDL.Close();
-
+        dbConn2.Close();
         return exemplaire;
     }
     public static List<EntiteUtilisateur> FindAllUtilisateur()
    {
-      List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
+        SqlConnection dbConn2 = Connection2();
+        List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
       String strRequete = "select * from Utilisateurs;";
-      SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+      SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
       SqlDataReader drDDL = cmdDDL.ExecuteReader();
       while (drDDL.Read())
       {
@@ -450,8 +457,8 @@ static public class SQL
       }
 
       drDDL.Close();
-
-      return lstUtilisateur;
+        dbConn2.Close();
+        return lstUtilisateur;
    }
 
     public static List<EntiteUtilisateur> FindAllAutresUtilisateur(int noUtilCourant)
@@ -459,7 +466,7 @@ static public class SQL
         SqlConnection dbConn2 = Connection2();
         List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
         String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + " and TypeUtilisateur != 'A';";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
@@ -476,7 +483,7 @@ static public class SQL
         SqlConnection dbConn2 = Connection2();
         List<EntiteUtilisateur> lstUtilisateur = new List<EntiteUtilisateur>();
         String strRequete = "select * from Utilisateurs where NoUtilisateur != " + noUtilCourant + "and NoUtilisateur != " + noUtilEmprunteur + " and TypeUtilisateur != 'A';";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
@@ -491,9 +498,10 @@ static public class SQL
     //Cette fonction permet de retourner une liste de producteur 
     public static List<EntiteProducteur> FindAllProducteur()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteProducteur> lstProducteurs = new List<EntiteProducteur>();
         String strRequete = "select * from Producteurs";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
@@ -501,15 +509,17 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return lstProducteurs;
     }
 
     //Cette fonction permet de retourner une liste de Réalisateur 
     public static List<EntiteRealisateur> FindAllRealisateur()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteRealisateur> lstRealisateurs = new List<EntiteRealisateur>();
         String strRequete = "select * from Realisateurs";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
@@ -517,14 +527,15 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return lstRealisateurs;
     }
 
     //Retourne le dernierID des réalisateurs
     public static int trouverDernierIDRealisateur()
     {
-        int leDernier = 0;
         SqlConnection dbConn2 = Connection2();
+        int leDernier = 0;
         String requete = "SELECT NoRealisateur FROM Realisateurs";
         SqlCommand cmd = new SqlCommand(requete, dbConn2);
         SqlDataReader reader = cmd.ExecuteReader();
@@ -589,9 +600,10 @@ static public class SQL
 
     public static List<EntiteFormat> FindAllFormat()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteFormat> lstFormats = new List<EntiteFormat>();
         String strRequete = "select * from Formats";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
@@ -599,6 +611,7 @@ static public class SQL
         }
 
         drDDL.Close();
+        dbConn2.Close();
         return lstFormats;
     }
 
@@ -609,15 +622,17 @@ static public class SQL
 
     public static List<EntiteCategorie> FindAllCategorie()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteCategorie> lstCategories = new List<EntiteCategorie>();
         String strRequete = "select * from Categories";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
             lstCategories.Add(new EntiteCategorie((int)drDDL[0], (string)drDDL[1]));
         }
         drDDL.Close();
+        dbConn2.Close();
         return lstCategories;
     }
 
@@ -628,15 +643,17 @@ static public class SQL
 
     public static List<EntiteActeur> FindAllActeurs()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteActeur> lstActeurs = new List<EntiteActeur>();
         String strRequete = "select * from Acteurs";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
             lstActeurs.Add(new EntiteActeur((int)drDDL[0], (string)drDDL[1], (string)drDDL[2]));
         }
         drDDL.Close();
+        dbConn2.Close();
         return lstActeurs;
     }
 
@@ -647,16 +664,17 @@ static public class SQL
 
     public static List<EntiteLangue> FindAllLangue()
     {
-        SQL.Connection2();
+        SqlConnection dbConn2 = Connection2();
         List<EntiteLangue> lstLangues = new List<EntiteLangue>();
         String strRequete = "select * from Langues";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
             lstLangues.Add(new EntiteLangue((int)drDDL[0], (string)drDDL[1]));
         }
         drDDL.Close();
+        dbConn2.Close();
         return lstLangues;
     }
 
@@ -667,14 +685,16 @@ static public class SQL
 
     public static List<EntiteSousTitres> FindAllSousTitre()
     {
+        SqlConnection dbConn2 = Connection2();
         List<EntiteSousTitres> lstSousTitres = new List<EntiteSousTitres>();
         String strRequete = "select * from SousTitres";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
             lstSousTitres.Add(new EntiteSousTitres((int)drDDL[0], (string)drDDL[1]));
         }
+        dbConn2.Close();
         drDDL.Close();
         return lstSousTitres;
     }
@@ -686,15 +706,16 @@ static public class SQL
 
     public static List<EntiteSupplements> FindAllSupplement()
     {
-        SQL.Connection2();
+        SqlConnection dbConn2 = Connection2();
         List<EntiteSupplements> lstSupplements = new List<EntiteSupplements>();
         String strRequete = "select * from Supplements";
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
         while (drDDL.Read())
         {
             lstSupplements.Add(new EntiteSupplements((int)drDDL[0], (string)drDDL[1]));
         }
+        dbConn2.Close();
         drDDL.Close();
         return lstSupplements;
     }
@@ -709,7 +730,7 @@ static public class SQL
         String strRequete = "select * from Utilisateurs where NoUtilisateur = @id";
         SqlParameter paramUsername = new SqlParameter("@id", id);
 
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramUsername);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -772,6 +793,7 @@ static public class SQL
     /// EntiteFilm
     public static EntiteFilm FindFilmById(int id)
     {
+        SqlConnection dbConn2 = Connection2();
         EntiteFilm film = null;
         String strRequete = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
            "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
@@ -784,7 +806,7 @@ static public class SQL
            "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur where Films.NoFilm = @id;";
         SqlParameter paramUsername = new SqlParameter("@id", id);
 
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramUsername);
 
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
@@ -815,7 +837,7 @@ static public class SQL
                 lstSupplements = getLstSupplements(idFilm)
             };
         }
-
+        dbConn2.Close();
         drDDL.Close();
         return film;
     }
@@ -826,6 +848,7 @@ static public class SQL
    }*/
     public static int FindNextNoFilm()
     {
+        SqlConnection dbConn2 = Connection2();
         int noFilm = 0;
         //String strRequete = "select max(NoFilm) from Films";
 
@@ -867,6 +890,7 @@ static public class SQL
     /// <returns>Si la requete est réeussi</returns>
     public static int AddMovieShort(List<string> lstNomFilm, string nomDeUtilisateur)
     {
+        SqlConnection dbConn2 = Connection2();
         int intNbAjout = 0;    
         int noUtilisateurMAJ = FindNoUtilisateurByName(nomDeUtilisateur);
         DateTime DateMAJ = DateTime.Now;
@@ -876,7 +900,7 @@ static public class SQL
             int noFilm = FindNextNoFilm();
             using (SqlCommand cmd = new SqlCommand())
             {
-                cmd.Connection = dbConn;
+                cmd.Connection = dbConn2;
                 cmd.CommandType = CommandType.Text;
                 cmd.CommandText = "INSERT INTO Films(NoFilm, TitreFrancais, NoUtilisateurMAJ, DateMAJ) Values (@no, @titre, @noMAJ, @date)";
                 cmd.Parameters.AddWithValue("@no", noFilm);
@@ -888,6 +912,7 @@ static public class SQL
             }
             CreerExemplaire(noFilm, noUtilisateurMAJ);     
         }
+        dbConn2.Close();
         return intNbAjout;
     }
 
@@ -929,11 +954,12 @@ static public class SQL
 
     public static bool checkIfNomFilmExiste(string titre)
     {
+        SqlConnection dbConn2 = Connection2();
         bool estPresent = false;
         string strRequete = "SELECT COUNT(*) FROM Films" +
             " WHERE TitreFrancais = @titre";
         SqlParameter paramTitre = new SqlParameter("@titre", titre);
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramTitre);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
 
@@ -941,17 +967,19 @@ static public class SQL
         {
             estPresent = (int)drDDL[0]>=1;
         }
-        dbConn.Close();
+        dbConn2.Close();
+        drDDL.Close();
         return estPresent;
     }
 
     public static bool checkIfNomOriginalFilmExiste(string titre)
     {
+        SqlConnection dbConn2 = Connection2();
         bool estPresent = false;
         string strRequete = "SELECT COUNT(*) FROM Films" +
             " WHERE TitreOriginal = @titre";
         SqlParameter paramTitre = new SqlParameter("@titre", titre);
-        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn);
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
         cmdDDL.Parameters.Add(paramTitre);
         SqlDataReader drDDL = cmdDDL.ExecuteReader();
 
@@ -959,18 +987,20 @@ static public class SQL
         {
             estPresent = (int)drDDL[0] >= 1;
         }
-        dbConn.Close();
+        dbConn2.Close();
+        drDDL.Close();
         return estPresent;
     }
 
     public static bool CreerExemplaire(int noFilm, int noUtilisateur)
     {
+        SqlConnection dbConn2 = Connection2();
         int intNbAjout =0;
         DateTime now = DateTime.Now;
         int noExemplaire = (int.Parse(noFilm + "01"));
         using (SqlCommand cmd = new SqlCommand())
         {
-            cmd.Connection = dbConn;
+            cmd.Connection = dbConn2;
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = "INSERT INTO Exemplaires(NoExemplaire, NoUtilisateurProprietaire) Values (@no, @proprietaire)";
             cmd.Parameters.AddWithValue("@no", noExemplaire);
@@ -981,7 +1011,7 @@ static public class SQL
         if (intNbAjout == 0) return false;
         using (SqlCommand cmd = new SqlCommand())
         {
-            cmd.Connection = dbConn;
+            cmd.Connection = dbConn2;
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = "INSERT INTO EmpruntsFilms(NoExemplaire, NoUtilisateur, DateEmprunt) Values (@no, @proprietaire, @date)";
             cmd.Parameters.AddWithValue("@no", noExemplaire);
@@ -990,6 +1020,7 @@ static public class SQL
 
             intNbAjout += cmd.ExecuteNonQuery();
         }
+        dbConn2.Close();  
         return intNbAjout >= 1;
     }
 
@@ -1066,9 +1097,9 @@ static public class SQL
                         break;
                 }
             }
+            drDDL.Close();
         }
         dbConn2.Close();
-
         return preference;
     }
     public static bool UpdatePreference(EntitePreference preferences, int noUtilisateur)
