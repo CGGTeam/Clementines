@@ -18,8 +18,8 @@ public class EntitePreference
     public int NbFilmParPage { get; set; }//7
     public EntitePreference()
     {
-        CouleurFond = "White";
-        CouleurTexte = "White";
+        CouleurFond = "#ffffff";
+        CouleurTexte = "#00000";
         CourrielSiAjout = true;
         CourrielSiAppropriation = true;
         CourrielSiSuppression = true;

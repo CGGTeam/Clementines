@@ -10,7 +10,11 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        string utilisateur = HttpContext.Current.User.Identity.Name;
+        int noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
+        EntitePreference mesPreferences = SQL.GetPreferenceByNoUtilisateur(noUtilisateurCourrant);
 
+        body.Attributes.Add("style", "background-color:"+ mesPreferences.CouleurFond+ "; color:" + mesPreferences.CouleurTexte);
     }
 
     protected void PageLogin(Object sender, EventArgs e)
