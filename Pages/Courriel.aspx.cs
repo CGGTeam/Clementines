@@ -43,10 +43,12 @@ public partial class _Default : System.Web.UI.Page
     protected void fermerSucces(object sender, EventArgs e)
     {
         success_message.Visible = false;
+        error_message.Visible = false;
     }
     protected void fermerError(object sender, EventArgs e)
     {
         error_message.Visible = false;
+        success_message.Visible = false;
     }
     public void envoyerMessage(object sender, EventArgs e)
     {
@@ -69,19 +71,22 @@ public partial class _Default : System.Web.UI.Page
         List<string> destinataireValide = lstDestinataires.Except(destinataireErronne).ToList();
 
         string sep = ", ";
-        if (destinataireValide.Any())
+        if (IsPostBack)
         {
-            success_message.Visible = true;
-            lblSucces.Text = "Le message a été envoyé à " + String.Join(sep, destinataireValide).Trim();
+            if (destinataireValide.Any())
+            {
+                success_message.Visible = true;
+                lblSucces.Text = "Le message a été envoyé à " + String.Join(sep, destinataireValide).Trim();
+            }
+            if (destinataireErronne.Any())
+            {
+                error_message.Visible = true;
+                lblError.Text = destinataireErronne.Count > 1 ?
+                    "Le message n'a pu être envoyé à " + String.Join(sep, destinataireErronne).Trim() + " car ils n'esxistent pas"
+                    : "Le message n'a pu être envoyé à " + String.Join(sep, destinataireErronne).Trim() + " car il n'esxiste pas";
+            }
         }
-        if (destinataireErronne.Any())
-        {
-            error_message.Visible = true;
-            lblError.Text = destinataireErronne.Count > 1 ?
-                "Le message n'a pu être envoyé à " + String.Join(sep, destinataireErronne).Trim() + " car ils n'esxistent pas"
-                : "Le message n'a pu être envoyé à " + String.Join(sep, destinataireErronne).Trim() + " car il n'esxiste pas";
-        }
-        
+       
     }
     private void ClearTextBox()
     {

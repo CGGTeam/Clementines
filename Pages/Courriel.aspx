@@ -18,7 +18,7 @@
 
         <div runat="server" Visible="false" id="error_message" class="alert alert-danger" role="alert">
             <asp:Label runat="server" ID="lblError"></asp:Label>
-            <asp:LinkButton runat="server" type="button" class="btn-link pull-right"  OnClick="fermerError">
+            <asp:LinkButton runat="server" type="button" class="btn-link pull-right" OnClick="fermerError">
                 <span class="glyphicon glyphicon-remove"></span>
             </asp:LinkButton>
         </div>
