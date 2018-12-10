@@ -72,8 +72,6 @@
       if (valide)
       {
          //Aller
-         //char[] typeAbonnement = ddlListeAbonnement­.SelectedValue.ToString().ToCharArray();
-
          /*if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
          {
             error.Visible = false;
@@ -86,6 +84,19 @@
             error.Visible = true;
             lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
          }*/
+         if (SQL.checkIfNomUtilisateurExiste(tbNomUtilisateur.Text))
+         {
+            succes.Visible = false;
+            error.Visible = true;
+            lblError.Text = "Ce nom d'utilisateur est déjà occupé!";
+         }
+         else
+         {
+            SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), ddlListeAbonnement.SelectedValue[0]);
+            //retourner à la page précédente.
+
+         }
+         
       }
       else
       {
@@ -139,7 +150,7 @@
              controltovalidate="tbNomUtilisateur"
              errormessage="Entrez un nom d'utilisateur!"/>
          <asp:RegularExpressionValidator runat="server" id="formatNomUtil"
-          controltovalidate="tbNomUtilisateur" validationexpression="^[a-z]{10}$"
+          controltovalidate="tbNomUtilisateur" validationexpression="^[a-z]{3,10}$"
           EnableClientScript="false" Display="None" />
          <br />
        <!-- Courriel -->

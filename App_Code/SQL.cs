@@ -1352,29 +1352,40 @@ static public class SQL
         SqlCommand command = new SqlCommand(strReq, conn);
         SqlDataReader dataReader = command.ExecuteReader();
         dataReader.Read();
-        intRetour = int.Parse(dataReader[1].ToString());
+        intRetour = int.Parse(dataReader[0].ToString());
         dataReader.Close();
         conn.Close();
-        return intRetour; 
+        return intRetour;
     }
 
-   public static bool ajouterUtilisateur(string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
+   public static bool checkIfNomUtilisateurExiste(string nomUtilisateur)
+   {
+      SqlConnection dbConn2 = Connection2();
+      bool estPresent = false;
+      string strRequete = "SELECT COUNT(*) FROM Utilisateurs" +
+          " WHERE NomUtilisateur = @username";
+      SqlParameter paramTitre = new SqlParameter("@username", nomUtilisateur);
+      SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+      cmdDDL.Parameters.Add(paramTitre);
+      SqlDataReader drDDL = cmdDDL.ExecuteReader();
+
+      while (drDDL.Read())
+      {
+         estPresent = (int)drDDL[0] >= 1;
+      }
+      dbConn2.Close();
+      drDDL.Close();
+      return estPresent;
+   }
+
+   public static void ajouterUtilisateur(string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
    {
       bool retour = true;
       SqlConnection conn = Connection2();
       int noUtilisateur = idProchainUtilisateur();
-      string strRequete = "INSERT INTO Utilisateurs(NoUtilisateur, NomUtilisateur, Courriel, MotPasse, TypeUtilisateur) VALUES(" + nomUtilisateur + "," + nomUtilisateur + "," + courriel + "," + motPasse + "," + typeUtilisateur+");";
-      try
-      {
-         SqlCommand command = new SqlCommand(strRequete, conn);
-         command.ExecuteNonQuery();
-      }
-      catch(Exception err)
-      {
-         retour = false;
-      }
+      string strRequete = "INSERT INTO Utilisateurs(NoUtilisateur, NomUtilisateur, Courriel, MotPasse, TypeUtilisateur) VALUES(" + noUtilisateur + ",'" + nomUtilisateur + "','" + courriel + "'," + motPasse + ",'" + typeUtilisateur+"');";     
+      SqlCommand command = new SqlCommand(strRequete, conn);
+      command.ExecuteNonQuery();
       conn.Close();
-      return retour;
-      
    }
 }
