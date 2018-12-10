@@ -76,8 +76,6 @@ public partial class _Default : System.Web.UI.Page
         error_message.Visible = false;
         lblSucces.Text = "Message envoyer à "+ destinaire.Text.Trim() + "!";
 
-        tbMessage.Text = "";
-        destinaire.Text = "";
         
     }
 }

@@ -26,7 +26,7 @@
             </asp:LinkButton>
         </div>
         <div runat="server" Visible="false" id="success_message" class="alert alert-success" role="alert">
-            <asp:Label runat="server" ID="lblSucces">Message envoyer sans erreure!</asp:Label>
+            <asp:Label runat="server" ID="lblSucces"></asp:Label>
             <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces">
                 <span class="glyphicon glyphicon-remove pull-right"></span>
             </asp:LinkButton>
