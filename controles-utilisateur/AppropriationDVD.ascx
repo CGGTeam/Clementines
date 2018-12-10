@@ -10,7 +10,7 @@
         utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
 
         InitialiserDestinaire();
-        
+
         if( !IsPostBack )
         {
             if (utilCourant.TypeUtilisateur == 'S')
@@ -58,6 +58,23 @@
             div_identite.Visible = false;
             btnApproprier.Visible = false;
             prevPage = Request.QueryString["Retour"];
+
+            // afficher les courriels envoyés
+            List<string> lstReceveursCourriel = SQL.GetListeUtilisateurNotifie(4);
+
+            if (lstReceveursCourriel.Count > 0)
+            {
+                string fluxMessage = "Un courriel a été envoyé aux personnes suivantes:<br/>";
+                foreach(string nom in lstReceveursCourriel)
+                {
+                    fluxMessage += nom.Trim() + "; ";
+                }
+
+                // afficher le message
+                lblMessageCourriels.Text = fluxMessage;
+                divMessageCourriels.Visible = true;
+                lblMessageCourriels.Visible = true;
+            }
         }
     }
     private void LoadFilm(string id)
@@ -123,6 +140,7 @@
 
         if (nbRetour > 0)
         {
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
             String url = "~/Pages/AppropriationDVD.aspx?Film=" + film.film.NoFilm + "&Retour=" + prevPage;
             Response.Redirect(url);
         }
@@ -142,6 +160,9 @@
     }
 </script>
 
+<div class="alert alert-success" runat="server" id="divMessageCourriels" visible="false">
+  <asp:Label ID="lblMessageCourriels" runat="server" Text="" />
+</div>
     <h1>Affichage détaillé du film <span style="color:darkred;"></span></h1>
 
 <div class="row" runat="server" id="div_identite" Visible="false">

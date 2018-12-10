@@ -50,6 +50,24 @@
         {
             btnSupprimer.Visible = false;
             prevPage = Request.QueryString["Retour"];
+
+            // afficher les courriels envoyés
+            List<string> lstReceveursCourriel = SQL.GetListeUtilisateurNotifie(5);
+
+            if (lstReceveursCourriel.Count > 0)
+            {
+                string fluxMessage = "Un courriel a été envoyé aux personnes suivantes:<br/>";
+                foreach(string nom in lstReceveursCourriel)
+                {
+                    fluxMessage += nom.Trim() + "; ";
+                }
+
+                // afficher le message
+                body_affichage.Visible = false;
+                lblMessageCourriels.Text = fluxMessage;
+                divMessageCourriels.Visible = true;
+                lblMessageCourriels.Visible = true;
+            }
         }
     }
     
@@ -107,11 +125,14 @@
         int nbRetour = SQL.SupprimerDVD(film.film.NoFilm);
         if (nbRetour > 0)
         {
-            String url = "~/Pages/Accueil.aspx";
+            String url = "~/Pages/SupprimerDVD.aspx?Retour=" + prevPage;
             Response.Redirect(url);
         }
     }
 </script>
+<div class="alert alert-success" runat="server" id="divMessageCourriels" visible="false">
+  <asp:Label ID="lblMessageCourriels" runat="server" Text="" />
+</div>
     <h1>Affichage détaillé du film <span style="color:darkred;"></span></h1> 
         <asp:LinkButton runat="server" class="btn btn-danger" Text="Retour" onclick="Retour" >
             <span class="glyphicon glyphicon-chevron-left"></span>Retour
@@ -121,7 +142,7 @@
             OnClientClick="if ( !confirm('Désirez-vous vraiment supprimer le DVD courant ?\n\nOK=OUI\n\nAnnuler=NON')) return false;"/> 
     <hr />
 
- <div class="panel panel-default">
+ <div class="panel panel-default" runat="server" id="body_affichage">
         <div class="panel-body">
         <div class="col-sm-3" align="center">
             <asp:Image ID="PHVignette" runat="server" class="vignette"/>

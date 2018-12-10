@@ -152,13 +152,15 @@
          ==============================================================================================================
          ==============================================================================================================*/
 
-        if (rerFieldValidatorTitreOriginal.IsValid && RegularExpressionDuree.IsValid &&
+        if (rerFieldValidatorTitreOriginal.IsValid && rangeValDuree.IsValid &&
         choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
         choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
         choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid)
         {
             string realisateur = "";
             string producteur = "";
+            int noFilm = SQL.FindNextNoFilm();
+
             //faire l'ajout de nouveaux producteur et réalisateur s'il en est le cas.
             if (choixRealisateur.ControleTextBox.Visible)
             {
@@ -175,8 +177,10 @@
                 int ID = SQL.trouverDernierIDProducteur();
                 ID++;
                 SQL.ajouteProducteur(ID, nomProducteurNOUVEAU);
-                producteur = ID.ToString();
+                producteur = ID.ToString();            
             }
+
+
 
 
 
@@ -186,14 +190,14 @@
 
             //Récupérer toutes mes informations dans mes variables. (pour le table Film)
             int anneSortie = corrigerLesDDl(ddlAnnee.SelectedItem.ToString());
-            string categorie = ddlCategorie.SelectedValue.ToString();//changer 0 pour null (string)
-            string format = ddlFormat.SelectedValue.ToString();//changer 0 pour null (string)
+            string categorie = ddlCategorie.SelectedValue.ToString();
+            string format = ddlFormat.SelectedValue.ToString();
             DateTime date = DateTime.Now;
             string noUtilisateur = noUtilisateurCourrant.ToString();
-            string resume = tbResume.Text.Trim(); // mettre null si ""
+            string resume = tbResume.Text.Trim();
             int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
-            string imagePochette = "";// mettre null si ""
+            string imagePochette = "";
 
             //récupération et téléchargement de l'image dans nos ressources
             if(btnUploadImagePochette.HasFile)
@@ -213,7 +217,7 @@
                 }
             }
 
-            int nbDisques = int.Parse(ddlNbDisques.SelectedItem.ToString());
+            int nbDisques = int.Parse(ddlNbDisques.SelectedValue);
             string titreFrancais = tbTitreFrancais.Text;
             string titreOriginal = tbTitreOriginal.Text.Trim();
             bool versionEtendue = cbEtendue.Checked;
@@ -221,20 +225,107 @@
             //gestions des réalisateurs et producteurs dans le cas du ddl visible
             if (!choixRealisateur.ControleTextBox.Visible)
             {
-                realisateur = choixRealisateur.ControleDDL.SelectedValue.ToString();//gérer a value 0
+                realisateur = choixRealisateur.ControleDDL.SelectedValue.ToString();
             }
 
 
             if (!choixProducteur.ControleTextBox.Visible)
             {
-                producteur = choixProducteur.ControleDDL.SelectedValue.ToString();//gérer a value 0
+                producteur = choixProducteur.ControleDDL.SelectedValue.ToString();
             }
-
-            string extras = tbExtras.Text.Trim();//mettre null si ""
-            EntiteFilm entite = new EntiteFilm(SQL.FindNextNoFilm(), anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
+            
+            string extras = tbExtras.Text.Trim();
+            EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.ajoutFilmComplet(entite);
 
+            //ajout dans Films Acteur (si le cas)
 
+
+            //ajout dans films supplements 
+            foreach (ListItem item in lbSupplements.Items)
+            {
+                if (item.Selected)
+                {
+                    if (item.Value != "0")
+                    {
+                        SQL.ajouterFilmSupplement(noFilm, int.Parse(item.Value.ToString()));
+                    }
+                }
+            }
+            //Ajout des langues
+            foreach (ListItem item in lbLangue.Items)
+            {
+                if (item.Selected)
+                {
+                    if (item.Value != "0")
+                    {
+                        SQL.ajouterFilmLangue(noFilm, int.Parse(item.Value.ToString()));
+                    }
+                }
+            }
+
+            //Ajout des sous titre
+            foreach (ListItem item in lbSousTitre.Items)
+            {
+                if (item.Selected)
+                {
+                    if (item.Value != "0")
+                    {
+                        SQL.ajouterFilmSousTitre(noFilm, int.Parse(item.Value.ToString()));
+                    }
+                }
+            }
+
+            //ajout d'un nouvel acteur 1 
+            if (choixActeur1.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur1.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm ,ID);
+            }else
+            {
+                //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
+                if (choixActeur1.ControleDDL.SelectedValue != "0")
+                {
+                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur1.ControleDDL.SelectedValue));
+                }
+            }
+            //ajout d'un nouvel acteur 2 
+            if (choixActeur2.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur2.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                SQL.ajouterFilmActeur(noFilm ,ID);
+            }else
+            {
+                //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
+                if (choixActeur2.ControleDDL.SelectedValue != "0")
+                {
+                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur2.ControleDDL.SelectedValue));
+                }
+            }
+            //ajout d'un nouvel acteur 3 
+            if (choixActeur3.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur3.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                SQL.ajouterFilmActeur(noFilm ,ID);
+            }else
+            {
+                //si n'est pas "aucun" qui est sélectionner on fait le nouveau lien filmActeur
+                if (choixActeur3.ControleDDL.SelectedValue != "0")
+                {
+                    SQL.ajouterFilmActeur(noFilm ,int.Parse(choixActeur3.ControleDDL.SelectedValue));
+                }
+            }
         }
     }
 
@@ -273,7 +364,7 @@
         ddlNbDisques.Items.Add(new ListItem("-- Aucun --", "0"));
         for (int i = 1; i <= 99; i++)
         {
-            ddlNbDisques.Items.Add(i.ToString());
+            ddlNbDisques.Items.Add(new ListItem(i.ToString(), i.ToString()));
         }
 
     }
@@ -343,12 +434,14 @@
         <asp:TextBox ID="tbDuree" runat="server"
            MaxLength="25" CssClass="form-control"
             placeholder="Durée (en minutes)"/>
-        <asp:RegularExpressionValidator ID="RegularExpressionDuree"
-            ControlToValidate="tbDuree" runat="server"
-            ErrorMessage="Nombres entiers seulement!"
+        <asp:RangeValidator runat="server"
+            ControlToValidate="tbDuree"
+            Type="Integer"
+            MinimumValue="0"
+            MaximumValue="9999"
+            ID="rangeValDuree"
             Style="color:red"
-            ValidationExpression="\d+">
-        </asp:RegularExpressionValidator>
+            ErrorMessage="nombre entre 0 et 9999" />
         <br />
         <!-- Format Requete-->
         <asp:Label runat="server">Format :</asp:Label>
@@ -461,21 +554,17 @@
         <!-- Les 3 check box -->
         <asp:Label runat="server">Options :</asp:Label>
         <div class="form-control">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <!-- Version originale? -->
                 <asp:Label runat="server">Version originale :</asp:Label>
                 <asp:CheckBox ID="cbOriginal" runat="server"/>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <!-- Version étendue?-->
                 <asp:Label runat="server">Version étendue :</asp:Label>
                 <asp:CheckBox ID="cbEtendue" runat="server"/>
             </div>
-            <div class="col-sm-4">
-                <!-- Visible à tous? -->
-                <asp:Label runat="server">Visible à tous :</asp:Label>
-                <asp:CheckBox ID="cbVisible" runat="server"/>
-            </div>
+
         </div>
         <br />
 
@@ -520,6 +609,6 @@
         <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter" OnClick="Ajouter"/>
     </div>
     <div class="col-sm-6">
-        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Annuler" OnClick="Retour"/>
+        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Annuler" OnClick="Retour" CausesValidation="false"/>
     </div>
 </div>

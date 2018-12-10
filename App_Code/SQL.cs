@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Web;
 
@@ -267,6 +268,28 @@ static public class SQL
         dbConn2.Close();
         return lstExemplaires;
     }
+
+   public static List<EntiteTypeAbonnement> FindAllTypeAbonnements()
+   {
+      SqlConnection dbConn2 = Connection2();
+      List<EntiteTypeAbonnement> lstTypeAbonnement = new List<EntiteTypeAbonnement>();
+
+      string strReq = "select * from TypesUtilisateur";
+      SqlCommand command = new SqlCommand(strReq, dbConn2);
+
+      SqlDataReader dataReader = command.ExecuteReader();
+      while(dataReader.Read())
+      {
+         char[] tabTypeUtilisateur;
+         tabTypeUtilisateur = dataReader[0].ToString().ToCharArray();
+         char typeUtilisateur = tabTypeUtilisateur[0];
+         string description = dataReader[1].ToString();
+         EntiteTypeAbonnement entiteTypeAbonnement = new EntiteTypeAbonnement(typeUtilisateur, description);
+         lstTypeAbonnement.Add(entiteTypeAbonnement);
+      }
+
+      return lstTypeAbonnement;
+   }
 
     public static List<EntiteExemplaire> FindAllUserExemplaires(int id)
    {
@@ -1033,22 +1056,22 @@ static public class SQL
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = "INSERT INTO Films VALUES(@no, @anneeSortie, @categorie, @format, @date, @noUtilisateur, @resume, @dureeMinutes, @filmOriginal, @pochette, @nbDisques, @titreFrancais, @titreOriginal, @versionEtendue, @noRealisateur, @noProducteur, @extra)";
             cmd.Parameters.AddWithValue("@no", entite.NoFilm);
-            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie);
-            cmd.Parameters.AddWithValue("@categorie", entite.Categorie);
-            cmd.Parameters.AddWithValue("@format", entite.Format);
+            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie == -1? SqlInt32.Null : entite.AnneeSortie);
+            cmd.Parameters.AddWithValue("@categorie", entite.Categorie == "0"? SqlString.Null : entite.Categorie);
+            cmd.Parameters.AddWithValue("@format", entite.Format == "0" ? SqlString.Null : entite.Format);
             cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
             cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);
-            cmd.Parameters.AddWithValue("@resume", entite.Resume);
-            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree);
+            cmd.Parameters.AddWithValue("@resume", entite.Resume == "" ? SqlString.Null : entite.Resume);
+            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree == -1? SqlInt32.Null : entite.Duree);
             cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
-            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette);
-            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques);
+            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == ""? SqlString.Null : entite.ImagePochette);
+            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0? SqlInt32.Null : entite.NbDisques);//a revoir
             cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
-            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal);
+            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal == ""? SqlString.Null : entite.TitreOriginal);
             cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
-            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur);
-            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur);
-            cmd.Parameters.AddWithValue("@extra", entite.LienInternet);
+            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur == "0"? SqlString.Null : entite.NomRealisateur);
+            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
+            cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
             cmd.Connection.Close();
         }
@@ -1056,6 +1079,8 @@ static public class SQL
 
         return intNbAjout >= 1;
     }
+
+
     public static EntitePreference GetPreferenceByNoUtilisateur(int noUtilisateur)
     {
         SqlConnection dbConn2 = Connection2();
@@ -1206,5 +1231,116 @@ static public class SQL
 
         dbConn2.Close();
         return intNbAjout == 1;
+    }
+
+    public static void ajouterFilmLangue(int noFilm, int noLangue)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsLangues VALUES (@film, @langue)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@langue", noLangue);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    public static void ajouterFilmSupplement(int noFilm, int noSupplmement)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsSupplements VALUES (@film, @supplement)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@supplement", noSupplmement);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    public static void ajouterFilmSousTitre(int noFilm, int noSousTitre)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsSousTitres VALUES (@film, @sousTitre)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@sousTitre", noSousTitre);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    public static void ajouterFilmActeur(int noFilm, int noActeur)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO FilmsActeurs VALUES (@film, @noActeur)";
+        cmd.Parameters.AddWithValue("@film", noFilm);
+        cmd.Parameters.AddWithValue("@noActeur", noActeur);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+    public static List<string> GetListeUtilisateurNotifie(int noTypePreference)
+    {
+        // 4 = appropriation
+        // 5 = suppression
+        List<string> lstUtilisateur = new List<string>();
+        SqlConnection dbConn2 = Connection2();
+        
+        String strRequete = "select U.NomUtilisateur from UtilisateursPreferences UP " + 
+            "inner join Utilisateurs U on U.NoUtilisateur = UP.NoUtilisateur " +
+            "where UP.NoPreference = @noPreference";
+        SqlParameter paramUsername = new SqlParameter("@noPreference", noTypePreference);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            lstUtilisateur.Add(drDDL[0].ToString());
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
+        return lstUtilisateur;
+    }
+
+    //trouver le dernier acteur de la table Acteurs
+    public static int trouverDernierIDActeur()
+    {
+
+        SqlConnection dbConn2 = Connection2();
+        int leDernier = 0;
+        String requete = "SELECT NoActeur FROM Acteurs";
+        SqlCommand cmd = new SqlCommand(requete, dbConn2);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            leDernier = (int)reader[0];
+        }
+        reader.Close();
+        dbConn2.Close();
+
+
+        return leDernier;
+    }
+
+    //fonction pour ajouter un nouveau acteur (tous non-genré ;) )
+    public static void ajouteActeur(int ID, string nom)
+    {
+        SqlConnection conn = Connection2();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.Text;
+        cmd.Connection = conn;
+        cmd.CommandText = "INSERT INTO Acteurs VALUES (@id, @nom, 'N')";
+        cmd.Parameters.AddWithValue("@id", ID);
+        cmd.Parameters.AddWithValue("@nom", nom);
+        cmd.ExecuteNonQuery();
+        conn.Close();
     }
 }
