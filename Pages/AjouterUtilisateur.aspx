@@ -14,8 +14,6 @@
     <!-- Contenu de la page -->
     <h1>Ajout d'utilisateurs</h1>
     <hr />
-
     <util:Util runat="server"></util:Util>
-
     <hr />
 </asp:Content>

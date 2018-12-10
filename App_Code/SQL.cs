@@ -292,7 +292,7 @@ static public class SQL
    }
 
     public static List<EntiteExemplaire> FindAllUserExemplaires(int id)
-   {
+    {
         SqlConnection dbConn2 = Connection2();
         List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
       String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
@@ -1343,4 +1343,38 @@ static public class SQL
         cmd.ExecuteNonQuery();
         conn.Close();
     }
+
+    public static int idProchainUtilisateur()
+    {
+        int intRetour = 0;
+        SqlConnection conn = Connection2();
+        string strReq = "select(Max(NoUtilisateur) + 1) from Utilisateurs";
+        SqlCommand command = new SqlCommand(strReq, conn);
+        SqlDataReader dataReader = command.ExecuteReader();
+        dataReader.Read();
+        intRetour = int.Parse(dataReader[1].ToString());
+        dataReader.Close();
+        conn.Close();
+        return intRetour; 
+    }
+
+   public static bool ajouterUtilisateur(string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
+   {
+      bool retour = true;
+      SqlConnection conn = Connection2();
+      int noUtilisateur = idProchainUtilisateur();
+      string strRequete = "INSERT INTO Utilisateurs(NoUtilisateur, NomUtilisateur, Courriel, MotPasse, TypeUtilisateur) VALUES(" + nomUtilisateur + "," + nomUtilisateur + "," + courriel + "," + motPasse + "," + typeUtilisateur+");";
+      try
+      {
+         SqlCommand command = new SqlCommand(strRequete, conn);
+         command.ExecuteNonQuery();
+      }
+      catch(Exception err)
+      {
+         retour = false;
+      }
+      conn.Close();
+      return retour;
+      
+   }
 }

@@ -21,7 +21,7 @@
          ddlListeAbonnement.Items.Add(new ListItem(typeUtil.Description,typeUtil.TypeUtilisateur.ToString()));
       }
    }
-   protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
+   protected void validationFormatCourriel(object source, ServerValidateEventArgs args)
    {
       if (tbCourriel.Text != "")
       {
@@ -31,7 +31,8 @@
          Match match = regex.Match(tbCourriel.Text);
          if (match.Success)
          {
-            args.IsValid = true; }
+            args.IsValid = true;
+         }
          else
          {
             args.IsValid = false;
@@ -45,23 +46,53 @@
    protected void Ajouter(object sender, EventArgs e)
    {
       bool valide = true;
-      if(!(courrielVide.IsValid) || !(usernameVide.IsValid) || !(passwordVide.IsValid))
+      string messageErreur = "";
+
+      //Nom d'utilisateur
+      if (!formatNomUtil.IsValid)
       {
          valide = false;
-         error.Visible = false;
-         succes.Visible = true;
-         lblSucces.Text = "Une des informations saisie est vide";
+         messageErreur += "Le format du nom d'utilisateur est invalide.";
       }
+
+      //courriel invalide
       if (!formatCourriel.IsValid)
       {
-         	succes.Visible = false;
-            error.Visible = true;
-            lblError.Text = "Format de courriel invalide.";
+         valide = false;
+         messageErreur += "Le format de courriel n'est pas valide. ";
       }
-      /*
-      error.Visible = false;
-      succes.Visible = true;
-      lblSucces.Text = "Ajout fait avec succès";*/
+      //Mot de passe invalide
+      if (!formatMotDePasse.IsValid)
+      {
+         valide = false;
+         messageErreur += "Le format du mot de passe est invalide (#####). ";
+         tbMotDePasse.Focus();
+      }
+
+      if (valide)
+      {
+         //Aller
+         char[] typeAbonnement = ddlListeAbonnement­.SelectedValue.ToCharArray();
+
+         if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
+         {
+            error.Visible = false;
+            succes.Visible = true;
+            lblSucces.Text = "Ajout fait avec succès";
+         }
+         else
+         {
+            succes.Visible = false;
+            error.Visible = true;
+            lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
+         }
+      }
+      else
+      {
+         succes.Visible = false;
+         error.Visible = true;
+         lblError.Text = messageErreur;
+      }
    }
    /// <summary>
    /// Fonction qui retourne au menu de la gestion des utilisateurs/superutilisateurs
@@ -107,12 +138,15 @@
              Style="color:red" 
              controltovalidate="tbNomUtilisateur"
              errormessage="Entrez un nom d'utilisateur!"/>
+         <asp:RegularExpressionValidator runat="server" id="formatNomUtil"
+          controltovalidate="tbNomUtilisateur" validationexpression="^[a-z]{10}$"
+          EnableClientScript="false" Display="None" />
          <br />
        <!-- Courriel -->
         <asp:Label runat="server">Courriel :</asp:Label>
         <asp:TextBox ID="tbCourriel" runat="server"
            MaxLength="25" CssClass="form-control"
-            placeholder="Nom d'utilisateur"/>
+           placeholder="Courriel" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
         <asp:RequiredFieldValidator runat="server" 
              id="courrielVide"  
              Style="color:red" 
@@ -120,21 +154,23 @@
              errormessage="Entrez un courriel!" />
        <asp:CustomValidator id="formatCourriel" runat="server" 
         ControlToValidate = "tbCourriel"
-        ClientValidationFunction="CustomValidator1_ServerValidate" >
+        OnServerValidate="validationFormatCourriel" EnableClientScript="true" Display="None">
       </asp:CustomValidator>
          <br />
 
         <!-- Mot de passe -->
         <asp:Label runat="server">Mot de Passe :</asp:Label>
-        <asp:TextBox ID="tbMotDePasse" runat="server"
-           MaxLength="25" CssClass="form-control"
-            placeholder="Mot de Passe" />
+        <asp:TextBox ID="tbMotDePasse" runat="server" CssClass="form-control"
+            placeholder="Mot de Passe Format(#####)" type="number" maxlength="5" format="NNNNN"/>
         <asp:RequiredFieldValidator runat="server" 
              id="passwordVide"  
              Style="color:red" 
              controltovalidate="tbMotDePasse"
              errormessage="Entrez un Mot de Passe!" />
-         <br />
+       <asp:RegularExpressionValidator runat="server" id="formatMotDePasse"
+          controltovalidate="tbMotDePasse" validationexpression="^[0-9]{5}$"
+          EnableClientScript="false" Display="None" />
+        <br />
 
         <!-- Type d'utilisateurs -->
         <asp:Label runat="server">Type d'abonnement :</asp:Label>
