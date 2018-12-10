@@ -499,21 +499,17 @@
         <!-- Les 3 check box -->
         <asp:Label runat="server">Options :</asp:Label>
         <div class="form-control">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <!-- Version originale? -->
                 <asp:Label runat="server">Version originale :</asp:Label>
                 <asp:CheckBox ID="cbOriginal" runat="server"/>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <!-- Version étendue?-->
                 <asp:Label runat="server">Version étendue :</asp:Label>
                 <asp:CheckBox ID="cbEtendue" runat="server"/>
             </div>
-            <div class="col-sm-4">
-                <!-- Visible à tous? -->
-                <asp:Label runat="server">Visible à tous :</asp:Label>
-                <asp:CheckBox ID="cbVisible" runat="server"/>
-            </div>
+
         </div>
         <br />
 
@@ -558,6 +554,6 @@
         <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter" OnClick="Ajouter"/>
     </div>
     <div class="col-sm-6">
-        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Annuler" OnClick="Retour"/>
+        <asp:Button runat="server" class="btn btn-lg btn-danger btn-block" Text="Annuler" OnClick="Retour" CausesValidation="false"/>
     </div>
 </div>
