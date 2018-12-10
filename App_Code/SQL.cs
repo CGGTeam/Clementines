@@ -265,6 +265,28 @@ static public class SQL
         return lstExemplaires;
     }
 
+   public static List<EntiteTypeAbonnement> FindAllTypeAbonnements()
+   {
+      SqlConnection dbConn2 = Connection2();
+      List<EntiteTypeAbonnement> lstTypeAbonnement = new List<EntiteTypeAbonnement>();
+
+      string strReq = "select * from TypesUtilisateur";
+      SqlCommand command = new SqlCommand(strReq, dbConn2);
+
+      SqlDataReader dataReader = command.ExecuteReader();
+      while(dataReader.Read())
+      {
+         char[] tabTypeUtilisateur;
+         tabTypeUtilisateur = dataReader[0].ToString().ToCharArray();
+         char typeUtilisateur = tabTypeUtilisateur[0];
+         string description = dataReader[1].ToString();
+         EntiteTypeAbonnement entiteTypeAbonnement = new EntiteTypeAbonnement(typeUtilisateur, description);
+         lstTypeAbonnement.Add(entiteTypeAbonnement);
+      }
+
+      return lstTypeAbonnement;
+   }
+
     public static List<EntiteExemplaire> FindAllUserExemplaires(int id)
    {
       List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
