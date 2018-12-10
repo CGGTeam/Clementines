@@ -287,6 +287,8 @@ static public class SQL
          EntiteTypeAbonnement entiteTypeAbonnement = new EntiteTypeAbonnement(typeUtilisateur, description);
          lstTypeAbonnement.Add(entiteTypeAbonnement);
       }
+        dbConn2.Close();
+        dataReader.Close();
 
       return lstTypeAbonnement;
    }
