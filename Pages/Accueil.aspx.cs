@@ -344,7 +344,7 @@ public partial class _Default : System.Web.UI.Page
     public void ApproprierDVD(object sender, EventArgs e)
     {
         Button btn = (Button)sender;
-        String url = "~/Pages/AppropriationDVD.aspx?Film=" + btn.ID.Replace("appropriation_", "");
+        String url = "~/Pages/AppropriationDVD.aspx?Film=" + btn.ID.Replace("approprier_", "");
         Response.Redirect(url, true);
     }
     private void EnvoyerUnCourriel(object sender, EventArgs e)
