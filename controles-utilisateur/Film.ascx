@@ -185,27 +185,30 @@
             noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
             //Récupérer toutes mes informations dans mes variables. (pour le table Film)
-            int anneSortie = int.Parse(ddlAnnee.SelectedItem.ToString());
+            int anneSortie = corrigerLesDDl(ddlAnnee.SelectedItem.ToString());
             string categorie = ddlCategorie.SelectedValue.ToString();//changer 0 pour null (string)
             string format = ddlFormat.SelectedValue.ToString();//changer 0 pour null (string)
             DateTime date = DateTime.Now;
             string noUtilisateur = noUtilisateurCourrant.ToString();
             string resume = tbResume.Text.Trim(); // mettre null si ""
-            int duree = int.Parse(tbDuree.Text.ToString().Trim());
+            int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
             string imagePochette = "";// mettre null si ""
 
             //récupération et téléchargement de l'image dans nos ressources
             if(btnUploadImagePochette.HasFile)
             {
+
                 try
                 {
+
                     string filename = Path.GetFileName(btnUploadImagePochette.FileName);
                     btnUploadImagePochette.SaveAs(Server.MapPath("~/static/images/") + filename);
                     imagePochette = filename;
                 }
                 catch(Exception ex)
                 {
+
                     //mettre une erreur?
                 }
             }
@@ -226,11 +229,25 @@
             {
                 producteur = choixProducteur.ControleDDL.SelectedValue.ToString();//gérer a value 0
             }
-            
+
             string extras = tbExtras.Text.Trim();//mettre null si ""
             EntiteFilm entite = new EntiteFilm(SQL.FindNextNoFilm(), anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.ajoutFilmComplet(entite);
+
+
         }
+    }
+
+    public int corrigerLesDDl(string aValider)
+    {
+        int retour = -1;
+
+        if (!int.TryParse(aValider, out retour))
+        {
+            retour = -1;
+        }
+
+        return retour;
     }
 
     public int? ToNullableInt(string s)
