@@ -107,6 +107,12 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
 
             afficherPager(phChangerPageHaut);
             afficherPager(phChangerPage);
+
+         }
+         //si super utilisateur, possibilité d'ajouter des dvds
+         if (utilCourant.TypeUtilisateur == 'S')
+         {
+            AfficherAjoutDVD(util);
          }
       }
       else
@@ -225,4 +231,10 @@ public partial class Pages_DVDsAutreUtilisateur : System.Web.UI.Page
          ddlUtilisateur.Items.Add(new ListItem(utilisateur.NomUtilisateur, utilisateur.NoUtilisateur.ToString()));
       }
    }
+    private void AfficherAjoutDVD(EntiteUtilisateur util)
+    {
+        filmAbrege.Visible = true;
+        filmAbrege.proprietaire = util.NomUtilisateur.Trim();
+        filmAbrege.titre = "Enregistrer un nouveau film pour " + util.NomUtilisateur.Trim();
+    }
 }

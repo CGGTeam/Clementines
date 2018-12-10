@@ -42,7 +42,6 @@
          string na = "N/A";
          string sep = ", ";
 
-         SQL.Connection();
          film = SQL.FindExemplaireById(no);
 
          PHVignette.ImageUrl = film.film.ImagePochette!=String.Empty ? film.film.ImagePochette : "../Static/images/pas-de-vignette.png";

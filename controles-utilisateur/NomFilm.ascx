@@ -1,10 +1,15 @@
 ﻿<%@ Control Language="C#" %>
 <script runat="server">
+
     public String Text                       { set { film1.Text = value; }
         get { return film1.Text; } }
     public TextBox Controle                  { get { return film1; } }
     public RequiredFieldValidator Present    { get { return ValidatorPresent; } }
     public RegularExpressionValidator Format { get { return ValidatorFormat; } }
+    public string proprietaire { get; set; }
+    public string titre { set { Titre.Text = value; } }
+
+
     public string CssClass {
         set {
             for (int i = 1; i <= 10; i++)
@@ -23,47 +28,56 @@
                 tbFilm.Attributes.Add("placeholder", value);
             }
         } }
-
+    public void SetProprietaire(string propri)
+    {
+        this.proprietaire = propri.Trim();
+    }
     protected void btnEnregistrer_Click(object sender, EventArgs e)
     {
-        string utilisateur = HttpContext.Current.User.Identity.Name;
-        List<string> lstNomFilm = new List<string>();
-        List<string> lstMauvais = new List<string>();
-
-        for (int i = 1; i <= 10; i++)
+        if (IsPostBack)
         {
-            string nomTextBox = "film" + i;
-            TextBox tbFilm = this.FindControl(nomTextBox) as TextBox;
+            string utilisateur = string.IsNullOrEmpty(this.proprietaire) ?
+                HttpContext.Current.User.Identity.Name : proprietaire;
+            List<string> lstNomFilm = new List<string>();
+            List<string> lstMauvais = new List<string>();
 
-            if (tbFilm != null && !string.IsNullOrEmpty(tbFilm.Text))
+            for (int i = 1; i <= 10; i++)
             {
-                string nom = tbFilm.Text;
-                SQL.Connection();
-                if (!SQL.checkIfNomFilmExiste(nom))
-                    lstNomFilm.Add(nom);
-                else
-                    lstMauvais.Add(nom);
+                string nomTextBox = "film" + i;
+                TextBox tbFilm = this.FindControl(nomTextBox) as TextBox;
+
+                if (tbFilm != null && !string.IsNullOrEmpty(tbFilm.Text))
+                {
+                    string nom = tbFilm.Text;
+                    SQL.Connection();
+                    if (!SQL.checkIfNomFilmExiste(nom))
+                        lstNomFilm.Add(nom);
+                    else
+                        lstMauvais.Add(nom);
+                }
             }
-        }
 
-        SQL.Connection();
-        SQL.AddMovieShort(lstNomFilm, utilisateur);
 
-        string sep = ", ";
+            SQL.AddMovieShort(lstNomFilm, utilisateur);
 
-        if (lstNomFilm.Any())
-        {
-            succes.Visible = true;
-            lblSucces.Text = "Les DVDs suivant ont été enregistré : " + String.Join(sep, lstNomFilm);
-        }
-        if (lstMauvais.Any())
-        {
-            error.Visible = true;
-            lblError.Text = "Les DVDs suivant n'ont pu être enregistré car ils existent déjà : " + String.Join(sep, lstMauvais);
+            string sep = ", ";
+
+            if (lstNomFilm.Any())
+            {
+                succes.Visible = true;
+                lblSucces.Text = "Les DVDs suivant ont été enregistré : " + String.Join(sep, lstNomFilm);
+            }
+            if (lstMauvais.Any())
+            {
+                error.Visible = true;
+                lblError.Text = "Les DVDs suivant n'ont pu être enregistré car ils existent déjà : " + String.Join(sep, lstMauvais);
+            }
         }
     }
     protected void Page_Load(object sender, EventArgs e)
     {
+        if(!IsPostBack)
+            proprietaire = null;
     }
     protected void fermerSucces(object sender, EventArgs e)
     {
@@ -112,7 +126,7 @@
 	margin-left: 10px;
 }
 </style>
-    <div class="row">
+    <div runat="server" id="DVDAbrege" class="row">
         <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
             <asp:Label runat="server" ID="lblSucces"></asp:Label>
             <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces">
@@ -132,7 +146,7 @@
             <div class="panel-heading">
               <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                Enregistrer un nouveau film abrégé</a>
+                <asp:Label runat="server" ID="Titre"></asp:Label></a>
               </h4>
             </div>
             <div id="collapse1" class="panel-collapse collapse out">
@@ -144,7 +158,7 @@
                           1
                       </span>
                     <asp:TextBox ID="film1" runat="server" 
-                       MaxLength="25" oninput="valider();"
+                       MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                   </div>
                   <!-- 2 -->
@@ -153,7 +167,7 @@
                           2
                       </span>
                     <asp:TextBox ID="film2" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                     </div>
                   <!-- 3 -->
@@ -162,7 +176,7 @@
                           3
                       </span>
                       <asp:TextBox ID="film3" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent" />
                     </div>
                   <!-- 4 -->
@@ -171,7 +185,7 @@
                           4
                       </span>
                       <asp:TextBox ID="film4" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control" 
                         placeholder="Doit être présent"/>
                     </div>
                   <!-- 5 -->
@@ -180,7 +194,7 @@
                           5
                       </span>
                       <asp:TextBox ID="film5" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                     </div>
                   <!-- 6 -->
@@ -189,7 +203,7 @@
                           6
                       </span>
                       <asp:TextBox ID="film6" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                     </div>
                   <!-- 7 -->
@@ -198,7 +212,7 @@
                           7
                       </span>
                       <asp:TextBox ID="film7" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent" />
                     </div>
                   <!-- 8 -->
@@ -207,7 +221,7 @@
                           8
                       </span>
                       <asp:TextBox ID="film8" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                     </div>
                   <!-- 9 -->
@@ -216,7 +230,7 @@
                           9
                       </span>
                       <asp:TextBox ID="film9" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                     </div>
                   <!-- 10 -->
@@ -225,7 +239,7 @@
                           10
                       </span>
                       <asp:TextBox ID="film10" runat="server"
-                        MaxLength="25" oninput="valider();"
+                        MaxLength="25" oninput="valider();" CssClass="form-control"
                         placeholder="Doit être présent"/>
                   </div>
                       <br />
