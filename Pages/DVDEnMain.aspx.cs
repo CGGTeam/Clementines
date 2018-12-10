@@ -13,14 +13,17 @@ public partial class Pages_DVDEnMain : System.Web.UI.Page
    private int nbVignettesParPage = 10; // {valeur déterminé dans les préférences de l'utilisateur}
    private int noUtilisateurCourrant = 3; // {valeur déterminé lors de la connexion}
    private int pageCourante;
-
    protected void Page_Load(object sender, EventArgs e)
    {
         string utilisateur = HttpContext.Current.User.Identity.Name;
         noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
 
-      // initialiser label pour message erreur et autres
-      Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
+        // initialiser les préférences de nb films par page
+        EntitePreference pref = SQL.GetPreferenceByNoUtilisateur(noUtilisateurCourrant);
+        nbVignettesParPage = pref.NbFilmParPage;
+
+        // initialiser label pour message erreur et autres
+        Label lblMessage = librairie.lblDYN(phVignettes, "message_vignettes", "", "message_vignettes");
       
       populerListeFilms();
 
