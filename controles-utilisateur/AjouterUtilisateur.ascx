@@ -1,117 +1,105 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AjouterUtilisateur.ascx.cs" Inherits="controles_utilisateur_AjouterUtilisateur" %>
 
 <script runat="server">
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack)
-        {
-            //Remplir les types d'abonnement
-        }
-        chargerTypeAbonnement();
-    }
-
-    protected void chargerTypeAbonnement()
-    {
-        SQL.Connection();
-        List<EntiteTypeAbonnement> entiteTypeAbonnements = new List<EntiteTypeAbonnement>();
-        entiteTypeAbonnements = SQL.FindAllTypeAbonnements();
-        foreach(EntiteTypeAbonnement typeUtil in entiteTypeAbonnements)
-        {
-            ddlListeAbonnement.Items.Add(new ListItem(typeUtil.Description,typeUtil.TypeUtilisateur.ToString()));
-        }
-    }
-    protected void validationFormatCourriel(object source, ServerValidateEventArgs args)
-    {
-        if (tbCourriel.Text != "")
-        {
-            string strPattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
-
-            Regex regex = new Regex(strPattern);
-            Match match = regex.Match(tbCourriel.Text);
-            if (match.Success)
-            {
-                args.IsValid = true;
-            }
-            else
-            {
-                args.IsValid = false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Fonction qui permet d'ajouter l'utilisateur
-    /// </summary>
-    protected void Ajouter(object sender, EventArgs e)
-    {
-        bool valide = true;
-        string messageErreur = "";
-
-        //Nom d'utilisateur
-        if (!formatNomUtil.IsValid)
-        {
-            valide = false;
-            messageErreur += "Le format du nom d'utilisateur est invalide.";
-        }
-
-        //courriel invalide
-        if (!formatCourriel.IsValid)
-        {
-            valide = false;
-            messageErreur += "Le format de courriel n'est pas valide. ";
-        }
-        //Mot de passe invalide
-        if (!formatMotDePasse.IsValid)
-        {
-            valide = false;
-            messageErreur += "Le format du mot de passe est invalide (#####). ";
-            tbMotDePasse.Focus();
-        }
-
-        if (valide)
-        {
-            //Aller
-            char[] typeAbonnement = ddlListeAbonnement­.SelectedValue.ToCharArray();
-
-            if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
-            {
-                error.Visible = false;
-                succes.Visible = true;
-                lblSucces.Text = "Ajout fait avec succès";
-            }
-            else
-            {
-                succes.Visible = false;
-                error.Visible = true;
-                lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
-            }
-        }
-        else
-        {
+   protected void Page_Load(object sender, EventArgs e)
+   {
+      if (!IsPostBack)
+      {
+         //Remplir les types d'abonnement
+      }
+      chargerTypeAbonnement();
+   }
+   protected void chargerTypeAbonnement()
+   {
+      SQL.Connection();
+      List<EntiteTypeAbonnement> entiteTypeAbonnements = new List<EntiteTypeAbonnement>();
+      entiteTypeAbonnements = SQL.FindAllTypeAbonnements();
+      foreach(EntiteTypeAbonnement typeUtil in entiteTypeAbonnements)
+      {
+         ddlListeAbonnement.Items.Add(new ListItem(typeUtil.Description,typeUtil.TypeUtilisateur.ToString()));
+      }
+   }
+   protected void validationFormatCourriel(object source, ServerValidateEventArgs args)
+   {
+      if (tbCourriel.Text != "")
+      {
+         string strPattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
+         Regex regex = new Regex(strPattern);
+         Match match = regex.Match(tbCourriel.Text);
+         if (match.Success)
+         {
+            args.IsValid = true;
+         }
+         else
+         {
+            args.IsValid = false;
+         }
+      }
+   }
+   /// <summary>
+   /// Fonction qui permet d'ajouter l'utilisateur
+   /// </summary>
+   protected void Ajouter(object sender, EventArgs e)
+   {
+      bool valide = true;
+      string messageErreur = "";
+      //Nom d'utilisateur
+      if (!formatNomUtil.IsValid)
+      {
+         valide = false;
+         messageErreur += "Le format du nom d'utilisateur est invalide.";
+      }
+      //courriel invalide
+      if (!formatCourriel.IsValid)
+      {
+         valide = false;
+         messageErreur += "Le format de courriel n'est pas valide. ";
+      }
+      //Mot de passe invalide
+      if (!formatMotDePasse.IsValid)
+      {
+         valide = false;
+         messageErreur += "Le format du mot de passe est invalide (#####). ";
+         tbMotDePasse.Focus();
+      }
+      if (valide)
+      {
+         //Aller
+         //char[] typeAbonnement = ddlListeAbonnement­.SelectedValue.ToString().ToCharArray();
+         /*if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
+         {
+            error.Visible = false;
+            succes.Visible = true;
+            lblSucces.Text = "Ajout fait avec succès";
+         }
+         else
+         {
             succes.Visible = false;
             error.Visible = true;
-            lblError.Text = messageErreur;
-        }
-    }
-    /// <summary>
-    /// Fonction qui retourne au menu de la gestion des utilisateurs/superutilisateurs
-    /// </summary>
-    protected void Retour(object sender, EventArgs e)
-    {
-
-    }
-
-    protected void fermerSucces(object sender, EventArgs e)
-    {
-        succes.Visible = false;
-    }
-    protected void fermerError(object sender, EventArgs e)
-    {
-        error.Visible = false;
-    }
-
-
+            lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
+         }*/
+      }
+      else
+      {
+         succes.Visible = false;
+         error.Visible = true;
+         lblError.Text = messageErreur;
+      }
+   }
+   /// <summary>
+   /// Fonction qui retourne au menu de la gestion des utilisateurs/superutilisateurs
+   /// </summary>
+   protected void Retour(object sender, EventArgs e)
+   {
+   }
+   protected void fermerSucces(object sender, EventArgs e)
+   {
+      succes.Visible = false;
+   }
+   protected void fermerError(object sender, EventArgs e)
+   {
+      error.Visible = false;
+   }
 </script>
 <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
    <asp:Label runat="server" ID="lblSucces"></asp:Label>
