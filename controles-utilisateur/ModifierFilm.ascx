@@ -457,6 +457,7 @@
                     SQL.retirerActeurFilm(idDansBD, noFilm);
                 }
             }
+            Response.Redirect(prevPage);
         }
     }
 
