@@ -67,7 +67,7 @@ static public class SQL
     /// Creation d'une 2e connexion pour éviter l'erreur "An unhandled exception of type 'System.InvalidOperationException' occurred in System.Data.dll"
     /// </summary>
     /// <returns>la connection</returns>
-    static private SqlConnection Connection2()
+    static public SqlConnection Connection2()
     {
         SqlConnection dbConn2 = new SqlConnection();
         dbConn2.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
@@ -1392,92 +1392,12 @@ static public class SQL
       conn.Close();
    }
 
-   public static Table fluxDeDonne()
-   {
-      string NomDataTable = "Utilisateurs";
-      SqlConnection conn = Connection2();
-      DataTable dtTable;
-      SqlDataAdapter cmdTable = new SqlDataAdapter("Select * from Utilisateurs", conn);
-      DataSet dsTable = new DataSet();
 
-      cmdTable.Fill(dsTable, NomDataTable);
-      dtTable = dsTable.Tables[NomDataTable];
-      conn.Close();
-
-      return remplirTable(dtTable);
-   }
 
    /// <summary>
-   /// Cette fonction permet de retourner un flux de donnée HTML à partir de la table passé en paramètre
+   /// Cette fonction permet de remplir la table 
    /// </summary>
    /// <param name="dt"></param>
    /// <returns></returns>
-   public static string remplirUneTable(DataTable dt)
-   {
-      string html = "<table class=\"table\">";
-      //ajouter les entêtes de colonnes
-      html += "<thead class=\"thead-dark\">";
-      html += "<tr>";
-      for (int i = 0; i < dt.Columns.Count; i++)
-         html += "<th scope=\"col\">" + dt.Columns[i].ColumnName + "</td>";
-      html += "</tr>";
-      html += "</thead>";
-      //add ajouter les lignes
-      for (int i = 0; i < dt.Rows.Count; i++)
-      {
-         html += "<tr>";
-         for (int j = 0; j < dt.Columns.Count; j++)
-         {
-            html += "<td>" + dt.Rows[i][j].ToString() + "</td>";
-         }
 
-
-         html += "</tr>";
-      }
-      html += "</table>";
-      return html;
-   }
-
-   public static Table remplirTable(DataTable dt)
-   {
-      Table table = new Table();
-      table.CssClass = "table";
-      TableRow tr = new TableRow();
-      tr.CssClass = "thead-dark";
-      table.Controls.Add(tr);
-      TableCell td = new TableCell();
-      //Remplir les entêtes
-      for(int i = 0; i < dt.Columns.Count; i++)
-      {
-         TableHeaderCell th = new TableHeaderCell();
-         th.Text = dt.Columns[i].ColumnName;
-         tr.Controls.Add(th);
-      }
-      //Remplir les données
-      for (int i = 0; i < dt.Rows.Count; i++)
-      {
-         tr = new TableRow();
-         table.Controls.Add(tr);
-         for (int j = 0; j < dt.Columns.Count; j++)
-         {
-            td = new TableCell();
-            td.Text = dt.Rows[i][j].ToString();
-            tr.Controls.Add(td);
-         }
-         //Ajouter le bouton modifier et supprimer
-         Button btnModfier = new Button();
-         btnModfier.ID = "modifier_" + dt.Rows[i][0].ToString();
-         btnModfier.Text = "Modifier";
-         td = new TableCell();
-         td.Controls.Add(btnModfier);
-         tr.Controls.Add(td);
-         Button btnSupprimer = new Button();
-         td = new TableCell();
-         btnSupprimer.ID = "supprimer_" + dt.Rows[i][0].ToString();
-         btnSupprimer.Text = "Supprimer";
-         td.Controls.Add(btnSupprimer);
-         tr.Controls.Add(td);
-      }
-      return table;
-   }
 }
