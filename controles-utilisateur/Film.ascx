@@ -230,7 +230,16 @@
             string categorie = ddlCategorie.SelectedValue.ToString();
             string format = ddlFormat.SelectedValue.ToString();
             DateTime date = DateTime.Now;
-            string noUtilisateur = utilCourant.NoUtilisateur.ToString();
+
+            string noUtilisateur;
+            if (utilCourant.TypeUtilisateur != 'S')
+            {
+                noUtilisateur = (int.Parse(ddlIdentite.SelectedValue)).ToString();
+            }
+            else
+            {
+                noUtilisateur= utilCourant.NoUtilisateur.ToString();
+            }            
             string resume = tbResume.Text.Trim();
             int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
