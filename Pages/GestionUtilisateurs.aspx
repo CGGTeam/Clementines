@@ -38,6 +38,17 @@
     <hr />
 
    <asp:PlaceHolder ID="phDynamique" runat="server"/>
+    <asp:Table ID="table" runat="server" CssClass = "table table-hover" >
+        <asp:TableHeaderRow runat="server" CssClass = "thead-dark" TableSection="TableHeader">
+            <asp:TableCell runat="server"  CssClass = "thead-dark">No</asp:TableCell>
+            <asp:TableCell runat="server"  CssClass = "thead-dark">Nom de l'utilisateur</asp:TableCell>
+            <asp:TableCell runat="server"  CssClass = "thead-dark">Courriel</asp:TableCell>
+            <asp:TableCell runat="server"  CssClass = "thead-dark">Mot de passe</asp:TableCell>
+            <asp:TableCell runat="server"  CssClass = "thead-dark">Description</asp:TableCell>
+            <asp:TableCell runat="server"  CssClass = "thead-dark">Modifier l'utilisateur</asp:TableCell>
+            <asp:TableCell runat="server"  CssClass = "thead-dark">Supprimer l'utilisateur</asp:TableCell>
+        </asp:TableHeaderRow>
+    </asp:Table>
     <div class="row" style="align-content:center;">
         <div class="col-sm-6" style="float: none; margin: 0 auto;">
            <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter un utilisateur" OnClick="pageAjouterUtil"/>

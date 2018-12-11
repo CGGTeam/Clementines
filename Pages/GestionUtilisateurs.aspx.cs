@@ -32,34 +32,14 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
    public Table remplirTable(DataTable dt)
    {
       EntiteUtilisateur utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
-      Table table = new Table();
-      table.CssClass = "table table-hover";
-        table.ID = "table_Utilisateur";
-      TableHeaderRow trheader = new TableHeaderRow();
-        trheader.TableSection = TableRowSection.TableHeader;
-        trheader.CssClass = "thead-dark";
-      table.Controls.Add(trheader);
-      TableCell td = new TableCell();
-      //Remplir les entêtes
-      for (int i = 0; i < dt.Columns.Count; i++)
-      {
-         TableHeaderCell th = new TableHeaderCell();
-         th.Text = dt.Columns[i].ColumnName;
-            trheader.Controls.Add(th);
-      }
-      TableHeaderCell thActionMod = new TableHeaderCell();
-      thActionMod.Text = "Modifier l'utilisateur";
-        trheader.Controls.Add(thActionMod);
-      TableHeaderCell thActionSup = new TableHeaderCell();
-      thActionSup.Text = "Supprimer l'utilisateur";
-        trheader.Controls.Add(thActionSup);
         //Remplir les données
         TableRow tr;
+        TableCell td;
       for (int i = 0; i < dt.Rows.Count; i++)
       {
          tr = new TableRow();
             tr.TableSection = TableRowSection.TableBody;
-         table.Controls.Add(tr);
+            table.Controls.Add(tr);
          for (int j = 0; j < dt.Columns.Count; j++)
          {
             td = new TableCell();
