@@ -33,6 +33,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
    {
       Table table = new Table();
       table.CssClass = "table table-bordered";
+        table.ID = "table_Utilisateur";
       TableRow tr = new TableRow();
       tr.CssClass = "thead-dark";
       table.Controls.Add(tr);

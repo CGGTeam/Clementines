@@ -67,7 +67,7 @@ static public class SQL
     /// Creation d'une 2e connexion pour éviter l'erreur "An unhandled exception of type 'System.InvalidOperationException' occurred in System.Data.dll"
     /// </summary>
     /// <returns>la connection</returns>
-    static private SqlConnection Connection2()
+    static public SqlConnection Connection2()
     {
         SqlConnection dbConn2 = new SqlConnection();
         dbConn2.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
