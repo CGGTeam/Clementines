@@ -188,9 +188,10 @@
              Style="color:red" 
              controltovalidate="tbMotDePasse"
              errormessage="Entrez un Mot de Passe!" />
-       <asp:RegularExpressionValidator runat="server" id="formatMotDePasse"
-          controltovalidate="tbMotDePasse" validationexpression="^[0-9]{5}$"
-          EnableClientScript="false" Display="None" />
+        <asp:RangeValidator runat="server" Type="Integer" ID="formatMotDePasse"
+                        MinimumValue="11111" MaximumValue="99999" ControlToValidate="tbMotDePasse" 
+                        EnableClientScript="false"
+                       Display="None" />
         <br />
 
         <!-- Type d'utilisateurs -->
