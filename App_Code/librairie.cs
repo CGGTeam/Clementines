@@ -145,7 +145,7 @@ static public class librairie
       btn.ID = strID;
       btn.Text = strValeur;
       btn.Click += nomFonctionClick;
-      btn.Attributes.Add("onclick", "confirm('Voulez vous vraiment supprimer cet utilisateur')");
+      btn.OnClientClick = "if ( ! UserDeleteConfirmation()) return false;";
       Conteneur.Controls.Add(btn);
       return btn;
    }
