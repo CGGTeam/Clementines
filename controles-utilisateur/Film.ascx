@@ -151,6 +151,13 @@
          ==============================================================================================================
          ==============================================================================================================
          ==============================================================================================================*/
+        if(btnUploadImagePochette.PostedFile.ContentLength >= 1048576)
+        {
+            error.Visible = true;
+            lblError.Text = "L'image doit être plus petite que 1mb";
+            return;
+        }
+
 
         if (rerFieldValidatorTitreOriginal.IsValid && rangeValDuree.IsValid &&
         choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
@@ -367,6 +374,9 @@
                     chargeListeRequete(personne);
                 }
             }
+            succes.Visible = true;
+            lblSucces.Text = "Le films a été ajouté avec succès!";
+            return;
 
             //charger les listes
 
@@ -451,8 +461,8 @@
     protected bool validationActeur()
     {
         bool retour = true;
-        if (choixActeur1.ControleDDL.SelectedValue == choixActeur2.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur2.ControleDDL.Visible || 
-            choixActeur1.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur3.ControleDDL.Visible|| 
+        if (choixActeur1.ControleDDL.SelectedValue == choixActeur2.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur2.ControleDDL.Visible ||
+            choixActeur1.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur3.ControleDDL.Visible||
             choixActeur2.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.Visible && choixActeur3.ControleDDL.Visible)
         {
             error.Visible = true;
@@ -496,7 +506,7 @@
         <!-- Titre français -->
         <asp:Label runat="server">Titre francais :</asp:Label>
         <asp:TextBox ID="tbTitreFrancais" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Titre francais"/>
         <asp:RequiredFieldValidator runat="server" 
              id="rerFieldValidatorTitreOriginal"  
@@ -515,19 +525,19 @@
          <!-- Année de sortie Fait -->
         <asp:Label runat="server">Année de sortie :</asp:Label>
         <asp:DropDownList ID="ddlAnnee" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
            placeholder="Année de sortie"/>
         <br />
         <!-- Categorie Requete-->
         <asp:Label runat="server">Catégorie :</asp:Label>
         <asp:DropDownList ID="ddlCategorie" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Nom du producteur"/>
         <br />
         <!-- Durée Fait-->
         <asp:Label runat="server">Durée :</asp:Label>
         <asp:TextBox ID="tbDuree" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Durée (en minutes)"/>
         <asp:RangeValidator runat="server"
             ControlToValidate="tbDuree"
@@ -590,7 +600,7 @@
         <!-- Ajouter des extras -->
           <asp:Label runat="server">Liens des extras :</asp:Label>
         <asp:TextBox ID="tbExtras" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="URL..."/>
         <br />
     </div>
@@ -599,7 +609,7 @@
         <!-- Titre original -->
         <asp:Label runat="server">Titre original :</asp:Label>
         <asp:TextBox ID="tbTitreOriginal" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Titre originale"/>
                 <asp:CustomValidator ID="CV2" runat="server"
         ControlToValidate="tbTitreFrancais"
