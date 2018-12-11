@@ -1414,7 +1414,6 @@ static public class SQL
       conn.Close();
    }
 
-<<<<<<< HEAD
    public static void modifierUtilisateur(int id, string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
    {
       SqlConnection conn = Connection2();
@@ -1423,8 +1422,6 @@ static public class SQL
       command.ExecuteNonQuery();
       conn.Close();
    }
-
-=======
     public static void modifierFilm(EntiteFilm entite)
     {
         int intNbAjout = 0;
@@ -1451,7 +1448,6 @@ static public class SQL
             cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
             cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
->>>>>>> 1579ace7a37c43a5a7a81def8e725be7e2b201eb
 
             cmd.Connection.Close();
         }

@@ -31,6 +31,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
 
    public Table remplirTable(DataTable dt)
    {
+      EntiteUtilisateur utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
       Table table = new Table();
       table.CssClass = "table table-bordered table-hover";
       TableRow tr = new TableRow();
@@ -61,11 +62,16 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
             td.Text = dt.Rows[i][j].ToString();
             tr.Controls.Add(td);
          }
+         
          //Ajouter le bouton modifier et supprimer
          Button btnModfier = new Button();
          btnModfier.ID = "modifier_" + dt.Rows[i][0].ToString();
          btnModfier.Text = "Modifier";
          btnModfier.CssClass = "btn btn-primary";
+         if (dt.Rows[i][0].ToString() == utilCourant.NoUtilisateur.ToString())
+         {
+            btnModfier.Enabled = false;
+         }
          btnModfier.Click += new EventHandler(modifieronClick);
          //btnModfier.Click = modifieronClick;
          td = new TableCell();
@@ -76,6 +82,10 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
          btnSupprimer.ID = "supprimer_" + dt.Rows[i][0].ToString();
          btnSupprimer.Text = "Supprimer";
          btnSupprimer.CssClass = "btn btn-danger";
+         if (dt.Rows[i][0].ToString() == utilCourant.NoUtilisateur.ToString())
+         {
+            btnSupprimer.Enabled = false;
+         }
          btnSupprimer.Click += new EventHandler(supprimerOnClick);
          td.Controls.Add(btnSupprimer);
          tr.Controls.Add(td);
