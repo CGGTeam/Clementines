@@ -138,6 +138,18 @@ static public class librairie
         return t;
     }
 
-  
+   public static Button btnDYN_JS(Control Conteneur, String strID, String strValeur, EventHandler nomFonctionClick)
+   {
+
+      Button btn = new Button();
+      btn.ID = strID;
+      btn.Text = strValeur;
+      btn.Click += nomFonctionClick;
+      btn.Attributes.Add("onclick", "confirm('Voulez vous vraiment supprimer cet utilisateur')");
+      Conteneur.Controls.Add(btn);
+      return btn;
+   }
+
+
 
 }
