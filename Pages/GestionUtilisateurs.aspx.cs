@@ -32,7 +32,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
    public Table remplirTable(DataTable dt)
    {
       Table table = new Table();
-      table.CssClass = "table";
+      table.CssClass = "table table-bordered";
       TableRow tr = new TableRow();
       tr.CssClass = "thead-dark";
       table.Controls.Add(tr);
@@ -44,6 +44,12 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
          th.Text = dt.Columns[i].ColumnName;
          tr.Controls.Add(th);
       }
+      TableHeaderCell thActionMod = new TableHeaderCell();
+      thActionMod.Text = "Modifier l'utilisateur";
+      tr.Controls.Add(thActionMod);
+      TableHeaderCell thActionSup = new TableHeaderCell();
+      thActionSup.Text = "Supprimer l'utilisateur";
+      tr.Controls.Add(thActionSup);
       //Remplir les données
       for (int i = 0; i < dt.Rows.Count; i++)
       {
@@ -59,6 +65,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
          Button btnModfier = new Button();
          btnModfier.ID = "modifier_" + dt.Rows[i][0].ToString();
          btnModfier.Text = "Modifier";
+         btnModfier.CssClass = "btn btn-primary";
          btnModfier.Click += new EventHandler(modifieronClick);
          //btnModfier.Click = modifieronClick;
          td = new TableCell();
@@ -68,6 +75,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
          td = new TableCell();
          btnSupprimer.ID = "supprimer_" + dt.Rows[i][0].ToString();
          btnSupprimer.Text = "Supprimer";
+         btnSupprimer.CssClass = "btn btn-danger";
          btnSupprimer.Click += new EventHandler(supprimerOnClick);
          td.Controls.Add(btnSupprimer);
          tr.Controls.Add(td);
