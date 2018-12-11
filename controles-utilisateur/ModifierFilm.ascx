@@ -46,6 +46,7 @@
                 Titre.Text = "Modification du film: " + filmAModifier.TitreFrancais.ToString();
                 tbTitreFrancais.Text = filmAModifier.TitreFrancais.ToString();
                 tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
+                tbImageActuelle.Text = Path.GetFileName(filmAModifier.ImagePochette.ToString());
                 tbExtras.Text = filmAModifier.LienInternet.ToString();
                 //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
                 if(filmAModifier.AnneeSortie!=-1)
@@ -321,6 +322,18 @@
             string extras = tbExtras.Text.Trim();
 
             //requete de modification
+            if (imagePochette == "")
+            {
+                if (tbImageActuelle.Text == "pas-de-vignette.jpeg")
+                {
+                    imagePochette = "";
+                }
+                else
+                {
+                    imagePochette = tbImageActuelle.Text.ToString();
+                }               
+            }
+            Titre.Text = imagePochette;
             EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.modifierFilm(entite);
 
@@ -426,7 +439,7 @@
             }
             else if (SQL.trouverActeurFilm(int.Parse(choixActeur3.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur3.ControleDDL.Visible)
             {
-                 listeIdActeur.Add(int.Parse(choixActeur3.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur3.ControleDDL.SelectedValue));
             }
             else if (choixActeur3.ControleTextBox.Visible)
             {
@@ -457,7 +470,7 @@
                     SQL.retirerActeurFilm(idDansBD, noFilm);
                 }
             }
-            Response.Redirect(prevPage);
+            //Response.Redirect(prevPage);
         }
     }
 
@@ -660,6 +673,11 @@
           </div>
         
         <!-- Image incertain-->
+         <asp:Label runat="server">Image présentement offerte:</asp:Label>
+        <asp:TextBox ID="tbImageActuelle" runat="server"
+           MaxLength="250" CssClass="form-control" Enabled="false"
+            placeholder="Aucune"/>
+        <br />
         <asp:Label runat="server">Image de la pochette :</asp:Label>
          <div class="input-group">
           <span class="input-group-addon">   

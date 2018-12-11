@@ -1643,7 +1643,7 @@ static public class SQL
       {
          cmd.Connection = Connection2();//connection ouverte
          cmd.CommandType = CommandType.Text;
-         cmd.CommandText = "UPDATE Films SET AnneeSortie = @anneeSortie,  Categorie = @categorie, Format = @format, DateMAJ = @date, NoUtilisateurMAJ = @noUtilisateur, Resume = @resume, DureeMinutes = @dureeMinutes, FilmOriginal = @filmOriginal, NbDisques = @nbDisques, Titrefrancais = @titreFrancais, TitreOriginal = @titreOriginal, VersionEtendue = @versionEtendue, NoRealisateur = @noRealisateur, NoProducteur = @noProducteur, XTra = @extra WHERE NoFilm = @no";
+         cmd.CommandText = "UPDATE Films SET AnneeSortie = @anneeSortie,  Categorie = @categorie, Format = @format, DateMAJ = @date, NoUtilisateurMAJ = @noUtilisateur, Resume = @resume, DureeMinutes = @dureeMinutes, FilmOriginal = @filmOriginal, ImagePochette = @pochette, NbDisques = @nbDisques, Titrefrancais = @titreFrancais, TitreOriginal = @titreOriginal, VersionEtendue = @versionEtendue, NoRealisateur = @noRealisateur, NoProducteur = @noProducteur, XTra = @extra WHERE NoFilm = @no";
          cmd.Parameters.AddWithValue("@no", entite.NoFilm);
          cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie == -1 ? SqlInt32.Null : entite.AnneeSortie);
          cmd.Parameters.AddWithValue("@categorie", entite.Categorie == "0" ? SqlString.Null : entite.Categorie);
@@ -1653,7 +1653,7 @@ static public class SQL
          cmd.Parameters.AddWithValue("@resume", entite.Resume == "" ? SqlString.Null : entite.Resume);
          cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree == -1 ? SqlInt32.Null : entite.Duree);
          cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
-         cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == "" ? SqlString.Null : entite.ImagePochette);//pas fait dans la requete pour le moment
+         cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == "" ? SqlString.Null : entite.ImagePochette);
          cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0 ? SqlInt32.Null : entite.NbDisques);
          cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
          cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal == "" ? SqlString.Null : entite.TitreOriginal);
