@@ -23,16 +23,17 @@
             Session["FileUpload"] = btnUploadImagePochette;
         }
 
-
+           
         utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
-        if (utilCourant.TypeUtilisateur == 'S')
-        {
-            div_identite.Visible = true;
-            populerDDLIdentite();
-        }
-
         if (!IsPostBack)
-        {
+        {  
+            if (utilCourant.TypeUtilisateur == 'S')
+            {
+                div_identite.Visible = true;
+                populerDDLIdentite();
+            }
+
+
             if (Request.UrlReferrer != null)
             {
                 prevPage = Request.UrlReferrer.ToString();
@@ -230,16 +231,15 @@
             string categorie = ddlCategorie.SelectedValue.ToString();
             string format = ddlFormat.SelectedValue.ToString();
             DateTime date = DateTime.Now;
-
             string noUtilisateur;
-            if (utilCourant.TypeUtilisateur != 'S')
+            if (utilCourant.TypeUtilisateur == 'S')
             {
-                noUtilisateur = (int.Parse(ddlIdentite.SelectedValue)).ToString();
+                noUtilisateur = ddlIdentite.SelectedValue.ToString();
             }
             else
             {
                 noUtilisateur= utilCourant.NoUtilisateur.ToString();
-            }            
+            }
             string resume = tbResume.Text.Trim();
             int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
