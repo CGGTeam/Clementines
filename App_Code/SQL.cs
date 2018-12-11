@@ -1538,6 +1538,45 @@ static public class SQL
         return retour;
     }
 
+    public static bool trouverActeurFilm(int entite, int noFilm)
+    {
+        bool retour = false;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT NoActeur FROM FilmsActeurs WHERE NoActeur = @noActeur AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@noActeur", entite);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            SqlDataReader drDDL = cmd.ExecuteReader();
+            while (drDDL.Read())
+            {
+                retour = true;
+            }
+            cmd.Connection.Close();
+        }
+        return retour;
+    }
+
+    public static List<int> trouverTousLesIDActeurPourUnFilm(int idFilm)
+    {
+        List<int> idActeurs = new List<int>();
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT NoActeur FROM FilmsActeurs WHERE NoFilm = @idFilm";
+            cmd.Parameters.AddWithValue("@idFilm", idFilm);
+            SqlDataReader drDDL = cmd.ExecuteReader();
+            while (drDDL.Read())
+            {
+                idActeurs.Add((int)drDDL[0]);
+            }
+            cmd.Connection.Close();
+        }
+        return idActeurs;
+    }
+
     public static void retirerLangueFilm(int noLangue, int noFilm)
     {
         using (SqlCommand cmd = new SqlCommand())
@@ -1546,6 +1585,21 @@ static public class SQL
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = "DELETE FROM FilmsLangues WHERE NoLangue = @noLangue AND NoFilm = @noFilm";
             cmd.Parameters.AddWithValue("@noLangue", noLangue);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            cmd.ExecuteNonQuery();
+
+            cmd.Connection.Close();
+        }
+    }
+
+    public static void retirerActeurFilm(int noActeur, int noFilm)
+    {
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "DELETE FROM FilmsActeurs WHERE NoActeur = @noActeur AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@noActeur", noActeur);
             cmd.Parameters.AddWithValue("@noFilm", noFilm);
             cmd.ExecuteNonQuery();
 

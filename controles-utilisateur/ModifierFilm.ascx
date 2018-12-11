@@ -372,7 +372,91 @@
                 }
             }
 
-            //S'occuper des réalisateurs
+            //gestion des acteurs a partir d'ici
+            List<int> listeIdActeur = new List<int>();
+            //acteur 1
+            if (!SQL.trouverActeurFilm(int.Parse(choixActeur1.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible)
+            {
+                //faire l'ajout
+                SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur1.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur1.ControleDDL.SelectedValue));
+            }
+            else if (SQL.trouverActeurFilm(int.Parse(choixActeur1.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur1.ControleDDL.Visible)
+            {
+                listeIdActeur.Add(int.Parse(choixActeur1.ControleDDL.SelectedValue));
+            }
+            else if (choixActeur1.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur1.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm, ID);
+                listeIdActeur.Add(ID);
+            }
+            //acteur 2
+            if (!SQL.trouverActeurFilm(int.Parse(choixActeur2.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.Visible)
+            {
+                //faire l'ajout
+                SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur2.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur2.ControleDDL.SelectedValue));
+            }
+            else if (SQL.trouverActeurFilm(int.Parse(choixActeur2.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur2.ControleDDL.Visible)
+            {
+                listeIdActeur.Add(int.Parse(choixActeur2.ControleDDL.SelectedValue));
+            }
+            else if (choixActeur2.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur2.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm, ID);
+                listeIdActeur.Add(ID);
+            }
+
+            //acteur 3
+            if (!SQL.trouverActeurFilm(int.Parse(choixActeur3.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.Visible)
+            {
+                //faire l'ajout
+                SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur3.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur3.ControleDDL.SelectedValue));
+            }
+            else if (SQL.trouverActeurFilm(int.Parse(choixActeur3.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur3.ControleDDL.Visible)
+            {
+                 listeIdActeur.Add(int.Parse(choixActeur3.ControleDDL.SelectedValue));
+            }
+            else if (choixActeur3.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur3.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm, ID);
+                listeIdActeur.Add(ID);
+            }
+
+            //repasser dnas la BD pour supprimer les ActeurFilms superflux
+            //parcourir tous les idActeur pour le film donné
+            foreach (int idDansBD in SQL.trouverTousLesIDActeurPourUnFilm(noFilm))
+            {
+                bool trouve = false;
+                foreach (int idDansListe in listeIdActeur)
+                {
+                    if (idDansListe == idDansBD)
+                    {
+                        trouve = true;
+                    }
+                }
+                if (!trouve)
+                {
+                    //supprimer cet ActeurFilm
+                    SQL.retirerActeurFilm(idDansBD, noFilm);
+                }
+            }
         }
     }
 
