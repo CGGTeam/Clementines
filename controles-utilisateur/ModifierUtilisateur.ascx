@@ -132,24 +132,25 @@
       error.Visible = false;
    }
 </script>
-<h1 id="titreModif" runat="server"></h1>
-<div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
-   <asp:Label runat="server" ID="lblSucces"></asp:Label>
-   <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces">
-         <span class="glyphicon glyphicon-remove pull-right"></span>
-   </asp:LinkButton>
-</div>
-
-<div runat="server" Visible="false" id="error" class="alert alert-danger" role="alert">
-   <asp:Label runat="server" ID="lblError"></asp:Label>
-   <asp:LinkButton runat="server" type="button" class="btn-link pull-right" OnClick="fermerError">
-         <span class="glyphicon glyphicon-remove"></span>
-   </asp:LinkButton>
-</div>
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-md-6 col-md-offset-3">
+                <h1 id="titreModif" runat="server"></h1>
+        <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
+           <asp:Label runat="server" ID="lblSucces"></asp:Label>
+           <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces">
+                 <span class="glyphicon glyphicon-remove pull-right"></span>
+           </asp:LinkButton>
+        </div>
+
+        <div runat="server" Visible="false" id="error" class="alert alert-danger" role="alert">
+           <asp:Label runat="server" ID="lblError"></asp:Label>
+           <asp:LinkButton runat="server" type="button" class="btn-link pull-right" OnClick="fermerError">
+                 <span class="glyphicon glyphicon-remove"></span>
+           </asp:LinkButton>
+        </div>
+        <hr />
         <!-- Nom d'utilisateur -->
-        <asp:Label runat="server">Nom d'utilisateur :</asp:Label>
+        <asp:Label runat="server" style="text-align:center;">Nom d'utilisateur :</asp:Label>
         <asp:TextBox ID="tbNomUtilisateur" runat="server"
            MaxLength="25" CssClass="form-control"
             placeholder="Nom d'utilisateur"/>
@@ -201,7 +202,7 @@
        </div>
    </div>
    <div class="row">
-       <div class="col-sm-6">
+       <div class="col-sm-6" style="float: none; margin: 0 auto;">
           <asp:Button ID="btnAjouterUtilisateur" runat="server" class="btn btn-lg btn-primary btn-block" Text="Modifier" OnClick="Modifier"/>
           <asp:Button ID="btnRetourGestionUtilisateur" runat="server" class="btn btn-lg btn-danger btn-block" Text="Annuler" OnClick="Retour" CausesValidation="false"/>
        </div>

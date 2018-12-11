@@ -38,8 +38,12 @@
     <hr />
 
    <asp:PlaceHolder ID="phDynamique" runat="server"/>
-   <div class="col-sm-6">
-        <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter un utilisateur" OnClick="pageAjouterUtil"/>
+    <div class="row" style="align-content:center;">
+        <div class="col-sm-6" style="float: none; margin: 0 auto;">
+           <asp:Button runat="server" class="btn btn-lg btn-primary btn-block" Text="Ajouter un utilisateur" OnClick="pageAjouterUtil"/>
+    
+        </div>
     </div>
 </div>
+    <br />
 </asp:Content>

@@ -33,29 +33,32 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
    {
       EntiteUtilisateur utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
       Table table = new Table();
-      table.CssClass = "table table-bordered";
+      table.CssClass = "table table-hover";
         table.ID = "table_Utilisateur";
-      TableRow tr = new TableRow();
-      tr.CssClass = "thead-dark";
-      table.Controls.Add(tr);
+      TableHeaderRow trheader = new TableHeaderRow();
+        trheader.TableSection = TableRowSection.TableHeader;
+        trheader.CssClass = "thead-dark";
+      table.Controls.Add(trheader);
       TableCell td = new TableCell();
       //Remplir les entêtes
       for (int i = 0; i < dt.Columns.Count; i++)
       {
          TableHeaderCell th = new TableHeaderCell();
          th.Text = dt.Columns[i].ColumnName;
-         tr.Controls.Add(th);
+            trheader.Controls.Add(th);
       }
       TableHeaderCell thActionMod = new TableHeaderCell();
       thActionMod.Text = "Modifier l'utilisateur";
-      tr.Controls.Add(thActionMod);
+        trheader.Controls.Add(thActionMod);
       TableHeaderCell thActionSup = new TableHeaderCell();
       thActionSup.Text = "Supprimer l'utilisateur";
-      tr.Controls.Add(thActionSup);
-      //Remplir les données
+        trheader.Controls.Add(thActionSup);
+        //Remplir les données
+        TableRow tr;
       for (int i = 0; i < dt.Rows.Count; i++)
       {
          tr = new TableRow();
+            tr.TableSection = TableRowSection.TableBody;
          table.Controls.Add(tr);
          for (int j = 0; j < dt.Columns.Count; j++)
          {
