@@ -55,6 +55,16 @@
          valide = false;
          messageErreur += "Le format de courriel n'est pas valide. ";
       }
+      if (!formatCourriel2.IsValid)
+      {
+         valide = false;
+         messageErreur += "Le format de la confirmation de courriel n'est pas valide. ";
+      }
+      if(tbCourriel.Text != tbCourriel2.Text)
+      {
+         valide = false;
+         messageErreur += "Les courriels ne sont pas identique. ";
+      }
       //Mot de passe invalide
       if (!formatMotDePasse.IsValid)
       {
@@ -62,6 +72,17 @@
          messageErreur += "Le format du mot de passe est invalide (#####). ";
          tbMotDePasse.Focus();
       }
+      if (!formatMotDePasse2.IsValid)
+      {
+         valide = false;
+         messageErreur += "Le format du mot de passe 2 est invalide (#####). ";
+      }
+      if(tbMotDePasse.Text != tbMotDePasse2.Text)
+      {
+         valide = false;
+         messageErreur += "Les mots de passes ne sont pas identique. ";
+      }
+
       if (valide)
       {
          //Aller 
@@ -155,6 +176,21 @@
         OnServerValidate="validationFormatCourriel" EnableClientScript="true" Display="None">
       </asp:CustomValidator>
          <br />
+        <!-- Confirmation de Courriel -->
+        <asp:Label runat="server">Confirmation de courriel :</asp:Label>
+        <asp:TextBox ID="tbCourriel2" runat="server"
+           MaxLength="25" CssClass="form-control"
+           placeholder="Courriel" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
+        <asp:RequiredFieldValidator runat="server" 
+             id="courriel2Vide"  
+             Style="color:red" 
+             controltovalidate="tbCourriel2"
+             errormessage="Entrez un courriel!" />
+       <asp:CustomValidator id="formatCourriel2" runat="server" 
+        ControlToValidate = "tbCourriel2"
+        OnServerValidate="validationFormatCourriel" EnableClientScript="true" Display="None">
+      </asp:CustomValidator>
+         <br />
 
         <!-- Mot de passe -->
         <asp:Label runat="server">Mot de Passe :</asp:Label>
@@ -177,10 +213,10 @@
         <asp:RequiredFieldValidator runat="server" 
              id="passwordVide2"  
              Style="color:red" 
-             controltovalidate="tbMotDePasse"
+             controltovalidate="tbMotDePasse2"
              errormessage="Entrez un Mot de Passe!" />
         <asp:RegularExpressionValidator runat="server" id="formatMotDePasse2"
-            controltovalidate="tbMotDePasse" validationexpression="^[0-9]{5}$"
+            controltovalidate="tbMotDePasse2" validationexpression="^[0-9]{5}$"
             EnableClientScript="false" Display="None" />
         <br />
 
