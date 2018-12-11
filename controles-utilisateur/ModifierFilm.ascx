@@ -241,6 +241,12 @@
          ==============================================================================================================
          ==============================================================================================================
          ==============================================================================================================*/
+         if(btnUploadImagePochette.PostedFile.ContentLength >= 1048576)
+        {
+            error.Visible = true;
+            lblError.Text = "L'image doit être plus petite que 1mb";
+            return;
+        }
 
         if (rerFieldValidatorTitreOriginal.IsValid && rangeValDuree.IsValid &&
         choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
