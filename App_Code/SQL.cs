@@ -1218,6 +1218,27 @@ static public class SQL
         dbConn2.Close();
         return noUtilisateur;
     }
+    public static int GetNoUtilisateurMAJDVD(int noFilm)
+    {
+        SqlConnection dbConn2 = Connection2();
+
+        int noUtilisateur = 0;
+        String strRequete = "select Films.NoUtilisateurMAJ from Films where NoFilm = @noExemplaire";
+        SqlParameter paramUsername = new SqlParameter("@noExemplaire", noFilm);
+
+        SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+        cmdDDL.Parameters.Add(paramUsername);
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            noUtilisateur = (int)drDDL[0];
+        }
+
+        drDDL.Close();
+        dbConn2.Close();
+        return noUtilisateur;
+    }
     public static bool UpdatePassword(int noUtilisateur, int newPass)
     {
         int intNbAjout = 0;

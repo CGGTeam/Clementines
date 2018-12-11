@@ -44,6 +44,11 @@
 
          film = SQL.FindExemplaireById(no);
 
+
+            
+            int noMAJ = SQL.GetNoUtilisateurMAJDVD(film.film.NoFilm);
+            EntiteUtilisateur utilmaj = SQL.FindUtilisateurById(noMAJ);
+
          PHVignette.ImageUrl = film.film.ImagePochette!=String.Empty ? film.film.ImagePochette : "../Static/images/pas-de-vignette.png";
 
          PHTitreOriginal.Text = film.film.TitreOriginal!=string.Empty ? film.film.TitreOriginal : na;
@@ -62,7 +67,7 @@
          PHSousTitre.Text = film.film.lstSousTitres.Count() != 0? String.Join(sep, film.film.lstSousTitres) : na;
 
          PHMiseAJourDate.Text = film.film.DateMAJ.ToString("yyyy-MM-dd") !=string.Empty ? film.film.DateMAJ.ToString("yyyy-MM-dd") : na;
-         PHMiseAJourDatePar.Text = film.film.NomUtilisateur!=string.Empty ? film.film.NomUtilisateur : na;
+         PHMiseAJourDatePar.Text = utilmaj!=null ? utilmaj.NomUtilisateur : na;
          PHProprietaire.Text = film.proprietaire.NomUtilisateur!=string.Empty ? film.proprietaire.NomUtilisateur : na;
 
          PHSupplement.Text = film.film.lstSupplements.Count() != 0? String.Join(sep, film.film.lstSupplements) : na;
@@ -74,7 +79,7 @@
             // emprunteur
             int noEmprunteur = SQL.GetNoUtilisateurDVDEmprunteur(film.film.NoFilm);
             EntiteUtilisateur util = SQL.FindUtilisateurById(noEmprunteur);
-
+            
             PHEmprunter.Text = util.NomUtilisateur;
 
 
