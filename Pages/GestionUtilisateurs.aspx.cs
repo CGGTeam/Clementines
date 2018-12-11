@@ -33,7 +33,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
    {
       EntiteUtilisateur utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
       Table table = new Table();
-      table.CssClass = "table table-bordered table-hover";
+      table.CssClass = "table table-bordered";
       TableRow tr = new TableRow();
       tr.CssClass = "thead-dark";
       table.Controls.Add(tr);

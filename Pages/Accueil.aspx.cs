@@ -72,7 +72,7 @@ public partial class _Default : System.Web.UI.Page
             try
             {
                 SQL.Connection();
-                lstFilms = SQL.FindAllExemplaires();
+                lstFilms = SQL.FindAllExemplairesEmpruntes();
             }
             catch (Exception Ex)
             {

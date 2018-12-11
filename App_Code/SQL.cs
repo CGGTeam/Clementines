@@ -67,7 +67,7 @@ static public class SQL
     /// Creation d'une 2e connexion pour éviter l'erreur "An unhandled exception of type 'System.InvalidOperationException' occurred in System.Data.dll"
     /// </summary>
     /// <returns>la connection</returns>
-    static public SqlConnection Connection2()
+    static private SqlConnection Connection2()
     {
         SqlConnection dbConn2 = new SqlConnection();
         dbConn2.ConnectionString = ConfigurationManager.AppSettings["strConnexionDreamTeam"];
@@ -1076,9 +1076,7 @@ static public class SQL
             cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
             cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
-
             cmd.Connection.Close();
-            CreerExemplaire(entite.NoFilm, int.Parse(entite.NomUtilisateur));
         }
 
 
@@ -1424,32 +1422,59 @@ static public class SQL
    }
     public static void modifierFilm(EntiteFilm entite)
     {
-        int intNbAjout = 0;
-        using (SqlCommand cmd = new SqlCommand())
-        {
-            cmd.Connection = Connection2();//connection ouverte
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "UPDATE Films SET AnneeSortie = @anneeSortie,  Categorie = @categorie, Format = @format, DateMAJ = @date, NoUtilisateurMAJ = @noUtilisateur, Resume = @resume, DureeMinutes = @dureeMinutes, FilmOriginal = @filmOriginal, ImagePochette = @pochette, NbDisques = @nbDisques, Titrefrancais = @titreFrancais, TitreOriginal = @titreOriginal, VersionEtendue = @versionEtendue, NoRealisateur = @noRealisateur, NoProducteur = @noProducteur, XTra = @extra WHERE NoFilm = @no";
-            cmd.Parameters.AddWithValue("@no", entite.NoFilm);
-            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie == -1 ? SqlInt32.Null : entite.AnneeSortie);
-            cmd.Parameters.AddWithValue("@categorie", entite.Categorie == "0" ? SqlString.Null : entite.Categorie);
-            cmd.Parameters.AddWithValue("@format", entite.Format == "0" ? SqlString.Null : entite.Format);
-            cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
-            cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);
-            cmd.Parameters.AddWithValue("@resume", entite.Resume == "" ? SqlString.Null : entite.Resume);
-            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree == -1 ? SqlInt32.Null : entite.Duree);
-            cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
-            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == "" ? SqlString.Null : entite.ImagePochette);
-            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0 ? SqlInt32.Null : entite.NbDisques);//a revoir
-            cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
-            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal == "" ? SqlString.Null : entite.TitreOriginal);
-            cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
-            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur == "0" ? SqlString.Null : entite.NomRealisateur);
-            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
-            cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
-            intNbAjout += cmd.ExecuteNonQuery();
+        SqlConnection dbConn2 = Connection2();
+        List<EntiteExemplaire> lstExemplaires = new List<EntiteExemplaire>();
+        String strReq = "SELECT Films.NoFilm, Films.AnneeSortie, Categories.[Description], Formats.[Description], Films.DateMAJ, Utilisateurs.NomUtilisateur, " +
+                          "Films.[Resume], Films.DureeMinutes, Films.FilmOriginal, Films.ImagePochette, Films.NbDisques, Films.TitreFrancais, Films.TitreOriginal, " +
+                          "Films.VersionEtendue, Realisateurs.Nom, Producteurs.Nom, Films.XTra, " +
+                            "Utilisateurs.NoUtilisateur, Utilisateurs.NomUtilisateur, Utilisateurs.Courriel, Utilisateurs.MotPasse, Utilisateurs.TypeUtilisateur " +
+                          "FROM Films " +
+                          "LEFT JOIN Categories ON Films.Categorie = Categories.NoCategorie " +
+                          "LEFT JOIN Formats ON Films.Format = Formats.NoFormat " +
+                          "LEFT JOIN Realisateurs ON Films.NoRealisateur = Realisateurs.NoRealisateur " +
+                          "LEFT JOIN Producteurs ON Films.NoProducteur = Producteurs.NoProducteur " +
+                          "inner join EmpruntsFilms on Films.NoFilm = LEFT(CONVERT(NVARCHAR, EmpruntsFilms.NoExemplaire), 6) " +
+                          "inner join Utilisateurs on EmpruntsFilms.NoUtilisateur = Utilisateurs.NoUtilisateur "+
+                          "order by Films.TitreFrancais";
 
-            cmd.Connection.Close();
+        System.Diagnostics.Debug.WriteLine(strReq);
+
+        SqlCommand cmdDDL = new SqlCommand(strReq, dbConn2);
+
+
+        SqlDataReader drDDL = cmdDDL.ExecuteReader();
+        while (drDDL.Read())
+        {
+            EntiteExemplaire exemplaire = new EntiteExemplaire
+            {
+                film = new EntiteFilm((int)drDDL[0],
+               (drDDL[1].ToString() == "") ? -1 : (int)drDDL[1],
+               (drDDL[2].ToString() == "") ? "" : (string)drDDL[2],
+               (drDDL[3].ToString() == "") ? "" : (string)drDDL[3],
+               (DateTime)drDDL[4],
+               (string)drDDL[5],
+               (drDDL[6].ToString() == "") ? "" : (string)drDDL[6],
+               (drDDL[7].ToString() == "") ? -1 : (int)drDDL[7],
+               (drDDL[8].ToString() == "") ? false : (bool)drDDL[8],
+               (drDDL[9].ToString() == "") ? "../Static/images/pas-de-vignette.jpeg" : "../Static/images/" + (string)drDDL[9],
+               (drDDL[10].ToString() == "") ? -1 : (int)drDDL[10],
+               (string)drDDL[11],
+               (drDDL[12].ToString() == "") ? "" : (string)drDDL[12],
+               (drDDL[13].ToString() == "") ? false : (bool)drDDL[13],
+               (drDDL[14].ToString() == "") ? "" : (string)drDDL[14],
+               (drDDL[15].ToString() == "") ? "" : (string)drDDL[15],
+               (drDDL[16].ToString() == "") ? "" : (string)drDDL[16]),
+
+                proprietaire = new EntiteUtilisateur((int)drDDL[17],
+               (string)drDDL[18],
+               (string)drDDL[19],
+               (int)drDDL[20],
+               Convert.ToChar((string)drDDL[21]))
+            };
+            lstExemplaires.Add(exemplaire);
         }
+        drDDL.Close();
+        dbConn2.Close();
+        return lstExemplaires;
     }
 }
