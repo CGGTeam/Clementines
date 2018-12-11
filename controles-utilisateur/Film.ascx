@@ -8,6 +8,20 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        //garder le fileInput apres un postback
+        if (Session["FileUpload"] == null && btnUploadImagePochette.HasFile)  
+           { 
+            Session["FileUpload"] = btnUploadImagePochette; 
+           }
+        else if (Session["FileUpload"] != null && (! btnUploadImagePochette.HasFile)) 
+          { 
+            btnUploadImagePochette = (FileUpload) Session["FileUpload"]; 
+          } 
+        else if (btnUploadImagePochette.HasFile) 
+         { 
+            Session["FileUpload"] = btnUploadImagePochette; 
+         }
+
         if (!IsPostBack)
         {
             if (Request.UrlReferrer != null)
@@ -707,7 +721,7 @@
               <span class="input-group-addon">   
                   <i class="glyphicon glyphicon glyphicon-file"></i>
               </span>
-                 <asp:FileUpload id="btnUploadImagePochette" runat="server" CssClass="form-control"/>
+                 <asp:FileUpload  id="btnUploadImagePochette" runat="server" CssClass="form-control"/>
             </div>
             <br />
         </div>
