@@ -376,7 +376,6 @@
             }
             succes.Visible = true;
             lblSucces.Text = "Le films a été ajouté avec succès!";
-            return;
 
             //charger les listes
 
