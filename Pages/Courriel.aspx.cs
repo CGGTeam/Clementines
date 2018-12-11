@@ -58,6 +58,12 @@ public partial class _Default : System.Web.UI.Page
             lblError.Text = "Le contenu du message ne peut être vide";
             return;
         }
+        if (cbTous.Checked)
+        {
+            success_message.Visible = true;
+            lblSucces.Text = "Le message a été envoyé à tous les utilisateurs";
+            return;
+        }
         if (string.IsNullOrEmpty(destinaire.Text))
         {
             error_message.Visible = true;
@@ -92,5 +98,12 @@ public partial class _Default : System.Web.UI.Page
     {
         tbMessage.Text = "";
         destinaire.Text = "";
+    }
+
+    protected void cbTous_CheckedChanged(object sender, EventArgs e)
+    {
+        destinaire.Enabled = !cbTous.Checked;
+        if (cbTous.Checked)
+            destinaire.Text = "";
     }
 }

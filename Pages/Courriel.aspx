@@ -34,9 +34,11 @@
                         Destinaires :
                     </label>
                    <p><small>(séparé pas des virgules)</small></p>
-                   <asp:TextBox Text="" runat="server" CssClass="form-control" ID="destinaire" placeholder="Votre distinaire" />
-                    
-                   <br />
+                   <div class="input-group">
+                        <span class="input-group-addon"><asp:CheckBox runat="server" ID="cbTous" OnCheckedChanged="cbTous_CheckedChanged" AutoPostBack="true"/> Tous </span>
+                        <asp:TextBox Text="" runat="server" CssClass="form-control" ID="destinaire" placeholder="Votre distinaire" />
+                   </div>
+                    <br />
                     <label for="comments">
                         Message :
                     </label>

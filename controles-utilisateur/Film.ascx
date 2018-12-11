@@ -5,22 +5,31 @@
 
 
     static string prevPage = String.Empty;
+    EntiteUtilisateur utilCourant;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         //garder le fileInput apres un postback
-        if (Session["FileUpload"] == null && btnUploadImagePochette.HasFile)  
-           { 
-            Session["FileUpload"] = btnUploadImagePochette; 
-           }
-        else if (Session["FileUpload"] != null && (! btnUploadImagePochette.HasFile)) 
-          { 
-            btnUploadImagePochette = (FileUpload) Session["FileUpload"]; 
-          } 
-        else if (btnUploadImagePochette.HasFile) 
-         { 
-            Session["FileUpload"] = btnUploadImagePochette; 
-         }
+        if (Session["FileUpload"] == null && btnUploadImagePochette.HasFile)
+        {
+            Session["FileUpload"] = btnUploadImagePochette;
+        }
+        else if (Session["FileUpload"] != null && (! btnUploadImagePochette.HasFile))
+        {
+            btnUploadImagePochette = (FileUpload) Session["FileUpload"];
+        }
+        else if (btnUploadImagePochette.HasFile)
+        {
+            Session["FileUpload"] = btnUploadImagePochette;
+        }
+
+
+        utilCourant = SQL.FindUtilisateurByName(HttpContext.Current.User.Identity.Name);
+        if (utilCourant.TypeUtilisateur == 'S')
+        {
+            div_identite.Visible = true;
+            populerDDLIdentite();
+        }
 
         if (!IsPostBack)
         {
@@ -90,6 +99,17 @@
         }
 
 
+    }
+
+    private void populerDDLIdentite()
+    {
+        ddlIdentite.Items.Clear();
+        List<EntiteUtilisateur> lstUtilisateurs = SQL.FindAllUtilisateurSaufCourantEtEmprunteur(utilCourant.NoUtilisateur, utilCourant.NoUtilisateur);
+        ddlIdentite.Items.Add(new ListItem("Moi", utilCourant.NoUtilisateur.ToString()));
+        foreach (EntiteUtilisateur utilisateur in lstUtilisateurs)
+        {
+            ddlIdentite.Items.Add(new ListItem(utilisateur.NomUtilisateur, utilisateur.NoUtilisateur.ToString()));
+        }
     }
 
     protected void chargeListeSupplements()
@@ -201,16 +221,16 @@
                 producteur = ID.ToString();
             }
 
-            int noUtilisateurCourrant;
+            /*int noUtilisateurCourrant;
             string utilisateur = HttpContext.Current.User.Identity.Name;
-            noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
+            noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);*/
 
             //Récupérer toutes mes informations dans mes variables. (pour le table Film)
             int anneSortie = corrigerLesDDl(ddlAnnee.SelectedItem.ToString());
             string categorie = ddlCategorie.SelectedValue.ToString();
             string format = ddlFormat.SelectedValue.ToString();
             DateTime date = DateTime.Now;
-            string noUtilisateur = noUtilisateurCourrant.ToString();
+            string noUtilisateur = utilCourant.NoUtilisateur.ToString();
             string resume = tbResume.Text.Trim();
             int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
             bool filmOriginal = cbOriginal.Checked;
@@ -499,7 +519,18 @@
         error.Visible = false;
     }
 </script>
-
+<!-- changer d'identité-->
+<div class="row" runat="server" id="div_identite" Visible="false">
+        <div class="col-sm-4">
+            <div class="input-group">
+              <span class="input-group-addon">Changer d'identité </span>
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <asp:DropDownList ID="ddlIdentite" runat="server"
+                  CssClass="form-control"/>
+        </div>
+        </div>
+    </div>
+<!-- les deux trucs de validations -->
         <div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
             <asp:Label runat="server" ID="lblSucces"></asp:Label>
             <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces" CausesValidation="false">
