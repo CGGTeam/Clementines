@@ -16,6 +16,7 @@ public partial class PageMaster_MasterPage : System.Web.UI.MasterPage
         {
             nav_dvdenmain.Visible = false;
             nav_ajoutfilm.Visible = false;
+            nav_gestionUtilisateur.Visible = true;
         }
 
         EntitePreference mesPreferences = SQL.GetPreferenceByNoUtilisateur(utilCourant.NoUtilisateur);

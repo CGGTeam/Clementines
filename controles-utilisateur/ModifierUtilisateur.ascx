@@ -1,26 +1,35 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ModifierUtilisateur.ascx.cs" Inherits="controles_utilisateur_ModifierUtilisateur" %>
 
 <script runat="server">
+   int id = 0;
+   EntiteUtilisateur valeurDepart;
    protected void Page_Load(object sender, EventArgs e)
    {
-      int id = 0;
+      //int id = 0;
       if (!IsPostBack)
       {
+         if(Request["Utilisateur"] != null)
+         {
+            id = int.Parse(Page.Request["Utilisateur"].ToString());
+            valeurDepart = SQL.FindUtilisateurById(id);
+         }
+         chargerTypeAbonnement();
+         EntiteUtilisateur utilisateurAModifier = SQL.FindUtilisateurById(id);
+         titreModif.InnerText = "Modification de l'utilisateur: " + utilisateurAModifier.NomUtilisateur.ToString();
 
+         //Charger les anciennes valeurs de l'utilisateur
+         tbNomUtilisateur.Text = utilisateurAModifier.NomUtilisateur.Trim();
+         tbCourriel.Text = utilisateurAModifier.Courriel.Trim();
+         tbMotDePasse.Text = utilisateurAModifier.MotPasse.ToString().Trim();
+         ddlListeAbonnement.Items.FindByValue(utilisateurAModifier.TypeUtilisateur.ToString()).Selected = true;
       }
-      if(Request["Utilisateur"] != null)
-      {
+
+       if(Request["Utilisateur"] != null)
+       {
          id = int.Parse(Page.Request["Utilisateur"].ToString());
-      }
-      chargerTypeAbonnement();
-      EntiteUtilisateur utilisateurAModifier = SQL.FindUtilisateurById(id);
-      titreModif.InnerText = "Modification de l'utilisateur: " + utilisateurAModifier.NomUtilisateur.ToString();
-
-      //Charger les anciennes valeurs de l'utilisateur
-      tbNomUtilisateur.Text = utilisateurAModifier.NomUtilisateur;
-      tbCourriel.Text = utilisateurAModifier.Courriel;
-      tbMotDePasse.Text = utilisateurAModifier.MotPasse.ToString();
-      ddlListeAbonnement.Items.FindByValue(utilisateurAModifier.TypeUtilisateur.ToString()).Selected = true;
+         valeurDepart = SQL.FindUtilisateurById(id);
+       }
+      
    }
 
    protected void chargerTypeAbonnement()
@@ -79,31 +88,23 @@
       }
       if (valide)
       {
-         //Aller
-
-         /*if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
-         {
-            error.Visible = false;
-            succes.Visible = true;
-            lblSucces.Text = "Ajout fait avec succès";
-         }
-         else
-         {
-            succes.Visible = false;
-            error.Visible = true;
-            lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
-         }*/
-         if (SQL.checkIfNomUtilisateurExiste(tbNomUtilisateur.Text))
+         if ((SQL.checkIfNomUtilisateurExiste(tbNomUtilisateur.Text)) && (tbNomUtilisateur.Text.Trim() != valeurDepart.NomUtilisateur.Trim()))
          {
             succes.Visible = false;
             error.Visible = true;
             lblError.Text = "Ce nom d'utilisateur est déjà occupé!";
          }
+         else if ((SQL.checkIfCourrielUtilisateurExiste(tbCourriel.Text)) && (tbCourriel.Text.Trim() != valeurDepart.Courriel.Trim()))
+         {
+            succes.Visible = false;
+            error.Visible = true;
+            lblError.Text = "Ce courriel d'utilisateur est déjà occupé";
+         }
          else
          {
-            SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), ddlListeAbonnement.SelectedValue[0]);
-            //retourner à la page précédente.
-
+            SQL.modifierUtilisateur(id, tbNomUtilisateur.Text.Trim(), tbCourriel.Text.Trim(), int.Parse(tbMotDePasse.Text.ToString()), ddlListeAbonnement.SelectedValue.ToString()[0]);
+            String url = "~/Pages/GestionUtilisateurs.aspx";
+            Response.Redirect(url, true);
          }
 
       }
