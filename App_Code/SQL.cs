@@ -1079,6 +1079,8 @@ static public class SQL
             cmd.Connection.Close();
         }
 
+        CreerExemplaire(entite.NoFilm, int.Parse(entite.NomUtilisateur));
+
 
         return intNbAjout >= 1;
     }
