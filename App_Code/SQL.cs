@@ -1383,12 +1383,41 @@ static public class SQL
       return estPresent;
    }
 
+   public static bool checkIfCourrielUtilisateurExiste(string courriel)
+   {
+      SqlConnection dbConn2 = Connection2();
+      bool estPresent = false;
+      string strRequete = "SELECT COUNT(*) FROM Utilisateurs" +
+          " WHERE Courriel = @courriel";
+      SqlParameter paramTitre = new SqlParameter("@courriel", courriel);
+      SqlCommand cmdDDL = new SqlCommand(strRequete, dbConn2);
+      cmdDDL.Parameters.Add(paramTitre);
+      SqlDataReader drDDL = cmdDDL.ExecuteReader();
+
+      while (drDDL.Read())
+      {
+         estPresent = (int)drDDL[0] >= 1;
+      }
+      dbConn2.Close();
+      drDDL.Close();
+      return estPresent;
+   }
+
    public static void ajouterUtilisateur(string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
    {
       bool retour = true;
       SqlConnection conn = Connection2();
       int noUtilisateur = idProchainUtilisateur();
       string strRequete = "INSERT INTO Utilisateurs(NoUtilisateur, NomUtilisateur, Courriel, MotPasse, TypeUtilisateur) VALUES(" + noUtilisateur + ",'" + nomUtilisateur + "','" + courriel + "'," + motPasse + ",'" + typeUtilisateur+"');";     
+      SqlCommand command = new SqlCommand(strRequete, conn);
+      command.ExecuteNonQuery();
+      conn.Close();
+   }
+
+   public static void modifierUtilisateur(int id, string nomUtilisateur, string courriel, int motPasse, char typeUtilisateur)
+   {
+      SqlConnection conn = Connection2();
+      string strRequete = "UPDATE Utilisateurs set NomUtilisateur = '" + nomUtilisateur + "', Courriel = '" + courriel + "', MotPasse = " + motPasse + ",TypeUtilisateur ='" + typeUtilisateur + "' WHERE NoUtilisateur=" + id;
       SqlCommand command = new SqlCommand(strRequete, conn);
       command.ExecuteNonQuery();
       conn.Close();
