@@ -1394,12 +1394,34 @@ static public class SQL
       conn.Close();
    }
 
+    public static void modifierFilm(EntiteFilm entite)
+    {
+        int intNbAjout = 0;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "UPDATE Films SET AnneeSortie = @anneeSortie,  Categorie = @categorie, Format = @format, DateMAJ = @date, NoUtilisateurMAJ = @noUtilisateur, Resume = @resume, DureeMinutes = @dureeMinutes, FilmOriginal = @filmOriginal, ImagePochette = @pochette, NbDisques = @nbDisques, Titrefrancais = @titreFrancais, TitreOriginal = @titreOriginal, VersionEtendue = @versionEtendue, NoRealisateur = @noRealisateur, NoProducteur = @noProducteur, XTra = @extra WHERE NoFilm = @no";
+            cmd.Parameters.AddWithValue("@no", entite.NoFilm);
+            cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie == -1 ? SqlInt32.Null : entite.AnneeSortie);
+            cmd.Parameters.AddWithValue("@categorie", entite.Categorie == "0" ? SqlString.Null : entite.Categorie);
+            cmd.Parameters.AddWithValue("@format", entite.Format == "0" ? SqlString.Null : entite.Format);
+            cmd.Parameters.AddWithValue("@date", entite.DateMAJ.ToShortDateString());
+            cmd.Parameters.AddWithValue("@noUtilisateur", entite.NomUtilisateur);
+            cmd.Parameters.AddWithValue("@resume", entite.Resume == "" ? SqlString.Null : entite.Resume);
+            cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree == -1 ? SqlInt32.Null : entite.Duree);
+            cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
+            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == "" ? SqlString.Null : entite.ImagePochette);
+            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0 ? SqlInt32.Null : entite.NbDisques);//a revoir
+            cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
+            cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal == "" ? SqlString.Null : entite.TitreOriginal);
+            cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
+            cmd.Parameters.AddWithValue("@noRealisateur", entite.NomRealisateur == "0" ? SqlString.Null : entite.NomRealisateur);
+            cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
+            cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
+            intNbAjout += cmd.ExecuteNonQuery();
 
-
-   /// <summary>
-   /// Cette fonction permet de remplir la table 
-   /// </summary>
-   /// <param name="dt"></param>
-   /// <returns></returns>
-
+            cmd.Connection.Close();
+        }
+    }
 }
