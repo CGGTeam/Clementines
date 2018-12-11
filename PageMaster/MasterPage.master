@@ -25,18 +25,17 @@
     
     <form id="form1" runat="server">
 <nav class="navbar navbar-dark bg-primary"  style="background-color: #646464;">
-    <div class="container-fluid">
+    <div class="collapse navbar-collapse">
         <div class="navbar-header">
-            <a class="navbar-brand a"> Clémentine</a>
+            <a class="navbar-brand a" href="../Pages/Accueil.aspx"> Clémentine</a>
         </div>
         <ul class="nav navbar-nav">
-            <li id="nav_accueil" runat="server"><a href="../Pages/Accueil.aspx" class="a">Accueil</a></li>
             <li id="nav_dvdenmain" runat="server"><a href="../Pages/DVDEnMain.aspx" class="a">Mes DVDs</a></li>
             <li id="nav_dvdautreutil" runat="server"><a href="../Pages/DVDsAutreUtilisateur.aspx" class="a">DVDs autre utilisateur</a></li>
             <li id="nav_ajoutfilm" runat="server"><a href="../Pages/AjoutFilm.aspx" class="a">Ajouter un DVD</a></li>
             <li id="nav_personnalisation" runat="server"><a href="../Pages/Personnalisation.aspx" class="a">Personnalisation</a></li>
             <li id="nav_courriel" runat="server"><a href="../Pages/Courriel.aspx" class="a">Courriel</a></li>
-            <li id="Li1" runat="server"><a href="../Pages/GestionUtilisateurs.aspx" class="a">Gestion des utilisateurs</a></li>
+            <li visible="false" id="nav_gestionUtilisateur" runat="server"><a href="../Pages/GestionUtilisateurs.aspx" class="a">Gestion des utilisateurs</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -48,6 +47,7 @@
                     <asp:LinkButton runat="server" class="btn btn-default" OnClick="Search">
                         <span class="glyphicon glyphicon-search"></span>
                     </asp:LinkButton>
+
 
                     &nbsp;&nbsp;
                     <span class="glyphicon glyphicon-user"></span>

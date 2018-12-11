@@ -5,10 +5,11 @@
     static string prevPage = String.Empty;
     string memoireTitreFrancais = "";
     string memoireTitreOriginal = "";
+    int idFilm = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
         string btnModifier = Request.QueryString["Film"];
-        int idFilm = int.Parse(btnModifier);
+        idFilm = int.Parse(btnModifier);
         //SQL.Connection();
 
         EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
@@ -245,9 +246,9 @@
         choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid && validationActeur())
         {
             //je peux modifier
-             string realisateur = "";
+            string realisateur = "";
             string producteur = "";
-            int noFilm = SQL.FindNextNoFilm();
+            int noFilm = idFilm;
 
             //faire l'ajout de nouveaux producteur et réalisateur s'il en est le cas.
             if (choixRealisateur.ControleTextBox.Visible)
@@ -319,6 +320,10 @@
             string extras = tbExtras.Text.Trim();
 
             //requete de modification
+            EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
+            SQL.modifierFilm(entite);
+
+            //rendu a gérer les table film[whatever]
         }
     }
 
