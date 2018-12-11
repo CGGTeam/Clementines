@@ -181,16 +181,17 @@
 
         <!-- Mot de passe -->
         <asp:Label runat="server">Mot de Passe :</asp:Label>
-        <asp:TextBox ID="tbMotDePasse" runat="server" CssClass="form-control"
+        <asp:TextBox ID="tbMotDePasse" runat="server" CssClass="form-control"  pattern="[0-9]{5}" title="5 chiffres"
             placeholder="Mot de Passe Format(#####)" type="number" maxlength="5" format="NNNNN"/>
         <asp:RequiredFieldValidator runat="server" 
              id="passwordVide"  
              Style="color:red" 
              controltovalidate="tbMotDePasse"
              errormessage="Entrez un Mot de Passe!" />
-       <asp:RegularExpressionValidator runat="server" id="formatMotDePasse"
-          controltovalidate="tbMotDePasse" validationexpression="^[0-9]{5}$"
-          EnableClientScript="false" Display="None" />
+        <asp:RangeValidator runat="server" Type="Integer" ID="formatMotDePasse"
+                        MinimumValue="11111" MaximumValue="99999" ControlToValidate="tbMotDePasse" 
+                        EnableClientScript="false"
+                       Display="None" />
         <br />
 
         <!-- Type d'utilisateurs -->
