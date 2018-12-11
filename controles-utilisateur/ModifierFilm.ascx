@@ -333,7 +333,7 @@
                     imagePochette = tbImageActuelle.Text.ToString();
                 }               
             }
-            Titre.Text = imagePochette;
+            //Titre.Text = imagePochette;
             EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.modifierFilm(entite);
 
@@ -470,7 +470,7 @@
                     SQL.retirerActeurFilm(idDansBD, noFilm);
                 }
             }
-            //Response.Redirect(prevPage);
+            Response.Redirect(prevPage);
         }
     }
 
