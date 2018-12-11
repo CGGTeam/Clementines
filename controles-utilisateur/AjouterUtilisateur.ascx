@@ -64,33 +64,28 @@
       }
       if (valide)
       {
-         //Aller
-
-         /*if (SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), typeAbonnement[0]))
-         {
-            error.Visible = false;
-            succes.Visible = true;
-            lblSucces.Text = "Ajout fait avec succès";
-         }
-         else
-         {
-            succes.Visible = false;
-            error.Visible = true;
-            lblError.Text = "Erreur lors de l'ajout dans la base de donnée";
-         }*/
+         //Aller 
          if (SQL.checkIfNomUtilisateurExiste(tbNomUtilisateur.Text))
          {
             succes.Visible = false;
             error.Visible = true;
             lblError.Text = "Ce nom d'utilisateur est déjà occupé!";
          }
+         else if (SQL.checkIfCourrielUtilisateurExiste(tbCourriel.Text))
+         {
+            succes.Visible = false;
+            error.Visible = true;
+            lblError.Text = "Ce courriel d'utilisateur est déjà occupé";
+         }
+
          else
          {
             SQL.ajouterUtilisateur(tbNomUtilisateur.Text, tbCourriel.Text, int.Parse(tbMotDePasse.Text), ddlListeAbonnement.SelectedValue[0]);
             //retourner à la page précédente.
-
+            String url = "~/Pages/GestionUtilisateurs.aspx";
+            Response.Redirect(url, true);
          }
-         
+
       }
       else
       {
