@@ -1,12 +1,25 @@
 ﻿<%@ Control Language="C#" %>
 <%@ Register tagprefix="pers" TagName="Personne" Src="Personne_Ddl_Ajout.ascx" %>
+<%@ Import Namespace="System.IO" %>
 <script runat="server">
     static string prevPage = String.Empty;
-
+    string memoireTitreFrancais = "";
+    string memoireTitreOriginal = "";
     protected void Page_Load(object sender, EventArgs e)
     {
+        string btnModifier = Request.QueryString["Film"];
+        int idFilm = int.Parse(btnModifier);
+        //SQL.Connection();
 
-        if (!IsPostBack)
+        EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
+
+        if (filmAModifier != null)
+        {
+            memoireTitreFrancais = filmAModifier.TitreFrancais.ToString();
+            memoireTitreOriginal = filmAModifier.TitreOriginal.ToString();
+        }
+
+        if (!IsPostBack && filmAModifier != null)
         {
             chargeListeSupplements();
             chargeListeSousTitres();
@@ -26,14 +39,12 @@
             }
             if (Request.QueryString["Film"] != null)
             {
-                string btnModifier = Request.QueryString["Film"];
-                int idFilm = int.Parse(btnModifier);
-                SQL.Connection();
-                EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
+
                 //Maintenant remplir les informations à partir de ce ID.
-                Titre.Text = "Modification du film: " + filmAModifier.TitreOriginal.ToString();
+                Titre.Text = "Modification du film: " + filmAModifier.TitreFrancais.ToString();
                 tbTitreFrancais.Text = filmAModifier.TitreFrancais.ToString();
                 tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
+                tbExtras.Text = filmAModifier.LienInternet.ToString();
                 //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
                 if(filmAModifier.AnneeSortie!=-1)
                     ddlAnnee.Items.FindByValue(filmAModifier.AnneeSortie.ToString().Trim()).Selected = true;
@@ -101,12 +112,14 @@
 
             }
         }
+        //apres le !PostBack
+
     }
 
 
     protected void chargeListeRequete(Personne_Ddl_Ajout control)
     {
-        SQL.Connection();
+        //SQL.Connection();
         if(control == choixProducteur)
         {
             List<EntiteProducteur> lstProducteurs  = SQL.FindAllProducteur();
@@ -154,7 +167,7 @@
 
     protected void chargeListeSupplements()
     {
-        SQL.Connection();
+        //  SQL.Connection();
         List<EntiteSupplements> lstSupplements = SQL.FindAllSupplement();
         lbSupplements.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteSupplements supplement in lstSupplements)
@@ -167,7 +180,7 @@
 
     protected void chargeListeSousTitres()
     {
-        SQL.Connection();
+        // SQL.Connection();
         List<EntiteSousTitres> lstSousTitres = SQL.FindAllSousTitre();
         lbSousTitre.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteSousTitres sousTitres in lstSousTitres)
@@ -180,7 +193,7 @@
 
     protected void chargeListeLangues()
     {
-        SQL.Connection();
+        //  SQL.Connection();
         List<EntiteLangue> lstLangues = SQL.FindAllLangue();
         lbLangue.Items.Add(new ListItem("-- Aucune --", "0"));
         foreach (EntiteLangue langue in lstLangues)
@@ -193,7 +206,7 @@
 
     protected void chargeListeFormats()
     {
-        SQL.Connection();
+        // SQL.Connection();
         List<EntiteFormat> lstFormat = SQL.FindAllFormat();
         ddlFormat.Items.Add(new ListItem("-- Aucun --", "0"));
         foreach (EntiteFormat format in lstFormat)
@@ -204,7 +217,7 @@
 
     protected void chargeListeCategories()
     {
-        SQL.Connection();
+        // SQL.Connection();
         List<EntiteCategorie> lstCategorie = SQL.FindAllCategorie();
         ddlCategorie.Items.Add(new ListItem("-- Aucune --", "0"));
         foreach (EntiteCategorie categorie in lstCategorie)
@@ -226,18 +239,99 @@
          ==============================================================================================================
          ==============================================================================================================*/
 
-        if (rerFieldValidatorTitreOriginal.IsValid && RegularExpressionDuree.IsValid &&
+        if (rerFieldValidatorTitreOriginal.IsValid && rangeValDuree.IsValid &&
         choixProducteur.ControleCustomValidator.IsValid && choixRealisateur.ControleCustomValidator.IsValid &&
         choixActeur1.ControleCustomValidator.IsValid && choixActeur2.ControleCustomValidator.IsValid &&
-        choixActeur3.ControleCustomValidator.IsValid)
+        choixActeur3.ControleCustomValidator.IsValid && cv1.IsValid && CV2.IsValid && validationActeur())
         {
-            //on ajoute
-            //tbTitreFrancais.Text = "Aucun validator actif";
+            //je peux modifier
+             string realisateur = "";
+            string producteur = "";
+            int noFilm = SQL.FindNextNoFilm();
+
+            //faire l'ajout de nouveaux producteur et réalisateur s'il en est le cas.
+            if (choixRealisateur.ControleTextBox.Visible)
+            {
+                string nomRealisateurNOUVEAU = choixRealisateur.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDRealisateur();
+                ID++;
+                SQL.ajouteRealisateur(ID, nomRealisateurNOUVEAU);
+                realisateur = ID.ToString();
+            }
+
+            if (choixProducteur.ControleTextBox.Visible)
+            {
+                string nomProducteurNOUVEAU = choixProducteur.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDProducteur();
+                ID++;
+                SQL.ajouteProducteur(ID, nomProducteurNOUVEAU);
+                producteur = ID.ToString();
+            }
+
+            int noUtilisateurCourrant;
+            string utilisateur = HttpContext.Current.User.Identity.Name;
+            noUtilisateurCourrant = SQL.FindNoUtilisateurByName(utilisateur);
+
+            //Récupérer toutes mes informations dans mes variables. (pour le table Film)
+            int anneSortie = corrigerLesDDl(ddlAnnee.SelectedItem.ToString());
+            string categorie = ddlCategorie.SelectedValue.ToString();
+            string format = ddlFormat.SelectedValue.ToString();
+            DateTime date = DateTime.Now;
+            string noUtilisateur = noUtilisateurCourrant.ToString();
+            string resume = tbResume.Text.Trim();
+            int duree = corrigerLesDDl(tbDuree.Text.ToString().Trim());
+            bool filmOriginal = cbOriginal.Checked;
+            string imagePochette = "";
+
+            //récupération et téléchargement de l'image dans nos ressources
+            if(btnUploadImagePochette.HasFile)
+            {
+                try
+                {
+
+                    string filename = Path.GetFileName(btnUploadImagePochette.FileName);
+                    btnUploadImagePochette.SaveAs(Server.MapPath("~/static/images/") + filename);
+                    imagePochette = filename;
+                }
+                catch(Exception ex)
+                {
+
+                    //mettre une erreur?
+                }
+            }
+
+            int nbDisques = int.Parse(ddlNbDisques.SelectedValue);
+            string titreFrancais = tbTitreFrancais.Text;
+            string titreOriginal = tbTitreOriginal.Text.Trim();
+            bool versionEtendue = cbEtendue.Checked;
+
+            //gestions des réalisateurs et producteurs dans le cas du ddl visible
+            if (!choixRealisateur.ControleTextBox.Visible)
+            {
+                realisateur = choixRealisateur.ControleDDL.SelectedValue.ToString();
+            }
+
+            if (!choixProducteur.ControleTextBox.Visible)
+            {
+                producteur = choixProducteur.ControleDDL.SelectedValue.ToString();
+            }
+
+            string extras = tbExtras.Text.Trim();
+
+            //requete de modification
         }
-        else
+    }
+
+    public int corrigerLesDDl(string aValider)
+    {
+        int retour = -1;
+
+        if (!int.TryParse(aValider, out retour))
         {
-            //on fait what ever qu'on veut, cas de validation active.
+            retour = -1;
         }
+
+        return retour;
     }
 
     protected void chargeListeAnneeSortie()
@@ -257,13 +351,12 @@
         {
             ddlNbDisques.Items.Add(i.ToString());
         }
-
     }
 
-    protected void maValidation(Object sender, ServerValidateEventArgs Arguments)
+    protected void maValidationFR(Object sender, ServerValidateEventArgs Arguments)
     {
-        SQL.Connection();
-        if (SQL.checkIfNomFilmExiste(tbTitreFrancais.Text))
+        //SQL.Connection();
+        if (SQL.checkIfNomFilmExiste(tbTitreFrancais.Text) && tbTitreFrancais.Text.Trim() != memoireTitreFrancais)
         {
             Arguments.IsValid = false;
         }
@@ -275,8 +368,8 @@
 
     protected void maValidationTitreOriginal(Object sender, ServerValidateEventArgs Arguments)
     {
-        SQL.Connection();
-        if (SQL.checkIfNomOriginalFilmExiste(tbTitreOriginal.Text))
+        //SQL.Connection();
+        if (SQL.checkIfNomOriginalFilmExiste(tbTitreOriginal.Text) && tbTitreOriginal.Text.Trim() != memoireTitreOriginal)
         {
             Arguments.IsValid = false;
         }
@@ -285,16 +378,58 @@
             Arguments.IsValid = true;
         }
     }
+
+    protected bool validationActeur()
+    {
+        bool retour = true;
+        if (choixActeur1.ControleDDL.SelectedValue == choixActeur2.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur2.ControleDDL.Visible ||
+            choixActeur1.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible && choixActeur3.ControleDDL.Visible||
+            choixActeur2.ControleDDL.SelectedValue == choixActeur3.ControleDDL.SelectedValue && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.Visible && choixActeur3.ControleDDL.Visible)
+        {
+            error.Visible = true;
+            succes.Visible = false;
+            lblError.Text = "Vous ne pouvez pas avoir plusieurs fois le même acteur";
+            retour = false;
+        }
+        else
+        {
+            error.Visible = false;
+        }
+        return retour;
+    }
+
+    protected void fermerSucces(object sender, EventArgs e)
+    {
+        succes.Visible = false;
+    }
+    protected void fermerError(object sender, EventArgs e)
+    {
+        error.Visible = false;
+    }
 </script>
    <asp:Label ID="Titre" runat="server" style="color: #7c795d; font-family: 'Source Sans Pro', sans-serif; font-size: 28px; font-weight: 400; line-height: 32px; margin: 0 0 24px;"/>
 <hr />
+
+<div runat="server" Visible="false" id="succes" class="alert alert-success" role="alert">
+            <asp:Label runat="server" ID="lblSucces"></asp:Label>
+            <asp:LinkButton runat="server" class="btn-link pull-right" OnClick="fermerSucces" CausesValidation="false">
+                <span class="glyphicon glyphicon-remove pull-right"></span>
+            </asp:LinkButton>
+        </div>
+
+        <div runat="server" Visible="false" id="error" class="alert alert-danger" role="alert">
+            <asp:Label runat="server" ID="lblError"></asp:Label>
+            <asp:LinkButton runat="server" type="button" class="btn-link pull-right"  OnClick="fermerError" CausesValidation="false">
+                <span class="glyphicon glyphicon-remove"></span>
+            </asp:LinkButton>
+        </div>
 
 <div class="row">
     <div class="col-sm-6">
         <!-- Titre français -->
         <asp:Label runat="server">Titre francais :</asp:Label>
         <asp:TextBox ID="tbTitreFrancais" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Titre francais"/>
         <asp:RequiredFieldValidator runat="server" 
              id="rerFieldValidatorTitreOriginal"  
@@ -303,7 +438,7 @@
              errormessage="Entrez un tite!" />
         <asp:CustomValidator ID="cv1" runat="server"
         ControlToValidate="tbTitreFrancais"
-        OnServerValidate="maValidation"
+        OnServerValidate="maValidationFR"
         EnableClientScript="false"
         ValidateEmptyText="true"
         Style="color:red" 
@@ -319,20 +454,22 @@
         <!-- Categorie Requete-->
         <asp:Label runat="server">Catégorie :</asp:Label>
         <asp:DropDownList ID="ddlCategorie" runat="server"
-           MaxLength="25" CssClass="form-control"
+            CssClass="form-control"
             placeholder="Nom du producteur"/>
         <br />
         <!-- Durée Fait-->
         <asp:Label runat="server">Durée :</asp:Label>
         <asp:TextBox ID="tbDuree" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Durée (en minutes)"/>
-        <asp:RegularExpressionValidator ID="RegularExpressionDuree"
-            ControlToValidate="tbDuree" runat="server"
-            ErrorMessage="Nombres entiers seulement!"
+        <asp:RangeValidator runat="server"
+            ControlToValidate="tbDuree"
+            Type="Integer"
+            MinimumValue="0"
+            MaximumValue="9999"
+            ID="rangeValDuree"
             Style="color:red"
-            ValidationExpression="\d+">
-        </asp:RegularExpressionValidator>
+            ErrorMessage="nombre entre 0 et 9999" />
         <br />
         <!-- Format Requete-->
         <asp:Label runat="server">Format :</asp:Label>
@@ -389,17 +526,25 @@
           <span class="input-group-addon">   
               <i class="glyphicon glyphicon glyphicon-file"></i>
           </span>
-           <input type="file" class="form-control">
+          <asp:FileUpload id="btnUploadImagePochette" runat="server" CssClass="form-control"/>
         </div> 
+
+        <!-- Ajouter des extras -->
+        <br />
+          <asp:Label runat="server">Liens des extras :</asp:Label>
+        <asp:TextBox ID="tbExtras" runat="server"
+            CssClass="form-control"
+            placeholder="URL..."/>
+        <br />
     </div>
     <!-- ------------------------------------------------------------------------------------------------------------------------------------- -->
     <div class="col-sm-6">
         <!-- Titre original -->
         <asp:Label runat="server">Titre original :</asp:Label>
         <asp:TextBox ID="tbTitreOriginal" runat="server"
-           MaxLength="25" CssClass="form-control"
+           MaxLength="250" CssClass="form-control"
             placeholder="Titre originale"/>
-                <asp:CustomValidator ID="CustomValidator1" runat="server"
+                <asp:CustomValidator ID="CV2" runat="server"
         ControlToValidate="tbTitreFrancais"
         OnServerValidate="maValidationTitreOriginal"
         EnableClientScript="false"
@@ -438,20 +583,15 @@
         <!-- Les 3 check box -->
         <asp:Label runat="server">Options :</asp:Label>
         <div class="form-control">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <!-- Version originale? -->
                 <asp:Label runat="server">Version originale :</asp:Label>
                 <asp:CheckBox ID="cbOriginal" runat="server"/>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <!-- Version étendue?-->
                 <asp:Label runat="server">Version étendue :</asp:Label>
                 <asp:CheckBox ID="cbEtendue" runat="server"/>
-            </div>
-            <div class="col-sm-4">
-                <!-- Visible à tous? -->
-                <asp:Label runat="server">Visible à tous :</asp:Label>
-                <asp:CheckBox ID="cbVisible" runat="server"/>
             </div>
         </div>
         <br />
@@ -483,6 +623,7 @@
                <div>
                  <asp:TextBox ID="tbResume" runat="server"
                     TextMode="MultiLine"
+                     MaxLength="250"
                      style="max-width:100%; min-width:100%; min-height:180px;max-height:180px;"
                      CssClass="form-control"/>
                </div>
