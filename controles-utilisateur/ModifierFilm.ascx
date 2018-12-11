@@ -6,13 +6,14 @@
     string memoireTitreFrancais = "";
     string memoireTitreOriginal = "";
     int idFilm = 0;
+    EntiteFilm filmAModifier = null;
     protected void Page_Load(object sender, EventArgs e)
     {
         string btnModifier = Request.QueryString["Film"];
         idFilm = int.Parse(btnModifier);
         //SQL.Connection();
 
-        EntiteFilm filmAModifier = SQL.FindFilmById(idFilm);
+        filmAModifier = SQL.FindFilmById(idFilm);
 
         if (filmAModifier != null)
         {
@@ -324,6 +325,27 @@
             SQL.modifierFilm(entite);
 
             //rendu a gérer les table film[whatever]
+
+
+            //S'occuper des Langues
+            foreach (ListItem valeur in lbLangue.Items)
+            {
+                /*if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && valeur.Selected)
+                {
+                    //Deja dans la BD pour ce film, ne rien faire
+
+                }
+                else */if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                {
+                    //dans la base de donnée mais pas sélectionné, retirer de la BD
+                    SQL.retirerLangueFilm(int.Parse(valeur.Value.ToString()), noFilm);
+                }
+                else if (!SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm)  && valeur.Selected && valeur.Value != "0")
+                {
+                    //Pas dans la BD et sélectionné, donc ajouter
+                    SQL.ajouterFilmLangue(noFilm, int.Parse(valeur.Value.ToString()));
+                }
+            }
         }
     }
 

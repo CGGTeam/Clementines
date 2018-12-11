@@ -1401,7 +1401,7 @@ static public class SQL
         {
             cmd.Connection = Connection2();//connection ouverte
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "UPDATE Films SET AnneeSortie = @anneeSortie,  Categorie = @categorie, Format = @format, DateMAJ = @date, NoUtilisateurMAJ = @noUtilisateur, Resume = @resume, DureeMinutes = @dureeMinutes, FilmOriginal = @filmOriginal, ImagePochette = @pochette, NbDisques = @nbDisques, Titrefrancais = @titreFrancais, TitreOriginal = @titreOriginal, VersionEtendue = @versionEtendue, NoRealisateur = @noRealisateur, NoProducteur = @noProducteur, XTra = @extra WHERE NoFilm = @no";
+            cmd.CommandText = "UPDATE Films SET AnneeSortie = @anneeSortie,  Categorie = @categorie, Format = @format, DateMAJ = @date, NoUtilisateurMAJ = @noUtilisateur, Resume = @resume, DureeMinutes = @dureeMinutes, FilmOriginal = @filmOriginal, NbDisques = @nbDisques, Titrefrancais = @titreFrancais, TitreOriginal = @titreOriginal, VersionEtendue = @versionEtendue, NoRealisateur = @noRealisateur, NoProducteur = @noProducteur, XTra = @extra WHERE NoFilm = @no";
             cmd.Parameters.AddWithValue("@no", entite.NoFilm);
             cmd.Parameters.AddWithValue("@anneeSortie", entite.AnneeSortie == -1 ? SqlInt32.Null : entite.AnneeSortie);
             cmd.Parameters.AddWithValue("@categorie", entite.Categorie == "0" ? SqlString.Null : entite.Categorie);
@@ -1411,8 +1411,8 @@ static public class SQL
             cmd.Parameters.AddWithValue("@resume", entite.Resume == "" ? SqlString.Null : entite.Resume);
             cmd.Parameters.AddWithValue("@dureeMinutes", entite.Duree == -1 ? SqlInt32.Null : entite.Duree);
             cmd.Parameters.AddWithValue("@filmOriginal", entite.FilmOriginal);
-            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == "" ? SqlString.Null : entite.ImagePochette);
-            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0 ? SqlInt32.Null : entite.NbDisques);//a revoir
+            cmd.Parameters.AddWithValue("@pochette", entite.ImagePochette == "" ? SqlString.Null : entite.ImagePochette);//pas fait dans la requete pour le moment
+            cmd.Parameters.AddWithValue("@nbDisques", entite.NbDisques == 0 ? SqlInt32.Null : entite.NbDisques);
             cmd.Parameters.AddWithValue("@titreFrancais", entite.TitreFrancais);
             cmd.Parameters.AddWithValue("@titreOriginal", entite.TitreOriginal == "" ? SqlString.Null : entite.TitreOriginal);
             cmd.Parameters.AddWithValue("@versionEtendue", entite.VersionEtendue);
@@ -1420,6 +1420,41 @@ static public class SQL
             cmd.Parameters.AddWithValue("@noProducteur", entite.NomProducteur == "0" ? SqlString.Null : entite.NomProducteur);
             cmd.Parameters.AddWithValue("@extra", entite.LienInternet == "" ? SqlString.Null : entite.LienInternet);
             intNbAjout += cmd.ExecuteNonQuery();
+
+            cmd.Connection.Close();
+        }
+    }
+
+    public static bool trouverLangueFilm(int entite, int noFilm)
+    {
+        bool retour = false;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT NoLangue FROM FilmsLangues WHERE NoLangue = @noLangue AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@noLangue", entite);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            SqlDataReader drDDL = cmd.ExecuteReader();
+            while (drDDL.Read())
+            {
+                retour = true;
+            }
+            cmd.Connection.Close();
+        }
+        return retour;
+    }
+
+    public static void retirerLangueFilm(int noLangue, int noFilm)
+    {
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "DELETE FROM FilmsLangues WHERE NoLangue = @noLangue AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@noLangue", noLangue);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            cmd.ExecuteNonQuery();
 
             cmd.Connection.Close();
         }
