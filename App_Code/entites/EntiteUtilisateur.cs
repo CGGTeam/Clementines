@@ -11,7 +11,7 @@ public class EntiteUtilisateur
     public int NoUtilisateur { get; set; }
     public string NomUtilisateur { get; set; }
     public string Courriel { get; set; }
-    private int MotPasse { get; set; }
+    public int MotPasse { get; set; }
     public char TypeUtilisateur { get; set; }
 
     public EntiteUtilisateur(int no, string nom, string courriel, int mdp, char type)

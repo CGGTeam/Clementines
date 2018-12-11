@@ -42,7 +42,7 @@
     </div>
     
     <hr />
-    <asp:FileUpload id="btnUploadImagePochette" runat="server" CssClass="form-control"/> <!--d-->
+   
     <asp:PlaceHolder id="phDynamique" runat="server" />
 </asp:Content>
 
