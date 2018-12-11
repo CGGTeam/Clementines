@@ -330,12 +330,7 @@
             //S'occuper des Langues
             foreach (ListItem valeur in lbLangue.Items)
             {
-                /*if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && valeur.Selected)
-                {
-                    //Deja dans la BD pour ce film, ne rien faire
-
-                }
-                else */if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
                 {
                     //dans la base de donnée mais pas sélectionné, retirer de la BD
                     SQL.retirerLangueFilm(int.Parse(valeur.Value.ToString()), noFilm);
@@ -346,6 +341,38 @@
                     SQL.ajouterFilmLangue(noFilm, int.Parse(valeur.Value.ToString()));
                 }
             }
+
+            //S'occuper des Supplements
+            foreach (ListItem valeur in lbSupplements.Items)
+            {
+                if (SQL.trouverSupplementsFilms(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                {
+                    //dans la base de donnée mais pas sélectionné, retirer de la BD
+                    SQL.retirerSupplementsFilm(int.Parse(valeur.Value.ToString()), noFilm);
+                }
+                else if (!SQL.trouverSupplementsFilms(int.Parse(valeur.Value.ToString()), noFilm)  && valeur.Selected && valeur.Value != "0")
+                {
+                    //Pas dans la BD et sélectionné, donc ajouter
+                    SQL.ajouterFilmSupplement(noFilm, int.Parse(valeur.Value.ToString()));
+                }
+            }
+
+            //S'occuper des Sous-Titre
+            foreach (ListItem valeur in lbSousTitre.Items)
+            {
+                if (SQL.trouverSousTitresFilms(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                {
+                    //dans la base de donnée mais pas sélectionné, retirer de la BD
+                    SQL.retirerSousTitresFilm(int.Parse(valeur.Value.ToString()), noFilm);
+                }
+                else if (!SQL.trouverSousTitresFilms(int.Parse(valeur.Value.ToString()), noFilm)  && valeur.Selected && valeur.Value != "0")
+                {
+                    //Pas dans la BD et sélectionné, donc ajouter
+                    SQL.ajouterFilmSousTitre(noFilm, int.Parse(valeur.Value.ToString()));
+                }
+            }
+
+            //S'occuper des réalisateurs
         }
     }
 

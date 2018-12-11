@@ -1498,6 +1498,46 @@ static public class SQL
         return retour;
     }
 
+    public static bool trouverSupplementsFilms(int entite, int noFilm)
+    {
+        bool retour = false;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT NoSupplement FROM FilmsSupplements WHERE NoSupplement = @nosup AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@nosup", entite);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            SqlDataReader drDDL = cmd.ExecuteReader();
+            while (drDDL.Read())
+            {
+                retour = true;
+            }
+            cmd.Connection.Close();
+        }
+        return retour;
+    }
+
+    public static bool trouverSousTitresFilms(int entite, int noFilm)
+    {
+        bool retour = false;
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT NoSousTitre FROM FilmsSousTitres WHERE NoSousTitre = @nosup AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@nosup", entite);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            SqlDataReader drDDL = cmd.ExecuteReader();
+            while (drDDL.Read())
+            {
+                retour = true;
+            }
+            cmd.Connection.Close();
+        }
+        return retour;
+    }
+
     public static void retirerLangueFilm(int noLangue, int noFilm)
     {
         using (SqlCommand cmd = new SqlCommand())
@@ -1512,7 +1552,37 @@ static public class SQL
             cmd.Connection.Close();
         }
     }
-   public static void modifierFilm(EntiteFilm entite)
+
+    public static void retirerSupplementsFilm(int noSup, int noFilm)
+    {
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "DELETE FROM FilmsSupplements WHERE NoSupplement = @noSup AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@noSup", noSup);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            cmd.ExecuteNonQuery();
+
+            cmd.Connection.Close();
+        }
+    }
+
+    public static void retirerSousTitresFilm(int noSousTitre, int noFilm)
+    {
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            cmd.Connection = Connection2();//connection ouverte
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "DELETE FROM FilmsSousTitres WHERE NoSousTitre = @noSousTitre AND NoFilm = @noFilm";
+            cmd.Parameters.AddWithValue("@noSousTitre", noSousTitre);
+            cmd.Parameters.AddWithValue("@noFilm", noFilm);
+            cmd.ExecuteNonQuery();
+
+            cmd.Connection.Close();
+        }
+    }
+    public static void modifierFilm(EntiteFilm entite)
    {
       int intNbAjout = 0;
       using (SqlCommand cmd = new SqlCommand())
