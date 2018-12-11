@@ -1666,4 +1666,58 @@ static public class SQL
          cmd.Connection.Close();
       }
    }
+
+   public static bool verifierOKSuppression(int id)
+   {
+      SqlConnection conn = Connection2();
+      bool booRetour = true;
+      string strRequete = "SELECT COUNT(*) from Exemplaires WHERE NoUtilisateurProprietaire = " + id.ToString() + "; ";
+      //strRequete += ;
+      SqlCommand commandNbExemplaires = new SqlCommand(strRequete, conn);
+
+      SqlDataReader dataReader = commandNbExemplaires.ExecuteReader();
+      dataReader.Read();
+      int nbExemplaires = int.Parse(dataReader[0].ToString());
+      dataReader.Close();
+      if (nbExemplaires > 0)
+      {
+         booRetour = false;
+      }
+
+      string strRequete2 = "SELECT COUNT(*) from EmpruntsFilms WHERE NoUtilisateur = " + id.ToString() + ";";
+      SqlCommand commandNbEmprunts = new SqlCommand(strRequete2, conn);
+      SqlDataReader sqlDataReader = commandNbEmprunts.ExecuteReader();
+      sqlDataReader.Read();
+      int nbEmprunts = int.Parse(sqlDataReader[0].ToString());
+      sqlDataReader.Close();
+
+      if(nbEmprunts > 0)
+      {
+         booRetour = false;
+      }
+
+      conn.Close();
+      return booRetour;
+   }
+
+   public static void supprimerUtilisateur(int id)
+   {
+      SqlConnection conn = Connection2();
+
+      //Suppression des ValeursPréferences
+      string strRequeteValPref = "DELETE FROM ValeursPreferences WHERE NoUtilisateur = " + id.ToString();
+      SqlCommand commandValPref = new SqlCommand(strRequeteValPref, conn);
+      commandValPref.ExecuteNonQuery();
+
+      //Suppression des préférences de l'utilisateur
+      string strRequete = "DELETE FROM UtilisateursPreferences WHERE NoUtilisateur = " + id.ToString();
+      SqlCommand commandPref = new SqlCommand(strRequete, conn);
+      commandPref.ExecuteNonQuery();
+
+      //Suppression de l'utilisateur.
+      string strReq = "DELETE FROM Utilisateurs where NoUtilisateur = " + id.ToString();
+      SqlCommand command = new SqlCommand(strReq, conn);
+      command.ExecuteNonQuery();
+      conn.Close();
+   }
 }

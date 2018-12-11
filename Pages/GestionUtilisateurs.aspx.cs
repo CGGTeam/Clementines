@@ -69,6 +69,7 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
          btnModfier.ID = "modifier_" + dt.Rows[i][0].ToString();
          btnModfier.Text = "Modifier";
          btnModfier.CssClass = "btn btn-primary";
+
          if (dt.Rows[i][0].ToString() == utilCourant.NoUtilisateur.ToString())
          {
             btnModfier.Enabled = false;
@@ -78,17 +79,18 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
          td = new TableCell();
          td.Controls.Add(btnModfier);
          tr.Controls.Add(td);
-         Button btnSupprimer = new Button();
+         //Button btnSupprimer = new Button();
          td = new TableCell();
-         btnSupprimer.ID = "supprimer_" + dt.Rows[i][0].ToString();
-         btnSupprimer.Text = "Supprimer";
+
+         Button btnSupprimer = librairie.btnDYN_JS(td, "supprimer_" + dt.Rows[i][0].ToString(), "Supprimer", new EventHandler(supprimerOnClick));
          btnSupprimer.CssClass = "btn btn-danger";
          if (dt.Rows[i][0].ToString() == utilCourant.NoUtilisateur.ToString())
          {
             btnSupprimer.Enabled = false;
          }
-         btnSupprimer.Click += new EventHandler(supprimerOnClick);
-         td.Controls.Add(btnSupprimer);
+         //btnSupprimer.OnClientClick = "if (!confirm('Désirez-vous vraiment vous supprimer l'utilisateur ?\n\nOK=OUI\n\nAnnuler=NON')) return false;";
+         //btnSupprimer.Click += new EventHandler(supprimerOnClick);
+         //td.Controls.Add(btnSupprimer);
          tr.Controls.Add(td);
       }
       return table;
@@ -117,9 +119,31 @@ public partial class Pages_GestionUtilisateurs : System.Web.UI.Page
 
    public void supprimerOnClick(Object sender, EventArgs e)
    {
-      /*Button btn = (Button)sender;
-      String url = "~/Pages/SupprimerDVD.aspx?Film=" + btn.ID.Replace("supprimer_", "");
-      Response.Redirect(url, true);*/
+      Button btn = (Button)sender;
+      string id = btn.ID.Replace("supprimer_", "");
+
+      if (SQL.verifierOKSuppression(int.Parse(id)))
+      {
+         SQL.supprimerUtilisateur(int.Parse(id));
+         String url = "~/Pages/GestionUtilisateurs.aspx";
+         Response.Redirect(url, true);
+      }
+      else
+      {
+         succes.Visible = false;
+         error.Visible = true;
+         lblError.Text = "Impossible de supprimer l'utilisateur, car il est associé à des DVD.";
+      }
+
+   }
+
+   protected void fermerSucces(object sender, EventArgs e)
+   {
+      succes.Visible = false;
+   }
+   protected void fermerError(object sender, EventArgs e)
+   {
+      error.Visible = false;
    }
 
 }

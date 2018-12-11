@@ -170,6 +170,20 @@
           EnableClientScript="false" Display="None" />
         <br />
 
+       <!-- Confirmation de mot de passe-->
+       <asp:Label runat="server">Confirmation du mot de passe :</asp:Label>
+        <asp:TextBox ID="tbMotDePasse2" runat="server" CssClass="form-control"
+            placeholder="Mot de Passe Format(#####)" type="number" maxlength="5" format="NNNNN"/>
+        <asp:RequiredFieldValidator runat="server" 
+             id="passwordVide2"  
+             Style="color:red" 
+             controltovalidate="tbMotDePasse"
+             errormessage="Entrez un Mot de Passe!" />
+        <asp:RegularExpressionValidator runat="server" id="formatMotDePasse2"
+            controltovalidate="tbMotDePasse" validationexpression="^[0-9]{5}$"
+            EnableClientScript="false" Display="None" />
+        <br />
+
         <!-- Type d'utilisateurs -->
         <asp:Label runat="server">Type d'abonnement :</asp:Label>
         <asp:DropDownList ID="ddlListeAbonnement" runat="server"
