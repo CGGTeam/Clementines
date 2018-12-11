@@ -672,19 +672,7 @@
             </div>
           </div>
         
-        <!-- Image incertain-->
-         <asp:Label runat="server">Image présentement offerte:</asp:Label>
-        <asp:TextBox ID="tbImageActuelle" runat="server"
-           MaxLength="250" CssClass="form-control" Enabled="false"
-            placeholder="Aucune"/>
-        <br />
-        <asp:Label runat="server">Image de la pochette :</asp:Label>
-         <div class="input-group">
-          <span class="input-group-addon">   
-              <i class="glyphicon glyphicon glyphicon-file"></i>
-          </span>
-          <asp:FileUpload id="btnUploadImagePochette" runat="server" CssClass="form-control"/>
-        </div> 
+
 
         <!-- Ajouter des extras -->
         <br />
@@ -788,6 +776,25 @@
           </div>
     </div>
 </div>
+<hr />
+  <div class="row" style="align-content:center;">
+        <div class="col-sm-6" style="float: none; margin: 0 auto;">
+                    <!-- Image -->
+            <asp:Label runat="server">Image présentement offerte:</asp:Label>
+        <asp:TextBox ID="tbImageActuelle" runat="server"
+           MaxLength="250" CssClass="form-control" Enabled="false"
+            placeholder="Aucune"/>
+        <br />
+        <asp:Label runat="server">Image de la pochette :</asp:Label>
+         <div class="input-group">
+          <span class="input-group-addon">   
+              <i class="glyphicon glyphicon glyphicon-file"></i>
+          </span>
+          <asp:FileUpload id="btnUploadImagePochette" runat="server" CssClass="form-control"/>
+        </div>
+            <br />
+        </div>
+    </div>
 <!-- TODO : ajouter d'autres champs, modifier textbox pour des dropdown list  -->
 <div class="row">
     <div class="col-sm-6">
