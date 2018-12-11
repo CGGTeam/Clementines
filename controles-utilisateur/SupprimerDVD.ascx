@@ -110,6 +110,12 @@
 
             PHResume.Text = film.film.Resume!=string.Empty ? film.film.Resume : na;
 
+            // emprunteur
+            int noEmprunteur = SQL.GetNoUtilisateurDVDEmprunteur(film.film.NoFilm);
+            EntiteUtilisateur util = SQL.FindUtilisateurById(noEmprunteur);
+
+            PHEmprunter.Text = util.NomUtilisateur;
+
 
         }
         catch(Exception e)

@@ -46,6 +46,7 @@
                 Titre.Text = "Modification du film: " + filmAModifier.TitreFrancais.ToString();
                 tbTitreFrancais.Text = filmAModifier.TitreFrancais.ToString();
                 tbTitreOriginal.Text = filmAModifier.TitreOriginal.ToString();
+                tbImageActuelle.Text = Path.GetFileName(filmAModifier.ImagePochette.ToString());
                 tbExtras.Text = filmAModifier.LienInternet.ToString();
                 //ddlAnnee.ClearSelection(); //making sure the previous selection has been cleared
                 if(filmAModifier.AnneeSortie!=-1)
@@ -321,6 +322,18 @@
             string extras = tbExtras.Text.Trim();
 
             //requete de modification
+            if (imagePochette == "")
+            {
+                if (tbImageActuelle.Text == "pas-de-vignette.jpeg")
+                {
+                    imagePochette = "";
+                }
+                else
+                {
+                    imagePochette = tbImageActuelle.Text.ToString();
+                }               
+            }
+            //Titre.Text = imagePochette;
             EntiteFilm entite = new EntiteFilm(noFilm, anneSortie, categorie, format, date, noUtilisateur, resume, duree, filmOriginal, imagePochette, nbDisques, titreFrancais, titreOriginal, versionEtendue, realisateur, producteur, extras);
             SQL.modifierFilm(entite);
 
@@ -330,12 +343,7 @@
             //S'occuper des Langues
             foreach (ListItem valeur in lbLangue.Items)
             {
-                /*if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && valeur.Selected)
-                {
-                    //Deja dans la BD pour ce film, ne rien faire
-
-                }
-                else */if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                if (SQL.trouverLangueFilm(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
                 {
                     //dans la base de donnée mais pas sélectionné, retirer de la BD
                     SQL.retirerLangueFilm(int.Parse(valeur.Value.ToString()), noFilm);
@@ -346,6 +354,123 @@
                     SQL.ajouterFilmLangue(noFilm, int.Parse(valeur.Value.ToString()));
                 }
             }
+
+            //S'occuper des Supplements
+            foreach (ListItem valeur in lbSupplements.Items)
+            {
+                if (SQL.trouverSupplementsFilms(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                {
+                    //dans la base de donnée mais pas sélectionné, retirer de la BD
+                    SQL.retirerSupplementsFilm(int.Parse(valeur.Value.ToString()), noFilm);
+                }
+                else if (!SQL.trouverSupplementsFilms(int.Parse(valeur.Value.ToString()), noFilm)  && valeur.Selected && valeur.Value != "0")
+                {
+                    //Pas dans la BD et sélectionné, donc ajouter
+                    SQL.ajouterFilmSupplement(noFilm, int.Parse(valeur.Value.ToString()));
+                }
+            }
+
+            //S'occuper des Sous-Titre
+            foreach (ListItem valeur in lbSousTitre.Items)
+            {
+                if (SQL.trouverSousTitresFilms(int.Parse(valeur.Value.ToString()), noFilm) && !valeur.Selected)
+                {
+                    //dans la base de donnée mais pas sélectionné, retirer de la BD
+                    SQL.retirerSousTitresFilm(int.Parse(valeur.Value.ToString()), noFilm);
+                }
+                else if (!SQL.trouverSousTitresFilms(int.Parse(valeur.Value.ToString()), noFilm)  && valeur.Selected && valeur.Value != "0")
+                {
+                    //Pas dans la BD et sélectionné, donc ajouter
+                    SQL.ajouterFilmSousTitre(noFilm, int.Parse(valeur.Value.ToString()));
+                }
+            }
+
+            //gestion des acteurs a partir d'ici
+            List<int> listeIdActeur = new List<int>();
+            //acteur 1
+            if (!SQL.trouverActeurFilm(int.Parse(choixActeur1.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur1.ControleDDL.SelectedValue != "0" && choixActeur1.ControleDDL.Visible)
+            {
+                //faire l'ajout
+                SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur1.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur1.ControleDDL.SelectedValue));
+            }
+            else if (SQL.trouverActeurFilm(int.Parse(choixActeur1.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur1.ControleDDL.Visible)
+            {
+                listeIdActeur.Add(int.Parse(choixActeur1.ControleDDL.SelectedValue));
+            }
+            else if (choixActeur1.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur1.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm, ID);
+                listeIdActeur.Add(ID);
+            }
+            //acteur 2
+            if (!SQL.trouverActeurFilm(int.Parse(choixActeur2.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur2.ControleDDL.SelectedValue != "0" && choixActeur2.ControleDDL.Visible)
+            {
+                //faire l'ajout
+                SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur2.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur2.ControleDDL.SelectedValue));
+            }
+            else if (SQL.trouverActeurFilm(int.Parse(choixActeur2.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur2.ControleDDL.Visible)
+            {
+                listeIdActeur.Add(int.Parse(choixActeur2.ControleDDL.SelectedValue));
+            }
+            else if (choixActeur2.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur2.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm, ID);
+                listeIdActeur.Add(ID);
+            }
+
+            //acteur 3
+            if (!SQL.trouverActeurFilm(int.Parse(choixActeur3.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur3.ControleDDL.SelectedValue != "0" && choixActeur3.ControleDDL.Visible)
+            {
+                //faire l'ajout
+                SQL.ajouterFilmActeur(noFilm, int.Parse(choixActeur3.ControleDDL.SelectedValue));
+                listeIdActeur.Add(int.Parse(choixActeur3.ControleDDL.SelectedValue));
+            }
+            else if (SQL.trouverActeurFilm(int.Parse(choixActeur3.ControleDDL.SelectedValue.ToString()), noFilm) && choixActeur3.ControleDDL.Visible)
+            {
+                listeIdActeur.Add(int.Parse(choixActeur3.ControleDDL.SelectedValue));
+            }
+            else if (choixActeur3.ControleTextBox.Visible)
+            {
+                string nomActeur = choixActeur3.ControleTextBox.Text;
+                int ID = SQL.trouverDernierIDActeur();
+                ID++;
+                SQL.ajouteActeur(ID, nomActeur);
+                //Ajouter dans la table filmacteur
+                SQL.ajouterFilmActeur(noFilm, ID);
+                listeIdActeur.Add(ID);
+            }
+
+            //repasser dnas la BD pour supprimer les ActeurFilms superflux
+            //parcourir tous les idActeur pour le film donné
+            foreach (int idDansBD in SQL.trouverTousLesIDActeurPourUnFilm(noFilm))
+            {
+                bool trouve = false;
+                foreach (int idDansListe in listeIdActeur)
+                {
+                    if (idDansListe == idDansBD)
+                    {
+                        trouve = true;
+                    }
+                }
+                if (!trouve)
+                {
+                    //supprimer cet ActeurFilm
+                    SQL.retirerActeurFilm(idDansBD, noFilm);
+                }
+            }
+            Response.Redirect(prevPage);
         }
     }
 
@@ -548,6 +673,11 @@
           </div>
         
         <!-- Image incertain-->
+         <asp:Label runat="server">Image présentement offerte:</asp:Label>
+        <asp:TextBox ID="tbImageActuelle" runat="server"
+           MaxLength="250" CssClass="form-control" Enabled="false"
+            placeholder="Aucune"/>
+        <br />
         <asp:Label runat="server">Image de la pochette :</asp:Label>
          <div class="input-group">
           <span class="input-group-addon">   
